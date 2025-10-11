@@ -50,9 +50,10 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
   };
 
   return (
-    <div className="container-fluid p-0" style={{ 
+    <div className="container rounded p-5 my-5 bg-accent2" style={{ 
       backgroundColor: '#c4a57b',
-      fontFamily: 'Georgia, serif'
+      fontFamily: 'Georgia, serif',
+      
     }}>
       {/* Sección principal */}
       <div className="row g-0 align-items-center" style={{ 
@@ -126,10 +127,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
             <div className="row g-0 align-items-center">
               {/* Botón anterior */}
               <div className="col-1 d-flex justify-content-center">
-                <button
+                <button className='bg-danger'
                   onClick={prevSlide}
                   style={{
-                    backgroundColor: '#a85a5a',
                     border: 'none',
                     color: 'white',
                     fontSize: '2rem',
@@ -199,10 +199,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
               {/* Botón siguiente */}
               <div className="col-1 d-flex justify-content-center">
-                <button
+                <button className='bg-danger'
                   onClick={nextSlide}
                   style={{
-                    backgroundColor: '#a85a5a',
                     border: 'none',
                     color: 'white',
                     fontSize: '2rem',
