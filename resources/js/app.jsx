@@ -1,7 +1,8 @@
 import './bootstrap';
 import '../scss/app.scss';
-import 'bootstrap';
-import '../css/custom.css'; 
+import '../css/main.css';
+import '../css/custom.css';
+
 
 
 import { createInertiaApp } from '@inertiajs/react';

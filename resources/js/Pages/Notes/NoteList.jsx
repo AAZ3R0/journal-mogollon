@@ -11,23 +11,17 @@ export default function NoteList(){
     
     return (
 
-
-        <GuestLayout>
-            {/* Cambia 'class' por 'className' */}
-            <div className="container-fluid p-5 m-auto">
+        <div className="container p-5 m-auto bg-accent2">
                 <h1>Lista de notas</h1>
 
-                <div className="p-5 my-5 bg-secondary text-white rounded">
+                <div className="p-5 my-5 bg-accent1 rounded">
                     Aquí irán tus notas...
                 </div>
 
 
                 <PrimaryButton className='btn btn-primary'>
-                    Crear una nueva nota
+                    Prueba botón
                 </PrimaryButton>
-            </div>
-
-            
-        </GuestLayout>
+        </div>
     );
 }

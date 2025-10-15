@@ -24,5 +24,5 @@ body::before{
     background-attachment: fixed; 
     
     /* ¡Y aquí está la magia! Ajusta este valor a tu gusto */
-    opacity: 0.4;
+    opacity: 0.6;
 }

@@ -1,11 +1,43 @@
-// 1. (Opcional pero recomendado) Importa las funciones de Bootstrap.
-// Esto permite que tus variables personalizadas puedan usar funciones de Bootstrap.
+
 @import 'bootstrap/scss/functions';
 
-// 2. ✨ AQUÍ VA TU MAGIA ✨ Importa tu archivo de variables personalizadas.
-// Como este archivo se carga antes que las variables por defecto de Bootstrap,
-// tus valores tendrán prioridad.
+
 @import 'variables';
+
+@import 'bootstrap/scss/variables';
+
+@import 'bootstrap/scss/maps';
+
+
+$theme-colors: map-merge(
+    $theme-colors,(
+        "accent1": $accent1,
+        "accent2": $accent2,
+        "accent3": $accent3
+    )
+);
+
+@import "bootstrap/scss/utilities";
+// ...y ahora simplemente les añadimos nuestros colores.
+
+$utilities-bg-colors: map-merge(
+  $utilities-bg-colors,
+  (
+    "accent1": $accent1,
+    "accent2": $accent2,
+    "accent3": $accent3
+  )
+);
+
+$utilities-text-colors: map-merge(
+  $utilities-text-colors,
+  (
+    "accent1": $accent1,
+    "accent2": $accent2,
+    "accent3": $accent3
+  )
+);
+
 
 
 @import "bootstrap/scss/bootstrap";
