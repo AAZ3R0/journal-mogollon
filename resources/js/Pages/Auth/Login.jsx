@@ -34,7 +34,7 @@ export default function Login({ status }) {
                     {/* Contenedor del formulario con clase personalizada */}
                     <div className="p-4 p-md-5 rounded-3 shadow-sm form-card">
 
-                        <h1 className="text-cente fw-bold mb-4 text-dark">
+                        <h1 className="text-center fw-bold mb-4 text-dark">
                             Iniciar sesión
                         </h1>
 
@@ -82,7 +82,7 @@ export default function Login({ status }) {
                                 ¿No tienes cuenta?{' '}
                                 <Link
                                     href={route('register')}
-                                    className="text-dark fw-bold"
+                                    className="text-info fw-bold"
                                 >
                                     Registrarse
                                 </Link>

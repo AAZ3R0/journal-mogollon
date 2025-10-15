@@ -1,4 +1,4 @@
-import Logo from '../../img/LogoText.png'; // 1. Importa la imagen
+import Logo from '../../img/LogoFigura.png'; // 1. Importa la imagen
 
 export default function ApplicationLogo(props) {
     return (

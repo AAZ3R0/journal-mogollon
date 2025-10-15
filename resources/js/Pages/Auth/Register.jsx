@@ -27,9 +27,9 @@ export default function Register() {
              <Head title="Registrarse" />
 
             {/* Se usa la misma estructura de layout que en el Login */}
-            <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+            <div className="container-fluid min-vh-100 mt-5 d-flex align-items-center justify-content-center">
                 
-                <div className="bg-accent2 bg-opacity-50 rounded col-12 col-sm-8 col-md-5 col-lg-4 p-4 p-md-5 rounded-3 shadow-sm form-card">
+                <div className="bg-accent2 bg-opacity-50  rounded col-12 col-sm-8 col-md-5 col-lg-4 p-4 p-md-5 rounded-3 shadow-sm form-card">
                     
                     <h1 className="text-center  fw-bold mb-4 text-dark">
                         Registrarse
@@ -127,7 +127,7 @@ export default function Register() {
                             ¿Ya tienes una cuenta?{' '}
                             <Link
                                 href={route('login')}
-                                className="text-dark fw-bold"
+                                className="text-info fw-bold"
                             >
                                 Iniciar sesión
                             </Link>
