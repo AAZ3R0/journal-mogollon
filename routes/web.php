@@ -17,7 +17,8 @@ Route::get('/', function () {
 });
 
 
-Route::get('/notes', [NotesController::class, 'index'])->name('listNotes');
+Route::get('/notes', [NotesController::class, 'index'])->name('notes.index');
+Route::post('/notes', [NotesController::class, 'store'])->name('notes.store');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

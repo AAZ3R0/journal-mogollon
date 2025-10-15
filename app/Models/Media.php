@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Medium extends Model
+class Media extends Model
 {
 	protected $table = 'media';
 	protected $primaryKey = 'media_id';

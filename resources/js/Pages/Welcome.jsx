@@ -1,3 +1,4 @@
+import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link } from '@inertiajs/react';
 import React, { useState } from 'react';
 
@@ -50,15 +51,13 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
   };
 
   return (
-    <div className="container rounded p-5 my-5 bg-accent2" style={{ 
-      backgroundColor: '#c4a57b',
-      fontFamily: 'Georgia, serif',
-      
-    }}>
+
+    <GuestLayout>
+      <div className="container rounded p-5 my-5 bg-accent2 bg-opacity-50">
       {/* Sección principal */}
-      <div className="row g-0 align-items-center" style={{ 
+      <div className="row g-0 align-items-center bg-secondary bg-opacity-25" style={{ 
         minHeight: '220px',
-        backgroundColor: '#c4a57b'
+        
       }}>
         <div className="col-md-5">
           <img 
@@ -108,7 +107,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
       </div>
 
       {/* Carrusel de Noticias del día */}
-      <div style={{ 
+      <div className='bg-secondary bg-opacity-25 my-5' style={{ 
         backgroundColor: '#d4b896',
         padding: '20px 0'
       }}>
@@ -221,5 +220,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         </div>
       </div>
     </div>
+    </GuestLayout>
   );
 }
