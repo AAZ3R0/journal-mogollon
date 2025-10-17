@@ -71,8 +71,7 @@ class Note extends Model
 
 	public function sections()
 	{
-		return $this->belongsToMany(Section::class, 'note_sections')
-					->withPivot('note_section_id');
+		return $this->belongsToMany(Section::class, 'note_sections', 'note_id', 'section_id');
 	}
 
 	public function notes_extension()

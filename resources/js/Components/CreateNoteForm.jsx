@@ -8,13 +8,14 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 
 // Recibimos la función para cerrar el modal como una prop
-export default function CreateNoteForm({ onClose }) { 
+export default function CreateNoteForm({ onClose, sections = [] }) { 
     const { data, setData, post, processing, errors, reset } = useForm({
         headline: '',
         lead: '',
         body: '',
         closing: '',
         portrait_url: null,
+        sections: [],
     });
 
     const submit = (e) => {
@@ -26,6 +27,20 @@ export default function CreateNoteForm({ onClose }) {
                 onClose();  // ✅ ¡Aquí cerramos el modal!
             },
         });
+    };
+
+    const handleSectionChange = (e) => {
+        const sectionId = parseInt(e.target.value, 10);
+        let updatedSections = [...data.sections];
+
+        if (e.target.checked) {
+            // Si se marca, añade el ID al arreglo
+            updatedSections.push(sectionId);
+        } else {
+            // Si se desmarca, quita el ID del arreglo
+            updatedSections = updatedSections.filter((id) => id !== sectionId);
+        }
+        setData('sections', updatedSections);
     };
 
     return (
@@ -47,6 +62,29 @@ export default function CreateNoteForm({ onClose }) {
                     onChange={(e) => setData('headline', e.target.value)}
                 />
                 <InputError message={errors.headline} className="mt-2" />
+            </div>
+
+
+            <div className="mt-4">
+                <label className="form-label fw-bold">Secciones</label>
+                <div className="d-flex flex-wrap">
+                    {sections.map((section) => (
+                        <div className="form-check me-3" key={section.section_id}>
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                value={section.section_id}
+                                id={`section-${section.section_id}`}
+                                onChange={handleSectionChange}
+                                checked={data.sections.includes(section.section_id)}
+                            />
+                            <label className="form-check-label" htmlFor={`section-${section.section_id}`}>
+                                {section.name}
+                            </label>
+                        </div>
+                    ))}
+                </div>
+                <InputError message={errors.sections} className="mt-2" />
             </div>
 
             <div>
