@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property User $user
  * @property Collection|Comment[] $comments
- * @property Collection|Medium[] $media
+ * @property Collection|Media[] $media
  * @property Collection|Section[] $sections
  * @property NotesExtension|null $notes_extension
  *
@@ -66,7 +66,7 @@ class Note extends Model
 
 	public function media()
 	{
-		return $this->hasMany(Medium::class);
+		return $this->hasMany(Media::class, 'note_id');
 	}
 
 	public function sections()

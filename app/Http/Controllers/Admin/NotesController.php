@@ -19,7 +19,7 @@ use Inertia\Response;
 class NotesController extends Controller
 {
     public function index(){
-        $notes = Note::with('user', 'sections')->orderBy('publish_date', 'desc')->get();
+        $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
         $sections = Section::all();
         return Inertia::render('Admin/NotesManager', [
             'notes' => $notes,
@@ -45,6 +45,9 @@ class NotesController extends Controller
             'portrait_url' => 'required|image|mimes:jpg, jpeg, png|max:2048',
             'sections' => 'required|array',
             'sections.*' => 'exists:sections,section_id',
+
+            'media_files' => 'nullable|array',
+            'media_files.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,mp3,wav|max:20480',
         ]);
 
         $path = $request->file('portrait_url')->store('notes', 'public');
@@ -64,19 +67,39 @@ class NotesController extends Controller
             $note->sections()->attach($validated['sections']);
         }
 
+        if($request->hasFile('media_files')){
+            foreach ($request->file('media_files') as $file){
+                
+
+                if($file){
+                    $mediaPath = $file->store('media', 'public');
+
+                    $note->media()->create([
+                        'url' => $mediaPath
+                    ]);
+                }
+
+                
+            }
+        }
+
         return redirect()->route('notes.index')->with('success', '¡Nota creada exitosamente!');
 
     }
 
     public function show(Note $note){
 
-        $note->load(['user', 'sections']);
+        $note->load(['user', 'sections', 'media']);
 
         return response()->json($note);
 
     }
 
     public function update(Request $request, Note $note){
+
+
+        
+
         // 1. Validar los datos de entrada (la imagen es opcional en la actualización)
         $validated = $request->validate([
             'headline' => 'required|string|max:50',
@@ -86,6 +109,11 @@ class NotesController extends Controller
             'portrait_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // 'nullable' la hace opcional
             'sections' => 'required|array',
             'sections.*' => 'exists:sections,section_id',
+
+            'media_files'       => 'nullable|array',
+            'media_files.*'     => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,mp3,wav|max:20480',
+            'media_to_delete'   => 'nullable|array', // Arreglo con los IDs de los media a borrar
+            'media_to_delete.*' => 'exists:media,media_id',
         ]);
 
         // 2. Actualizar los campos principales de la nota
@@ -115,12 +143,40 @@ class NotesController extends Controller
             $note->sections()->sync([]);
         }
 
+
+        if (!empty($validated['media_to_delete'])) {
+            // Buscamos todos los registros de media que coincidan con los IDs
+            $mediaToDelete = Media::whereIn('media_id', $validated['media_to_delete'])->get();
+            foreach ($mediaToDelete as $media) {
+                // Borramos el archivo físico del disco
+                Storage::disk('public')->delete($media->url);
+                // Borramos el registro de la base de datos
+                $media->delete();
+            }
+        }
+
+        if ($request->hasFile('media_files')) {
+            foreach ($request->file('media_files') as $file) {
+                if ($file) {
+                    $mediaPath = $file->store('media', 'public');
+                    $note->media()->create(['url' => $mediaPath]);
+                }
+            }
+        }
+
         return redirect()->route('notes.index')->with('success', '¡Nota actualizada exitosamente!');
     }
 
     public function destroy(Note $note){
         // 1. Eliminar las relaciones en la tabla pivote (note_sections)
         // detach() sin argumentos elimina todas las relaciones para esta nota.
+
+        foreach ($note->media as $mediafile){
+            Storage::disk('public')->delete($mediafile->url);
+            $mediafile->delete();
+        }
+
+
         $note->sections()->detach();
 
         // 2. Eliminar la imagen de portada del almacenamiento

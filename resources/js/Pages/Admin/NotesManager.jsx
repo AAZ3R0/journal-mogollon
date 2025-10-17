@@ -1,36 +1,31 @@
 import React, { useState } from 'react';
 import { Link, Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import GuestLayout from '@/Layouts/GuestLayout'; // O tu layout principal
+import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
-import Modal from '@/Components/Modal'; // Crearemos este componente a continuación
-import CreateNoteForm from '@/Components/CreateNoteForm'; // Y este también
+import Modal from '@/Components/Modal';
+import CreateNoteForm from '@/Components/CreateNoteForm';
 import ViewNoteDetails from '@/Components/ViewNoteDetails';
 import EditNoteForm from '@/Components/EditNoteForm';
 import DeleteNoteConfirmation from '@/Components/DeleteNoteConfirmation';
 import axios from 'axios';
 
+export default function NotesManager({auth, notes, sections, success }) {
 
-export default function NotesManager({auth, notes, sections, success }) { // Recibes las notas y mensajes flash
-    
-    // Estado para controlar la visibilidad del modal
-    
-
+    // Modal de Creación
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const openCreateModal = () => setCreateModalOpen(true);
     const closeCreateModal = () => setCreateModalOpen(false);
 
-    //-- MODAL DE VISUALIZACIÖN ---
-
+    // Modal de Visualización
     const [viewingNote, setViewingNote] = useState(null);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
 
     const openViewModal = (note) => {
         axios.get(route('notes.show', note.note_id)).then(response => {
-            
             setViewingNote(response.data);
             setViewModalOpen(true);
-        })
+        });
     }
 
     const closeViewModal = () => {
@@ -38,21 +33,25 @@ export default function NotesManager({auth, notes, sections, success }) { // Rec
         setViewingNote(null);
     }
 
-    // --- ESTADO PARA EL MODAL DE EDICIÓN ---
-    const [editingNote, setEditingNote] = useState(null); // Guardará la nota a editar
+    // Modal de Edición
+    const [editingNote, setEditingNote] = useState(null);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-
+    
+    // ✅✅✅ ESTA ES LA ÚNICA CORRECCIÓN NECESARIA ✅✅✅
     const openEditModal = (note) => {
-        setEditingNote(note); // Guardamos la nota seleccionada en el estado
-        setEditModalOpen(true); // Abrimos el modal
+        // Debe llamar a 'notes.show' para OBTENER los datos, no a 'notes.update'.
+        axios.get(route('notes.show', note.note_id)).then(response => {
+            setEditingNote(response.data); // Ahora sí recibe el objeto 'note' con su arreglo 'media'
+            setEditModalOpen(true);
+        });
     };
 
     const closeEditModal = () => {
         setEditModalOpen(false);
-        setEditingNote(null); // Limpiamos el estado al cerrar
+        setEditingNote(null);
     };
 
-    // --- ESTADO PARA EL MODAL DE ELIMINACIÓN ---
+    // Modal de Eliminación
     const [deletingNote, setDeletingNote] = useState(null);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -66,28 +65,20 @@ export default function NotesManager({auth, notes, sections, success }) { // Rec
         setDeletingNote(null);
     };
 
-
     return (
         <AuthenticatedLayout>
             <Head title="Administrador de Notas" />
             
-            {/* ✅ Contenedor principal ÚNICO que envuelve todo el contenido de la página */}
             <div className="container py-5">
-
-                {/* --- Encabezado de la página --- */}
-                {/* ❌ Se eliminó la clase .container y m-auto de este div */}
                 <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                     <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
-                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg mt-3'>
+                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg mt-3 rounded-pill'>
                         <b>CREAR NOTA</b>
                     </PrimaryButton>
                 </div>
 
-                {/* --- Tabla Responsiva --- */}
-                {/* El div que la envuelve ya no necesita la clase .container */}
                 <div className="table-responsive">
                     <table className="table table-bordered border-dark">
-                        {/* ... tu thead y tbody no necesitan cambios ... */}
                         <thead className='text-center'>
                             <tr>
                                 <th className='bg-warning py-4 text-dark h4'>Foto de portada</th>
@@ -126,24 +117,18 @@ export default function NotesManager({auth, notes, sections, success }) { // Rec
                 </div>
             </div>
 
-            {/* --- Modales --- */}
-            {/* La posición de los modales en el JSX no afecta su layout visual */}
             <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
                 <CreateNoteForm onClose={closeCreateModal} sections={sections} />
             </Modal>
-
             <Modal show={isViewModalOpen} onClose={closeViewModal}>
                 {viewingNote && <ViewNoteDetails note={viewingNote} onClose={closeViewModal} />}
             </Modal>
-            
             <Modal show={isEditModalOpen} onClose={closeEditModal} >
                 {editingNote && <EditNoteForm note={editingNote} sections={sections} onClose={closeEditModal} />}
             </Modal>
-
             <Modal show={isDeleteModalOpen} onClose={closeDeleteModal}>
                 {deletingNote && <DeleteNoteConfirmation note={deletingNote} onClose={closeDeleteModal} />}
             </Modal>
-            
         </AuthenticatedLayout>
     );
 }
