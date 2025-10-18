@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $media_id
  * @property string|null $url
  * @property int $note_id
- * 
+ * @property int $position
  * @property Note $note
  *
  * @package App\Models
@@ -31,7 +31,8 @@ class Media extends Model
 
 	protected $fillable = [
 		'url',
-		'note_id'
+		'note_id',
+		'position'
 	];
 
 	public function note()

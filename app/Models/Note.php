@@ -78,4 +78,13 @@ class Note extends Model
 	{
 		return $this->hasOne(NotesExtension::class, 'note_extension_id');
 	}
+
+
+	public function getMediaByPositionAttribute()
+	{
+		// Carga la relación 'media', la ordena por posición,
+		// y la convierte en un objeto donde la clave es la posición.
+		// ej: { "0": { ...archivo1 }, "1": { ...archivo2 } }
+		return $this->media()->orderBy('position', 'asc')->get()->keyBy('position');
+	}
 }

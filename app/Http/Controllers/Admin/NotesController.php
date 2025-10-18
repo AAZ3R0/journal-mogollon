@@ -21,6 +21,9 @@ class NotesController extends Controller
     public function index(){
         $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
         $sections = Section::all();
+
+        $notes->each->append('media_by_position');
+
         return Inertia::render('Admin/NotesManager', [
             'notes' => $notes,
             'sections' => $sections,
@@ -35,17 +38,16 @@ class NotesController extends Controller
         return Inertia::render('Notes/NoteList');
     }
 
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'headline' => 'required|string|max:50',
-            'lead' => 'required|string|max:100',
-            'body' => 'required|string|max:200',
-            'closing' => 'required|string|max:100',
-            'portrait_url' => 'required|image|mimes:jpg, jpeg, png|max:2048',
+            'lead' => 'required|string|max:200',
+            'body' => 'required|string|max:280',
+            'closing' => 'required|string|max:200',
+            'portrait_url' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'sections' => 'required|array',
             'sections.*' => 'exists:sections,section_id',
-
             'media_files' => 'nullable|array',
             'media_files.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,mp3,wav|max:20480',
         ]);
@@ -63,37 +65,28 @@ class NotesController extends Controller
             'publish_date' => now(),
         ]);
 
-        if(!empty($validated['sections'])){
+        if (!empty($validated['sections'])) {
             $note->sections()->attach($validated['sections']);
         }
 
-        if($request->hasFile('media_files')){
-            foreach ($request->file('media_files') as $file){
-                
-
-                if($file){
+        // ✅✅✅ CORRECCIÓN CLAVE AQUÍ ✅✅✅
+        // El foreach ahora captura tanto la $position (0, 1, etc.) como el $file.
+        if ($request->hasFile('media_files')) {
+            foreach ($request->file('media_files') as $position => $file) {
+                if ($file) {
                     $mediaPath = $file->store('media', 'public');
-
                     $note->media()->create([
-                        'url' => $mediaPath
+                        'url' => $mediaPath,
+                        'position' => $position, // Se guarda la posición correcta
                     ]);
                 }
-
-                
             }
         }
 
         return redirect()->route('notes.index')->with('success', '¡Nota creada exitosamente!');
-
     }
 
-    public function show(Note $note){
-
-        $note->load(['user', 'sections', 'media']);
-
-        return response()->json($note);
-
-    }
+    
 
     public function update(Request $request, Note $note){
 
@@ -103,9 +96,9 @@ class NotesController extends Controller
         // 1. Validar los datos de entrada (la imagen es opcional en la actualización)
         $validated = $request->validate([
             'headline' => 'required|string|max:50',
-            'lead' => 'required|string|max:100',
-            'body' => 'required|string|max:200',
-            'closing' => 'required|string|max:100',
+            'lead' => 'required|string|max:200',
+            'body' => 'required|string|max:280',
+            'closing' => 'required|string|max:200',
             'portrait_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // 'nullable' la hace opcional
             'sections' => 'required|array',
             'sections.*' => 'exists:sections,section_id',
@@ -156,15 +149,35 @@ class NotesController extends Controller
         }
 
         if ($request->hasFile('media_files')) {
-            foreach ($request->file('media_files') as $file) {
+            foreach ($request->file('media_files') as $position => $file) {
                 if ($file) {
+                    // Borramos cualquier archivo viejo que pudiera estar en esta misma posición
+                    $oldMedia = $note->media()->where('position', $position)->first();
+                    if ($oldMedia) {
+                        Storage::disk('public')->delete($oldMedia->url);
+                        $oldMedia->delete();
+                    }
+                    
                     $mediaPath = $file->store('media', 'public');
-                    $note->media()->create(['url' => $mediaPath]);
+                    $note->media()->create([
+                        'url' => $mediaPath,
+                        'position' => $position,
+                    ]);
                 }
             }
         }
 
         return redirect()->route('notes.index')->with('success', '¡Nota actualizada exitosamente!');
+    }
+
+    public function show(Note $note){
+
+        $note->load(['user', 'sections', 'media']);
+
+        $note->append('media_by_position');
+
+        return response()->json($note);
+
     }
 
     public function destroy(Note $note){

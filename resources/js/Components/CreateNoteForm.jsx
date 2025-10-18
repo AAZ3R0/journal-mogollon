@@ -1,7 +1,7 @@
 // resources/js/Pages/Admin/Partials/CreateNoteForm.jsx
 
 import React from 'react';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
@@ -19,6 +19,14 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
         sections: [],
         media_files: [],
     });
+
+    //Limite de caracteres
+    const charLimits = {
+        headline: 50,
+        lead: 200,
+        body: 280,
+        closing: 200,
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -54,11 +62,20 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
         setData('media_files', newMediaFiles);
     }
 
+
+    //Calcula si algún campo excede el límite de caracteres
+
+    const isTitleOverLimit = data.headline.length > charLimits.headline;
+    const isLeadOverLimit = data.lead.length > charLimits.lead;
+    const isBodyOverLimit = data.body.length > charLimits.body;
+    const isClosingOverLimit = data.closing.length > charLimits.closing;
+    const isFormInvalid = isLeadOverLimit || isBodyOverLimit || isClosingOverLimit;
+
     return ( 
         <div>
             <div className='modal-header'>
-                <h3 className="modal-title">Crear Nueva Nota</h3>
-                <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+                <h2 className="modal-title">Crear Nueva Nota</h2>
+                <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
             
             {/* ✅ LA ETIQUETA <form> ENVUELVE TODO EL CONTENIDO Y EL FOOTER */}
@@ -73,15 +90,29 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
                             onChange={(e) => setData('headline', e.target.value)}
                         />
                         <InputError message={errors.headline} className="mt-2" />
+
+                        {/* Contador de caracteres */}
+                        <InputError message={errors.headline} className="mt-2" />
+                        <div className={`text-end small ${isTitleOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.headline.length} / {charLimits.headline}
+                        </div>
+                        <InputError message={errors.headline} className="mt-2" />
+
                     </div>
 
                     {/* Campo: Entrada */}
                     <div className="mt-4">
                         <InputLabel htmlFor="lead" value="Entrada" />
-                        <TextInput
-                            id="lead" value={data.lead} className="form-control mt-1"
+                        <textarea
+                            id="lead" value={data.lead} className="form-control mt-1" rows='4'
                             onChange={(e) => setData('lead', e.target.value)}
-                        />
+                        ></textarea>
+
+                        {/* Contador de caracteres */}
+                        <InputError message={errors.lead} className="mt-2" />
+                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.lead.length} / {charLimits.lead}
+                        </div>
                         <InputError message={errors.lead} className="mt-2" />
                     </div>
 
@@ -89,10 +120,17 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
                     <div className="mt-4">
                         <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
                         <textarea
-                            id="body" value={data.body} className="form-control mt-1" rows="5"
+                            id="body" value={data.body} className="form-control mt-1" rows="6"
                             onChange={(e) => setData('body', e.target.value)}
                         ></textarea>
                         <InputError message={errors.body} className="mt-2" />
+
+                        {/* Contador de caracteres */}
+                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.body.length} / {charLimits.body}
+                        </div>
+                        <InputError message={errors.body} className="mt-2" />
+
                     </div>
 
                     {/* --- PRIMER INPUT DE ARCHIVO --- */}
@@ -104,15 +142,26 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
                             accept="image/*,video/*,audio/*" 
                         />
                         <InputError message={errors['media_files.0']} className="mt-2" />
+
+
+                        
+
                     </div>
                     
                     {/* ✅ Campo: Remate (Restaurado y en orden) */}
                     <div className="mt-4">
                         <InputLabel htmlFor="closing" value="Remate" />
-                        <TextInput
-                            id="closing" value={data.closing} className="form-control mt-1"
+                        <textarea
+                            id="closing" value={data.closing} className="form-control mt-1" rows='4'
                             onChange={(e) => setData('closing', e.target.value)}
-                        />
+                        ></textarea>
+                        <InputError message={errors.closing} className="mt-2" />
+
+                        {/* Contador de caracteres */}
+
+                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.closing.length} / {charLimits.closing}
+                        </div>
                         <InputError message={errors.closing} className="mt-2" />
                     </div>
 

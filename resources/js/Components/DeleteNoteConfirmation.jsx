@@ -19,9 +19,15 @@ export default function DeleteNoteConfirmation({ note, onClose }) {
     };
 
     return (
-        <div className="p-4 text-center">
-            <h2 className="h4 mb-3">¿Estás seguro?</h2>
+        <div className="text-center">
+
+            <div className='modal-header mb-3'>
+                <h2 className='moda-title'>Eliminar nota</h2>
+                <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
+            </div>
             
+
+            <h3>¿Estás seguro?</h3>
             <p className="mb-4">
                 Estás a punto de eliminar permanentemente la nota:
                 <br />

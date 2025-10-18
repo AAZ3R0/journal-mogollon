@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
@@ -20,30 +20,35 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
         media_to_delete: [],
     });
 
-    const [hiddenMediaIds, setHiddenMediaIds] = useState([]);
 
-    // ✅✅✅ FUNCIÓN CORREGIDA ✅✅✅
-    const handleFileChange = (index, file, existingMediaId = null) => {
+    const charLimits = {
+        headline: 50,
+        lead: 200,
+        body: 280,
+        closing: 200,
+    }
+
+    const isHeadlineOverLimit = data.headline.length > charLimits.headline;
+    const isLeadOverLimit = data.lead.length > charLimits.lead;
+    const isBodyOverLimit = data.body.length > charLimits.body;
+    const isClosingOverLimit = data.closing.length > charLimits.closing;
+    const isFormInvalid = isHeadlineOverLimit || isLeadOverLimit || isBodyOverLimit || isClosingOverLimit;
+
+
+    // Lógica simplificada: encuentra el archivo específico para cada posición
+    const existingMedia1 = Array.isArray(note.media) ? note.media.find(m => m.position === 0) : null;
+    const existingMedia2 = Array.isArray(note.media) ? note.media.find(m => m.position === 1) : null;
+
+    const handleFileChange = (index, file) => {
         const newMediaFiles = [...data.media_files];
         newMediaFiles[index] = file;
         setData('media_files', newMediaFiles);
-
-        if (existingMediaId) {
-            // Leemos el estado actual directamente de 'data' y luego lo actualizamos.
-            if (!data.media_to_delete.includes(existingMediaId)) {
-                setData('media_to_delete', [...data.media_to_delete, existingMediaId]);
-            }
-        }
     };
 
-    // ✅✅✅ FUNCIÓN CORREGIDA ✅✅✅
     const handleRemoveExistingMedia = (mediaId) => {
-        // Leemos el estado actual directamente de 'data' y luego lo actualizamos.
         if (!data.media_to_delete.includes(mediaId)) {
             setData('media_to_delete', [...data.media_to_delete, mediaId]);
         }
-        // El estado local de la UI sí puede usar el updater sin problema.
-        setHiddenMediaIds((prev) => [...prev, mediaId]);
     };
 
     const handleSectionChange = (e) => {
@@ -61,44 +66,49 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
 
     const submit = (e) => {
         e.preventDefault();
-        // Vuelve a añadir el tercer argumento con la opción onSuccess
-        post(route('notes.update', note.note_id),{
-            onSuccess: () => onClose()
+        post(route('notes.update', note.note_id), {
+            onSuccess: () => onClose(),
         });
     };
-
-    const existingMedia1 = note.media && note.media[0] ? note.media[0] : null;
-    const existingMedia2 = note.media && note.media[1] ? note.media[1] : null;
 
     return (
         <div>
             <div className="modal-header">
-                <h3 className="modal-title">Editar Nota: {note.headline}</h3>
-                <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+                <h2 className="modal-title">Editar Nota</h2>
+                <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
 
             <form onSubmit={submit}>
                 <div className="modal-body">
-                    
                     <div>
                         <InputLabel htmlFor="headline" value="Título" />
                         <TextInput id="headline" value={data.headline} className="form-control mt-1" onChange={(e) => setData('headline', e.target.value)} />
+
+                        <div className={`text-end small ${isHeadlineOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.headline.length} / {charLimits.headline}
+                        </div>
                         <InputError message={errors.headline} className="mt-2" />
                     </div>
                     <div className="mt-4">
                         <InputLabel htmlFor="lead" value="Entrada" />
-                        <TextInput id="lead" value={data.lead} className="form-control mt-1" onChange={(e) => setData('lead', e.target.value)} />
+                        <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
+                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.lead.length} / {charLimits.lead}
+                        </div>
                         <InputError message={errors.lead} className="mt-2" />
                     </div>
                     <div className="mt-4">
                         <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
-                        <textarea id="body" value={data.body} className="form-control mt-1" rows="5" onChange={(e) => setData('body', e.target.value)}></textarea>
+                        <textarea id="body" value={data.body} className="form-control mt-1" rows="6" onChange={(e) => setData('body', e.target.value)}></textarea>
+                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.body.length} / {charLimits.body}
+                        </div>
                         <InputError message={errors.body} className="mt-2" />
                     </div>
 
-                    <div className="mt-4 p-3 border rounded bg-light">
+                    <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
                         <InputLabel value="Contenido Multimedia 1" />
-                        {existingMedia1 && !hiddenMediaIds.includes(existingMedia1.media_id) ? (
+                        {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
                             <div>
                                 <MediaRenderer file={existingMedia1} index={0} />
                                 <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
@@ -107,17 +117,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                             </div>
                         ) : (
                             <div>
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        handleFileChange(
-                                            0,
-                                            e.target.files[0],
-                                            existingMedia1 ? existingMedia1.media_id : null
-                                        )
-                                    }
-                                />
+                                <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
                                 <InputError message={errors['media_files.0']} className="mt-2" />
                             </div>
                         )}
@@ -125,13 +125,16 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     
                     <div className="mt-4">
                         <InputLabel htmlFor="closing" value="Remate" />
-                        <TextInput id="closing" value={data.closing} className="form-control mt-1" onChange={(e) => setData('closing', e.target.value)} />
+                        <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
+                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.closing.length} / {charLimits.closing}
+                        </div>
                         <InputError message={errors.closing} className="mt-2" />
                     </div>
 
-                    <div className="mt-4 p-3 border rounded bg-light">
+                    <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
                         <InputLabel value="Contenido Multimedia 2" />
-                        {existingMedia2 && !hiddenMediaIds.includes(existingMedia2.media_id) ? (
+                        {existingMedia2 && !data.media_to_delete.includes(existingMedia2.media_id) ? (
                             <div>
                                 <MediaRenderer file={existingMedia2} index={1} />
                                 <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia2.media_id)} className="btn btn-sm btn-danger mt-2">
@@ -140,17 +143,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                             </div>
                         ) : (
                             <div>
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        handleFileChange(
-                                            1,
-                                            e.target.files[0],
-                                            existingMedia2 ? existingMedia2.media_id : null
-                                        )
-                                    }
-                                />
+                                <input type="file" className="form-control" onChange={(e) => handleFileChange(1, e.target.files[0])} />
                                 <InputError message={errors['media_files.1']} className="mt-2" />
                             </div>
                         )}
