@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 // Este componente auxiliar no necesita cambios, pero se incluye para que el archivo esté completo.
 export const MediaRenderer = ({ file, index }) => {
@@ -43,6 +43,21 @@ export const MediaRenderer = ({ file, index }) => {
 };
 
 export default function ViewNoteDetails({ note, onClose }) {
+
+    const leadExtensions = useMemo(
+        ()=> (note.extensions || []).filter(ext => ext.type === 'lead'),
+        [note.extensions]
+    );
+    const bodyExtensions = useMemo(
+        () => (note.extensions || []).filter(ext => ext.type === 'body'),
+        [note.extensions]
+    );
+    const closingExtensions = useMemo(
+        () => (note.extensions || []).filter(ext => ext.type === 'closing'),
+        [note.extensions]
+    );
+
+
     // Leemos los archivos directamente de los "espacios" (slots) que nos da el backend.
     const mediaForSlot1 = note.media_by_position ? (note.media_by_position['0'] || null) : null;
     const mediaForSlot2 = note.media_by_position ? (note.media_by_position['1'] || null) : null;
@@ -69,11 +84,33 @@ export default function ViewNoteDetails({ note, onClose }) {
                     ))}
                 </div>
                 <hr/>
+
+                {/* SECCIÓN DE ENTRADA (LEAD) */}
                 <p style={{textAlign: 'justify'}}><strong>{note.lead}</strong></p>
+                {leadExtensions.map(ext => (
+                    <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">
+                        <p>{ext.content}</p>
+                        {ext.media && <MediaRenderer file={ext.media} index={ext.position} />}
+                    </div>
+                ))}
+                {/* SECCIÓN DE CUERPO (BODY) */}
                 <p style={{textAlign: 'justify'}}>{note.body}</p>
                 {mediaForSlot1 && <MediaRenderer file={mediaForSlot1} index={0} />}
+                {bodyExtensions.map(ext => (
+                    <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">
+                        <p>{ext.content}</p>
+                        {ext.media && <MediaRenderer file={ext.media} index={ext.position} />}
+                    </div>
+                ))}
+                {/* SECCIÓN DE REMATE (CLOSING) */}
                 <p style={{textAlign: 'justify'}}>{note.closing}</p>
                 {mediaForSlot2 && <MediaRenderer file={mediaForSlot2} index={1} />}
+                {closingExtensions.map(ext => (
+                    <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">
+                        <p>{ext.content}</p>
+                        {ext.media && <MediaRenderer file={ext.media} index={ext.position} />}
+                    </div>
+                ))}
             </div>
         </div>
     );

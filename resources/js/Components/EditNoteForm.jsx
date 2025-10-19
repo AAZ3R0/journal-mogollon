@@ -5,6 +5,24 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { MediaRenderer } from '@/Components/ViewNoteDetails';
+import ExtensionBlock from '@/Components/ExtensionBlock';
+
+
+
+const groupExtensionsByType = (extensions = []) => {
+    const grouped = { lead: [], body: [], closing: [] };
+    extensions.forEach(ext => {
+        if (grouped[ext.type]) {
+            grouped[ext.type].push({
+                content: ext.content,
+                media_file: null, // Los archivos existentes no se pueden pre-cargar, solo reemplazar
+                existing_media: ext.media || null, // Guardamos la info del archivo existente
+                existing_media_id: ext.media ? ext.media.media_id : null,
+            });
+        }
+    });
+    return grouped;
+};
 
 export default function EditNoteForm({ note, sections = [], onClose }) {
     
@@ -18,6 +36,8 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
         _method: 'PUT',
         media_files: [null, null],
         media_to_delete: [],
+        // ✅ PASO 1: Inicializamos el estado de 'extensions' con los datos existentes de la nota
+        extensions: groupExtensionsByType(note.extensions),
     });
 
 
@@ -27,6 +47,45 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
         body: 280,
         closing: 200,
     }
+
+    const addExtension = (type) => {
+        const currentExtensions = data.extensions[type];
+        if (currentExtensions.length < 3) {
+            setData('extensions', {
+                ...data.extensions,
+                [type]: [...currentExtensions, { content: '', media_file: null, existing_media: null }],
+            });
+        }
+    };
+
+    const removeExtension = (type, index) => {
+        const extensionToRemove = data.extensions[type][index];
+
+        // Si el párrafo que vamos a quitar tiene un archivo existente, lo añadimos a la lista de borrado.
+        if (extensionToRemove && extensionToRemove.existing_media_id) {
+            setData('media_to_delete', (prev) => [...prev, extensionToRemove.existing_media_id]);
+        }
+
+        const updatedExtensions = data.extensions[type].filter((_, i) => i !== index);
+        setData('extensions', {
+            ...data.extensions,
+            [type]: updatedExtensions,
+        });
+    };
+
+    const handleExtensionContentChange = (type, index, value) => {
+        const updatedExtensions = { ...data.extensions };
+        updatedExtensions[type][index].content = value;
+        setData('extensions', updatedExtensions);
+    };
+
+    const handleExtensionFileChange = (type, index, file) => {
+        const updatedExtensions = { ...data.extensions };
+        // Al subir un archivo nuevo, borramos la referencia al viejo
+        updatedExtensions[type][index].media_file = file;
+        updatedExtensions[type][index].existing_media_id = null;
+        setData('extensions', updatedExtensions);
+    };
 
     const isHeadlineOverLimit = data.headline.length > charLimits.headline;
     const isLeadOverLimit = data.lead.length > charLimits.lead;
@@ -38,6 +97,9 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
     // Lógica simplificada: encuentra el archivo específico para cada posición
     const existingMedia1 = Array.isArray(note.media) ? note.media.find(m => m.position === 0) : null;
     const existingMedia2 = Array.isArray(note.media) ? note.media.find(m => m.position === 1) : null;
+
+    const reportajeSection = sections.find(section => section.name.toLowerCase() === 'reportaje');
+    const isReportajeSelected = reportajeSection ? data.sections.includes(reportajeSection.section_id) : false;
 
     const handleFileChange = (index, file) => {
         const newMediaFiles = [...data.media_files];
@@ -88,67 +150,17 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                             {data.headline.length} / {charLimits.headline}
                         </div>
                         <InputError message={errors.headline} className="mt-2" />
-                    </div>
-                    <div className="mt-4">
-                        <InputLabel htmlFor="lead" value="Entrada" />
-                        <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
-                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.lead.length} / {charLimits.lead}
+
+                        {/* Imagen de PORTADA*/}        
+                        <div className="mt-4">
+                            <InputLabel htmlFor="portrait_url" value="Cambiar Imagen de Portada (Opcional)" />
+                            <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
+                            <input type="file" className="form-control mt-1" onChange={(e) => setData('portrait_url', e.target.files[0])} />
+                            <InputError message={errors.portrait_url} className="mt-2" />
                         </div>
-                        <InputError message={errors.lead} className="mt-2" />
-                    </div>
-                    <div className="mt-4">
-                        <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
-                        <textarea id="body" value={data.body} className="form-control mt-1" rows="6" onChange={(e) => setData('body', e.target.value)}></textarea>
-                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.body.length} / {charLimits.body}
-                        </div>
-                        <InputError message={errors.body} className="mt-2" />
+
                     </div>
 
-                    <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
-                        <InputLabel value="Contenido Multimedia 1" />
-                        {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
-                            <div>
-                                <MediaRenderer file={existingMedia1} index={0} />
-                                <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
-                                    Quitar archivo existente
-                                </button>
-                            </div>
-                        ) : (
-                            <div>
-                                <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
-                                <InputError message={errors['media_files.0']} className="mt-2" />
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div className="mt-4">
-                        <InputLabel htmlFor="closing" value="Remate" />
-                        <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
-                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.closing.length} / {charLimits.closing}
-                        </div>
-                        <InputError message={errors.closing} className="mt-2" />
-                    </div>
-
-                    <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
-                        <InputLabel value="Contenido Multimedia 2" />
-                        {existingMedia2 && !data.media_to_delete.includes(existingMedia2.media_id) ? (
-                            <div>
-                                <MediaRenderer file={existingMedia2} index={1} />
-                                <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia2.media_id)} className="btn btn-sm btn-danger mt-2">
-                                    Quitar archivo existente
-                                </button>
-                            </div>
-                        ) : (
-                            <div>
-                                <input type="file" className="form-control" onChange={(e) => handleFileChange(1, e.target.files[0])} />
-                                <InputError message={errors['media_files.1']} className="mt-2" />
-                            </div>
-                        )}
-                    </div>
-                    
                     <div className="mt-4">
                         <label className="form-label fw-bold">Secciones</label>
                         <div className="d-flex flex-wrap">
@@ -163,10 +175,94 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     </div>
 
                     <div className="mt-4">
-                        <InputLabel htmlFor="portrait_url" value="Cambiar Imagen de Portada (Opcional)" />
-                        <input type="file" className="form-control mt-1" onChange={(e) => setData('portrait_url', e.target.files[0])} />
-                        <InputError message={errors.portrait_url} className="mt-2" />
+                        <InputLabel htmlFor="lead" value="Entrada" />
+                        <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
+                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.lead.length} / {charLimits.lead}
+                        </div>
+                        <InputError message={errors.lead} className="mt-2" />
+
+                        {isReportajeSelected && (
+                            <ExtensionBlock 
+                                type="lead" label="Entrada" extensions={data.extensions.lead}
+                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
+                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
+                                borderColorClass="border-secondary" isEditing={true}
+                            />
+                        )}
                     </div>
+                    <div className="mt-4">
+                        <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
+                        <textarea id="body" value={data.body} className="form-control mt-1" rows="6" onChange={(e) => setData('body', e.target.value)}></textarea>
+                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.body.length} / {charLimits.body}
+                        </div>
+                        <InputError message={errors.body} className="mt-2" />
+
+                        <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                            <InputLabel value="Contenido Multimedia 1" />
+                            {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
+                                <div>
+                                    <MediaRenderer file={existingMedia1} index={0} />
+                                    <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
+                                        Quitar archivo existente
+                                    </button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
+                                    <InputError message={errors['media_files.0']} className="mt-2" />
+                                </div>
+                            )}
+                        </div>
+
+                        {isReportajeSelected && (
+                            <ExtensionBlock 
+                                type="body" label="Cuerpo" extensions={data.extensions.body}
+                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
+                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
+                                borderColorClass="border-info" isEditing={true}
+                            />
+                        )}
+                    </div>
+
+                    
+                    
+                    <div className="mt-4">
+                        <InputLabel htmlFor="closing" value="Remate" />
+                        <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
+                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                            {data.closing.length} / {charLimits.closing}
+                        </div>
+                        <InputError message={errors.closing} className="mt-2" />
+
+                        <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                            <InputLabel value="Contenido Multimedia 2" />
+                            {existingMedia2 && !data.media_to_delete.includes(existingMedia2.media_id) ? (
+                                <div>
+                                    <MediaRenderer file={existingMedia2} index={1} />
+                                    <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia2.media_id)} className="btn btn-sm btn-danger mt-2">
+                                        Quitar archivo existente
+                                    </button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <input type="file" className="form-control" onChange={(e) => handleFileChange(1, e.target.files[0])} />
+                                    <InputError message={errors['media_files.1']} className="mt-2" />
+                                </div>
+                            )}
+                        </div>
+
+                        {isReportajeSelected && (
+                            <ExtensionBlock 
+                                type="closing" label="Remate" extensions={data.extensions.closing}
+                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
+                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
+                                borderColorClass="border-secondary" isEditing={true}
+                            />
+                        )}
+                    </div>
+                    
                 </div>
 
                 <div className="modal-footer">

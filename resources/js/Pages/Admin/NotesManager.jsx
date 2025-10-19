@@ -9,6 +9,7 @@ import ViewNoteDetails from '@/Components/ViewNoteDetails';
 import EditNoteForm from '@/Components/EditNoteForm';
 import DeleteNoteConfirmation from '@/Components/DeleteNoteConfirmation';
 import axios from 'axios';
+import { CircleFill, Newspaper, Paperclip, PencilFill, PencilSquare, PlusCircleFill, Trash2Fill, TrashFill } from 'react-bootstrap-icons';
 
 export default function NotesManager({auth, notes, sections, success }) {
 
@@ -72,8 +73,8 @@ export default function NotesManager({auth, notes, sections, success }) {
             <div className="container py-5">
                 <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                     <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
-                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg mt-3 rounded-pill'>
-                        <b>CREAR NOTA</b>
+                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark mt-3 rounded-pill d-flex align-items-stretch'>
+                        <PlusCircleFill className='fs-3 mx-2'/>CREAR NOTA
                     </PrimaryButton>
                 </div>
 
@@ -81,18 +82,18 @@ export default function NotesManager({auth, notes, sections, success }) {
                     <table className="table table-bordered border-dark">
                         <thead className='text-center'>
                             <tr>
-                                <th className='bg-warning py-4 text-dark h4'>Foto de portada</th>
-                                <th className='bg-warning py-4 text-dark h4'>Título</th>
-                                <th className='bg-warning py-4 text-dark h4'>Secciones</th>
-                                <th className='bg-warning py-4 text-dark h4'>Fecha</th>
-                                <th className='bg-warning py-4 text-dark h4'>Autor</th>
-                                <th className='bg-warning py-4 text-dark h4'>Operaciones</th>
+                                <th className='bg-warning text-dark h4'>Foto de portada</th>
+                                <th className='bg-warning text-dark h4'>Título</th>
+                                <th className='bg-warning text-dark h4'>Secciones</th>
+                                <th className='bg-warning text-dark h4'>Fecha</th>
+                                <th className='bg-warning text-dark h4'>Autor</th>
+                                <th className='bg-warning text-dark h4'>Operaciones</th>
                             </tr>
                         </thead>
                         <tbody className='text-center'>
                             {notes.map((note) => (
                                 <tr key={note.note_id}> 
-                                    <td className='bg-accent2 bg-opacity-50'><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"15rem",height:"10rem"}}/></td>
+                                    <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
                                     <td className='bg-accent2 bg-opacity-50 align-middle'>
                                         <div className="d-flex flex-wrap justify-content-center">
@@ -106,9 +107,9 @@ export default function NotesManager({auth, notes, sections, success }) {
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{new Date(note.publish_date).toLocaleDateString()}</td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.user? note.user.name : 'Autor no encontrado'}</td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>
-                                        <button onClick={() => openViewModal(note)} className='btn btn-info text-accent2'>Ver</button> 
-                                        <button onClick={() => openEditModal(note)} className='btn btn-warning text-accent2'>Editar</button> 
-                                        <button onClick={() => openDeleteModal(note)} className='btn btn-danger text-accent2'>eliminar</button>
+                                        <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
+                                        <button onClick={() => openEditModal(note)} className='badge text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
+                                        <button onClick={() => openDeleteModal(note)} className='badge text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
                                     </td>
                                 </tr>
                             ))}

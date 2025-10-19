@@ -54,6 +54,8 @@ class Note extends Model
 		'user_id'
 	];
 
+	protected $appends = ['media_by_position'];
+
 	public function user()
 	{
 		return $this->belongsTo(User::class, 'user_id');
@@ -74,9 +76,8 @@ class Note extends Model
 		return $this->belongsToMany(Section::class, 'note_sections', 'note_id', 'section_id');
 	}
 
-	public function notes_extension()
-	{
-		return $this->hasOne(NotesExtension::class, 'note_extension_id');
+	public function extensions(){
+		return $this->hasMany(NotesExtension::class, 'note_id')->orderBy('position', 'asc');
 	}
 
 

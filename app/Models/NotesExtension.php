@@ -23,23 +23,32 @@ use Illuminate\Database\Eloquent\Model;
  */
 class NotesExtension extends Model
 {
-	protected $table = 'notes_extension';
+	protected $table = 'note_extensions';
 	protected $primaryKey = 'note_extension_id';
 	public $timestamps = false;
 
 	protected $casts = [
-		'note_id' => 'int'
+		'note_id' => 'int',
+		'media_id' => 'int',
+		'position' => 'int'
 	];
 
 	protected $fillable = [
-		'lead',
-		'body',
-		'closing',
-		'note_id'
+		'note_id',
+		'type',
+		'content',
+		'position',
+		'media_id'
 	];
 
 	public function note()
 	{
-		return $this->belongsTo(Note::class, 'note_extension_id');
+		return $this->belongsTo(Note::class, 'note_id');
 	}
+
+	public function media()
+	{
+		return $this->belongsTo(Media::class, 'media_id');
+	}
+
 }
