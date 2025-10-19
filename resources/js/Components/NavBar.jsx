@@ -7,7 +7,7 @@ import { Link } from '@inertiajs/react';
 export default function Navbar() {
     return (
         // Quitamos 'navbar-expand-lg' para que la barra nunca se colapse.
-        <nav className="navbar navbar-light bg-accent1 bg-opacity-75 shadow-sm fixed-top">
+        <nav className="navbar navbar-light bg-accent1  bg-opacity-75 shadow-sm ">
             <div className="container d-flex justify-content-between align-items-center">
                 {/* GRUPO IZQUIERDO: Logo y Enlaces */}
                 <div className="d-flex align-items-center">
@@ -54,7 +54,7 @@ export default function Navbar() {
                 <form className="d-flex">
                     <div className="input-group">
                         <span className="input-group-text" id="basic-addon1">
-                           🔍
+                            🔍
                         </span>
                         <input
                             type="text"

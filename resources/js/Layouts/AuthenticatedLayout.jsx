@@ -1,176 +1,101 @@
+// resources/js/Layouts/AuthenticatedLayout.jsx
+
 import ApplicationLogo from '@/Components/ApplicationLogoFigure';
-import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import Footer from '@/Components/Footer';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
-
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const { auth } = usePage().props;
 
     return (
-        <div>
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" style={{ height: '100px', width: 'auto' }} />
-                                </Link>
-                            </div>
+        // Estructura principal para que el footer (si lo añades) se pegue abajo
+        <div className="d-flex flex-column min-vh-100">
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
+            {/* Añadimos 'fixed-top' para que la barra de navegación
+              se quede fija en la parte superior.
+            */}
+            <nav className="navbar navbar-light bg-accent1 bg-opacity-75 shadow-sm">
+                {/* Contenedor con Flexbox:
+                  d-flex: activa flexbox
+                  justify-content-between: empuja los grupos a los extremos
+                  align-items-center: centra todo verticalmente
+                */}
+                <div className="container d-flex justify-content-between align-items-center">
+
+                    {/* GRUPO IZQUIERDO: Logo y Enlaces */}
+                    <div className="d-flex align-items-center">
+                        {/* Logo */}
+                        <Link className="navbar-brand me-4" href="/">
+                            <ApplicationLogo style={{ height: '100px', width: 'auto' }} />
+                        </Link>
+
+                        {/* Enlaces de Navegación */}
+                        <ul className="navbar-nav flex-row">
+                            <li className="nav-item me-3">
+                                <NavLink href={route('dashboard')} className="nav-link d-flex align-items-center" active={route().current('dashboard')}>
+                                    Notas
                                 </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
+                            </li>
+                            <li className="nav-item me-3">
+                                <NavLink href={route('profile.edit')} className="nav-link d-flex align-items-center" active={route().current('profile.edit')}>
+                                    {auth.user.name}
+                                </NavLink>
+                            </li>
+                            <li className="nav-item me-3">
+                                <NavLink href="#" className="nav-link d-flex align-items-center">
+                                    Sobre nosotros
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink href={route('logout')} method="post" as="button" className="nav-link d-flex align-items-center btn btn-link text-danger">
+                                    Cerrar sesión
+                                </NavLink>
+                            </li>
+                        </ul>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
+                    {/* GRUPO DERECHO: Barra de Búsqueda */}
+                    <form className="d-flex">
+                        <div className="input-group">
+                            <span className="input-group-text" id="basic-addon1">
+                                🔍
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Buscar"
+                                aria-label="Buscar"
+                                aria-describedby="basic-addon1"
+                            />
                         </div>
+                    </form>
 
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
                 </div>
             </nav>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
-                    </div>
-                </header>
-            )}
+            {/* Añadimos 'mt-5' y 'pt-4' al 'main' para crear el espacio
+              necesario y que el contenido no quede oculto
+              debajo de la barra de navegación fija.
+            */}
+            <main className="container flex-grow-1 py-4 mt-5">
+                {/* Cabecera de la página (si existe) */}
+                {header && (
+                    <header className="bg-white shadow-sm mb-4">
+                        <div className="py-4 px-4">
+                            {header}
+                        </div>
+                    </header>
+                )}
 
-            <main>{children}</main>
+                {/* Contenido principal */}
+                {children}
+            </main>
+
+            {/* <Footer /> */}
+            <Footer />
+
         </div>
     );
 }

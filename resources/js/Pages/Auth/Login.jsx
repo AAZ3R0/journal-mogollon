@@ -45,11 +45,11 @@ export default function Login({ status }) {
                         )}
 
                         <form onSubmit={submit}>
-                            <div className=" mb-3">
+                            <div className="">
                                 <TextInput
                                     id="email"
                                     type="email"
-                                    className="form-control form-control-lg"
+                                    className="form-control mb-3 form-control-lg"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     placeholder="Nombre de usuario o correo..."
