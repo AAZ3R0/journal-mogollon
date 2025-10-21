@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Note;
 use App\Models\NoteSection;
@@ -22,9 +23,12 @@ class NotesController extends Controller
         $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
         $sections = Section::all();
 
+        $featuredNote = $notes->firstWhere('is_featured', true);
+
         $notes->each->append('media_by_position');
 
         return Inertia::render('Admin/NotesManager', [
+            'featuredNote' => $featuredNote,
             'notes' => $notes,
             'sections' => $sections,
         ]);
@@ -251,6 +255,22 @@ class NotesController extends Controller
         }
         
         return redirect()->route('notes.index')->with('success', '¡Nota actualizada exitosamente!');
+    }
+
+
+    public function toggleFeatured(Note $note)
+    {
+        // Use a database transaction to ensure atomicity
+        DB::transaction(function () use ($note) {
+            // 1. Unfeature all other notes first.
+            Note::where('note_id', '!=', $note->note_id)->update(['is_featured' => false]);
+
+            // 2. Toggle the selected note.
+            // If it was false, it becomes true. If it was true, it becomes false.
+            $note->update(['is_featured' => !$note->is_featured]);
+        });
+
+        return redirect()->route('notes.index')->with('success', 'Portada actualizada!');
     }
 
     public function show(Note $note){

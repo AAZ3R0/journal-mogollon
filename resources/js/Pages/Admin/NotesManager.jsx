@@ -11,7 +11,7 @@ import DeleteNoteConfirmation from '@/Components/DeleteNoteConfirmation';
 import axios from 'axios';
 import { CircleFill, Newspaper, Paperclip, PencilFill, PencilSquare, PlusCircleFill, Trash2Fill, TrashFill } from 'react-bootstrap-icons';
 
-export default function NotesManager({auth, notes, sections, success }) {
+export default function NotesManager({auth, notes, sections, featuredNote, success }) {
 
     // Modal de Creación
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
@@ -78,21 +78,70 @@ export default function NotesManager({auth, notes, sections, success }) {
                     </PrimaryButton>
                 </div>
 
+                {featuredNote && (
+                    <div className="card mb-4 border-primary border-2 shadow">
+                        <div className="card-header bg-primary text-white">
+                            <h5 className="mb-0">⭐ Nota en Portada</h5>
+                        </div>
+                        <div className="row g-0">
+                            <div className="col-md-4">
+                                <img 
+                                    src={`/storage/${featuredNote.portrait_url}`} 
+                                    className="img-fluid rounded-start" 
+                                    alt={`Portada de ${featuredNote.headline}`} 
+                                    style={{ objectFit: 'cover', height: '100%' }} // Adjust styling as needed
+                                />
+                            </div>
+                            <div className="col-md-8">
+                                <div className="card-body">
+                                    <h4 className="card-title">{featuredNote.headline}</h4>
+                                    <p className="card-text"><small className="text-muted">Por: {featuredNote.user?.name || 'Desconocido'} - {new Date(featuredNote.publish_date).toLocaleDateString()}</small></p>
+                                    <p className="card-text">{featuredNote.lead}</p>
+                                    {/* Add buttons or links if needed */}
+                                    <button onClick={() => openViewModal(featuredNote)} className='btn btn-sm btn-outline-primary me-2'>Ver Detalles</button>
+                                    <button onClick={() => openEditModal(featuredNote)} className='btn btn-sm btn-outline-secondary'>Editar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}              
+
                 <div className="table-responsive">
                     <table className="table table-bordered border-dark">
                         <thead className='text-center'>
                             <tr>
-                                <th className='bg-warning text-dark h4'>Foto de portada</th>
-                                <th className='bg-warning text-dark h4'>Título</th>
-                                <th className='bg-warning text-dark h4'>Secciones</th>
-                                <th className='bg-warning text-dark h4'>Fecha</th>
-                                <th className='bg-warning text-dark h4'>Autor</th>
-                                <th className='bg-warning text-dark h4'>Operaciones</th>
+                                <th className='bg-warning py-4 text-dark h4'>Portada</th>
+                                <th className='bg-warning py-4 text-dark h4'>Foto de portada</th>
+                                <th className='bg-warning py-4 text-dark h4'>Título</th>
+                                <th className='bg-warning py-4 text-dark h4'>Secciones</th>
+                                <th className='bg-warning py-4 text-dark h4'>Fecha</th>
+                                <th className='bg-warning py-4 text-dark h4'>Autor</th>
+                                <th className='bg-warning py-4 text-dark h4'>Operaciones</th>
                             </tr>
                         </thead>
                         <tbody className='text-center'>
+
                             {notes.map((note) => (
-                                <tr key={note.note_id}> 
+                                <tr key={note.note_id}>
+                                    <td className='bg-accent2 bg-opacity-50 align-middle'>
+                                        <Link 
+                                            href={route('notes.toggleFeatured', note.note_id)} 
+                                            method="patch" // Important: Tells Inertia to make a PUT request
+                                            as="button" // Renders as a button but behaves like a link
+                                            className="btn border-0 p-0" // Style as needed, here removing default button styles
+                                            preserveScroll // Prevents page from scrolling to top on click
+                                            preserveState // Optional: Keeps component state (like modal open/closed)
+                                            aria-label={`Marcar ${note.headline} como portada`}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input fs-4" // Bootstrap classes for styling
+                                                checked={note.is_featured}
+                                                readOnly // The actual state change is handled by the backend redirect
+                                                style={{ cursor: 'pointer' }} // Indicate it's clickable
+                                            />
+                                        </Link>
+                                    </td> 
                                     <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
                                     <td className='bg-accent2 bg-opacity-50 align-middle'>
