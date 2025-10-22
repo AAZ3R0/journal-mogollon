@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notes_extension', function (Blueprint $table) {
+        Schema::create('note_extensions', function (Blueprint $table) {
             $table->integer('note_extension_id', true);
-            $table->string('lead', 100)->nullable();
-            $table->string('body', 200)->nullable();
-            $table->string('closing', 100)->nullable();
-            $table->integer('note_id');
+            $table->integer('note_id')->index('note_id');
+            $table->enum('type', ['lead', 'body', 'closing']);
+            $table->text('content');
+            $table->tinyInteger('position');
+            $table->integer('media_id')->nullable()->index('media_id');
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notes_extension');
+        Schema::dropIfExists('note_extensions');
     }
 };
