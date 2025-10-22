@@ -1,3 +1,5 @@
+// resources/js/Pages/Profile/Partials/DeleteUserForm.jsx
+
 import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -5,10 +7,10 @@ import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-export default function DeleteUserForm({ className = '' }) {
-    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+// ✅ Recibe 'show' y 'onClose' como props
+export default function DeleteUserForm({ className = '', show, onClose }) {
     const passwordInput = useRef();
 
     const {
@@ -23,98 +25,72 @@ export default function DeleteUserForm({ className = '' }) {
         password: '',
     });
 
-    const confirmUserDeletion = () => {
-        setConfirmingUserDeletion(true);
-    };
-
     const deleteUser = (e) => {
         e.preventDefault();
 
         destroy(route('profile.destroy'), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => closeModal(), // Llama a closeModal interno
             onError: () => passwordInput.current.focus(),
             onFinish: () => reset(),
         });
     };
 
     const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
+        onClose(); // Llama a la función 'onClose' del padre
         clearErrors();
         reset();
     };
 
     return (
-        <section className={`space-y-6 ${className}`}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Delete Account
-                </h2>
+        // ✅ El <section> se elimina. El Modal se convierte en el contenedor raíz.
+        <Modal show={show} onClose={closeModal}>
+            <form onSubmit={deleteUser} className="p-4 p-md-5">
+                <h5 className="fw-bold fs-3 text-dark mb-4">
+                    ¿Estás seguro de que quieres eliminar tu cuenta?
+                </h5>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Once your account is deleted, all of its resources and data
-                    will be permanently deleted. Before deleting your account,
-                    please download any data or information that you wish to
-                    retain.
+                    Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán borrados permanentemente. 
+                    Por favor, ingresa tu contraseña para confirmar que deseas eliminar tu cuenta de forma permanente.
                 </p>
-            </header>
 
-            <DangerButton onClick={confirmUserDeletion}>
-                Delete Account
-            </DangerButton>
+                <div className="mt-4">
+                    <label htmlFor="delete_password" className="form-label fw-bold">Contraseña:</label>
+                    <TextInput
+                        id="delete_password"
+                        type="password"
+                        name="password"
+                        ref={passwordInput}
+                        value={data.password}
+                        onChange={(e) => setData('password', e.target.value)}
+                        className="form-control rounded-pill"
+                        isFocused
+                        placeholder="Contraseña"
+                    />
+                    <InputError message={errors.password} className="mt-2" />
+                </div>
 
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
-                    </h2>
-
-                    <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
-                    </p>
-
-                    <div className="mt-6">
-                        <InputLabel
-                            htmlFor="password"
-                            value="Password"
-                            className="sr-only"
-                        />
-
-                        <TextInput
-                            id="password"
-                            type="password"
-                            name="password"
-                            ref={passwordInput}
-                            value={data.password}
-                            onChange={(e) =>
-                                setData('password', e.target.value)
-                            }
-                            className="mt-1 block w-3/4"
-                            isFocused
-                            placeholder="Password"
-                        />
-
-                        <InputError
-                            message={errors.password}
-                            className="mt-2"
-                        />
-                    </div>
-
-                    <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>
-                            Cancel
-                        </SecondaryButton>
-
-                        <DangerButton className="ms-3" disabled={processing}>
-                            Delete Account
-                        </DangerButton>
-                    </div>
-                </form>
-            </Modal>
-        </section>
+                <div className="mt-4 d-flex justify-content-end">
+                    <button
+                        type="button"
+                        className="btn btn-secondary rounded-pill me-3 px-4"
+                        onClick={closeModal}
+                        disabled={processing}
+                    >
+                        Cancelar
+                    </button>
+                    
+                    {/* Usamos un botón de Bootstrap en lugar del DangerButton de Breeze/Tailwind */}
+                    <button
+                        type="submit"
+                        className="btn btn-danger rounded-pill px-4"
+                        disabled={processing}
+                    >
+                        {processing ? 'Eliminando...' : 'Eliminar Cuenta'}
+                    </button>
+                </div>
+            </form>
+        </Modal>
     );
 }

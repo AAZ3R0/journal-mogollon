@@ -63,7 +63,8 @@ class Note extends Model
 
 	public function comments()
 	{
-		return $this->hasMany(Comment::class);
+		// Ordena los comentarios por fecha, los más recientes primero
+		return $this->hasMany(Comment::class, 'note_id')->orderBy('publish_date', 'desc'); 
 	}
 
 	public function media()

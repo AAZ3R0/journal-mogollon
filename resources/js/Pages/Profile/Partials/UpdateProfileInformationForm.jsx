@@ -7,6 +7,9 @@ import { Transition } from '@headlessui/react';
 import { useRef, useEffect, useState } from 'react';
 // --- AÑADIR Modal ---
 import Modal from '@/Components/Modal';
+import EditProfileModal from '@/Components/EditProfileModal';
+import { PencilSquare, Trash2Fill, TrashFill } from 'react-bootstrap-icons';
+import DeleteUserForm from './DeleteUserForm';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
@@ -14,11 +17,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     // --- ESTADO PARA EL MODAL ---
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         username: user.username || '',
         email: user.email,
-        rol_id: user.rol_id || 'Lector',
+        role_name: user.role ? user.role.name : 'Rol no asignado',
     });
 
     const nameInput = useRef();
@@ -39,14 +42,9 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         // reset(); 
     };
 
-    const submitProfileUpdate = (e) => {
-        e.preventDefault();
-        patch(route('profile.update'), {
-            preserveScroll: true,
-            onSuccess: () => closeModal(), // Cierra el modal si la actualización es exitosa
-        });
-    };
-
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const openDeleteModal = () => setIsDeleteModalOpen(true);
+    const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
     return (
         // El div principal ahora necesita un <></> o <Fragment> si pones el Modal fuera
@@ -144,11 +142,12 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     </label>
                                     <div className="col-md-7 offset-md-1">
                                         <input
-                                            id="rol_id"
+                                            id="rol_name_display" // Cambiamos el ID para claridad
                                             type="text"
                                             className="form-control bg-accent3 rounded-pill"
-                                            value={data.rol_id}
-                                            readOnly
+                                            // ✅ Mostramos el nombre del rol aquí
+                                            value={user.role ? user.role.name : 'Rol no asignado'}
+                                            readOnly // Sigue siendo de solo lectura en esta vista
                                         />
                                         <InputError className="mt-2" message={errors.rol_id} />
                                     </div>
@@ -157,19 +156,23 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         </div> {/* --- FIN DEL CONTENEDOR 1 --- */}
 
                         {/* --- CONTENEDOR 2: BOTONES DE ACCIÓN --- */}
-                        <div className="text-end bg-light py-3 px-4 bg-opacity-50 mt-4">
+                        <div className="bg-light py-3 px-4 bg-opacity-50 mt-4 d-flex justify-content-end">
                             {/* --- MODIFICACIÓN AQUÍ: Añadir onClick --- */}
                             <button
                                 type="button"
-                                className="btn btn-warning btn-md rounded-pill me-3 px-4"
+                                className="btn btn-warning btn-lg rounded-pill me-3 px-4"
                                 onClick={openModal} // <-- AÑADIDO
                             >
-                                <i className="bi bi-pencil-square me-1"></i>
+                                <PencilSquare className='fs-3 mx-2'></PencilSquare>
                                 Editar perfil
                             </button>
                             
-                            <button type="button" className="btn btn-danger btn-md rounded-pill px-4">
-                                <i className="bi bi-trash me-1"></i>
+                            <button 
+                                type="button" 
+                                className="btn btn-danger btn-lg rounded-pill px-4"
+                                onClick={openDeleteModal}
+                            >
+                                <TrashFill className='fs-3 mx-2'></TrashFill>
                                 Eliminar perfil
                             </button>
                         </div>
@@ -177,89 +180,19 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 </div>
             </div>
 
-            {/* --- INICIO DEL MODAL DE EDICIÓN --- */}
-            <Modal show={isModalOpen} onClose={closeModal}>
-                {/* Usamos el padding de Bootstrap (p-4 o p-5) */}
-                <form onSubmit={submitProfileUpdate} className="p-4 p-md-5">
-                    <h5 className="fw-bold fs-3 text-dark mb-4">Modificar Perfil</h5>
+            <EditProfileModal 
+                user={user} 
+                show={isModalOpen} 
+                onClose={closeModal} 
+            />
 
-                    {/* Campo Nombre */}
-                    <div className="mb-3">
-                        <label htmlFor="modal_name" className="form-label fw-bold">Nombre:</label>
-                        <input
-                            id="modal_name"
-                            type="text"
-                            className="form-control rounded-pill" // Usamos inputs normales
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            required
-                            autoComplete="name"
-                        />
-                        <InputError className="mt-2" message={errors.name} />
-                    </div>
+            <DeleteUserForm
+                user={user} 
+                show={isDeleteModalOpen} 
+                onClose={closeDeleteModal} 
+            />
 
-                    {/* Campo Usuario */}
-                    <div className="mb-3">
-                        <label htmlFor="modal_username" className="form-label fw-bold">Usuario:</label>
-                        <input
-                            id="modal_username"
-                            type="text"
-                            className="form-control rounded-pill"
-                            value={data.username}
-                            onChange={(e) => setData('username', e.target.value)}
-                            autoComplete="username"
-                        />
-                        <InputError className="mt-2" message={errors.username} />
-                    </div>
 
-                    {/* Campo Email */}
-                    <div className="mb-3">
-                        <label htmlFor="modal_email" className="form-label fw-bold">Correo electrónico:</label>
-                        <input
-                            id="modal_email"
-                            type="email"
-                            className="form-control rounded-pill"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            required
-                            autoComplete="email"
-                        />
-                        <InputError className="mt-2" message={errors.email} />
-                    </div>
-
-                    {/* Mensaje de "Guardado" */}
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-success mt-3">Guardado exitosamente.</p>
-                    </Transition>
-
-                    {/* Botones de Acción del Modal */}
-                    <div className="mt-4 d-flex justify-content-end">
-                        <button
-                            type="button"
-                            className="btn btn-secondary rounded-pill me-3 px-4"
-                            onClick={closeModal}
-                            disabled={processing}
-                        >
-                            Cancelar
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="btn btn-primary rounded-pill px-4" // Asumiendo que tienes btn-primary
-                            disabled={processing}
-                        >
-                            {processing ? 'Guardando...' : 'Guardar Cambios'}
-                        </button>
-                    </div>
-                </form>
-            </Modal>
-            {/* --- FIN DEL MODAL --- */}
 
         </div>
     );

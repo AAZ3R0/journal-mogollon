@@ -42,7 +42,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}
-                <Link href={route('notes.show', featuredNote.note_id)} className="text-decoration-none text-reset">
+                <Link href={route('notes.public.show', featuredNote.note_id)} className="text-decoration-none text-reset">
                   {featuredNote ? (
                       <div className="row g-0 align-items-center bg-warning bg-opacity-25 mb-5 shadow-sm rounded"> {/* Añadí shadow */}
                           <div className="col-md-5">
@@ -106,7 +106,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                                 </div>
 
                                 {/* Contenido del Carrusel */}
-                                <Link href={route('notes.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
+                                <Link href={route('notes.public.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
                                   <div className="row g-0 align-items-center shadow-sm bg-warning bg-opacity-25 rounded" style={{ minHeight: '130px' }}>
                                       <div className="col-md-5">
                                           <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start' style={{ width: '25rem', height: '14rem', objectFit: 'cover' }} />

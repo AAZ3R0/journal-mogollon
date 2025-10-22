@@ -273,6 +273,7 @@ class NotesController extends Controller
         return redirect()->route('notes.index')->with('success', 'Portada actualizada!');
     }
 
+    //ADMINISTRADOR
     public function show(Note $note){
 
         $note->load(['user', 'sections', 'media', 'extensions']);
@@ -285,6 +286,33 @@ class NotesController extends Controller
 
         return response()->json($note);
 
+    }
+
+    //LECTOR
+    public function showNote(Note $note) // Using Route Model Binding
+    {
+        // Load all necessary relationships for display
+        $note->load(['user', 'sections', 'media', 'extensions.media', 'comments.user']);
+
+        // 2. Obtener los IDs de las secciones de la nota actual
+        $currentSectionIds = $note->sections->pluck('section_id')->toArray();
+
+        // 3. Buscar notas relacionadas (que compartan al menos una sección)
+        $relatedNotes = Note::with(['user', 'sections']) // Carga relaciones básicas
+                            ->where('note_id', '!=', $note->note_id) // Excluye la nota actual
+                            ->whereHas('sections', function ($query) use ($currentSectionIds) {
+                                // Busca notas que tengan secciones cuyo ID esté en nuestra lista
+                                $query->whereIn('sections.section_id', $currentSectionIds);
+                            })
+                            ->orderBy('publish_date', 'desc') // Las más recientes primero
+                            ->limit(9) // Limita a 2 resultados
+                            ->get();
+
+        // 4. Pasar todo a la vista
+        return Inertia::render('Notes/NoteDetails', [
+            'note' => $note,
+            'relatedNotes' => $relatedNotes, //Pasa las notas relacionadas
+        ]);
     }
 
     public function destroy(Note $note){

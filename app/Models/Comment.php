@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Comment
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Comment extends Model
 {
+	use HasFactory;
+
 	protected $table = 'comments';
 	protected $primaryKey = 'comment_id';
 	public $timestamps = false;
@@ -44,11 +47,14 @@ class Comment extends Model
 
 	public function user()
 	{
-		return $this->belongsTo(User::class);
+		return $this->belongsTo(User::class, 'user_id');
 	}
 
 	public function note()
 	{
-		return $this->belongsTo(Note::class);
+		return $this->belongsTo(Note::class, 'note_id');
 	}
+
+
+	
 }
