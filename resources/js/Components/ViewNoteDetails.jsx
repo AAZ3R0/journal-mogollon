@@ -2,25 +2,37 @@ import React, { useMemo } from 'react';
 
 // Este componente auxiliar no necesita cambios, pero se incluye para que el archivo esté completo.
 export const MediaRenderer = ({ file, index }) => {
-    if (!file) {
+    if (!file || !file.url) {
         return null;
     }
-    const getFileType = (url) => {
-        const extension = url.split('.').pop().toLowerCase();
+
+    const getFileType = (fileObject) => {
+        // 1. Revisa el tipo explícito (para previsualizaciones)
+        if (fileObject.type) {
+            if (fileObject.type.startsWith('image/')) return 'image';
+            if (fileObject.type.startsWith('video/')) return 'video';
+            if (fileObject.type.startsWith('audio/')) return 'audio';
+        }
+        // 2. Revisa la extensión (para datos de la BD)
+        const extension = String(fileObject.url).split('.').pop().toLowerCase();
         if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image';
         if (['mp4', 'webm', 'mov'].includes(extension)) return 'video';
         if (['mp3', 'wav', 'ogg'].includes(extension)) return 'audio';
         return 'unknown';
     };
-    const fileType = getFileType(file.url);
-    const fullUrl = `/storage/${file.url}`;
+
+    const fileType = getFileType(file);
+    // ✅ Comprueba si es una URL blob: y la usa directamente, si no, añade /storage/
+    const isBlob = file.url.startsWith('blob:');
+    const fullUrl = isBlob ? file.url : `/storage/${file.url}`;
+
     switch (fileType) {
         case 'image':
             return <img src={fullUrl} className="img-fluid rounded my-3" alt={`Contenido multimedia ${index + 1}`} />;
         case 'video':
             return (
                 <video controls className="w-100 rounded my-3">
-                    <source src={fullUrl} type={`video/${file.url.split('.').pop()}`} />
+                    <source src={fullUrl} type={isBlob ? file.type : `video/${file.url.split('.').pop()}`} />
                     Tu navegador no soporta la etiqueta de video.
                 </video>
             );
@@ -28,7 +40,7 @@ export const MediaRenderer = ({ file, index }) => {
             return (
                 <div className="my-3">
                     <audio controls className="w-100">
-                        <source src={fullUrl} type={`audio/${file.url.split('.').pop()}`} />
+                        <source src={fullUrl} type={isBlob ? file.type : `audio/${file.url.split('.').pop()}`} />
                         Tu navegador no soporta la etiqueta de audio.
                     </audio>
                 </div>
@@ -36,13 +48,16 @@ export const MediaRenderer = ({ file, index }) => {
         default:
             return (
                 <div className="my-3">
-                    <a href={fullUrl} target="_blank" rel="noopener noreferrer">Descargar archivo desconocido</a>
+                    <a href={fullUrl} target="_blank" rel="noopener noreferrer">Descargar archivo</a>
                 </div>
             );
     }
+
 };
 
 export default function ViewNoteDetails({ note, onClose }) {
+
+    const isPortraitBlob = note.portrait_url && note.portrait_url.startsWith('blob:');
 
     const leadExtensions = useMemo(
         ()=> (note.extensions || []).filter(ext => ext.type === 'lead'),
@@ -59,8 +74,16 @@ export default function ViewNoteDetails({ note, onClose }) {
 
 
     // Leemos los archivos directamente de los "espacios" (slots) que nos da el backend.
-    const mediaForSlot1 = note.media_by_position ? (note.media_by_position['0'] || null) : null;
-    const mediaForSlot2 = note.media_by_position ? (note.media_by_position['1'] || null) : null;
+    const isPreview = !note.media_by_position;
+
+    // Buscamos los archivos principales en el lugar correcto.
+    const mediaForSlot1 = isPreview
+        ? (Array.isArray(note.media) ? note.media.find(m => m.position === 0) : null) // Para previsualización
+        : (note.media_by_position ? (note.media_by_position['0'] || null) : null);    // Para datos reales
+
+    const mediaForSlot2 = isPreview
+        ? (Array.isArray(note.media) ? note.media.find(m => m.position === 1) : null) // Para previsualización
+        : (note.media_by_position ? (note.media_by_position['1'] || null) : null);    // Para datos reales
 
     return (
         <div>
@@ -70,7 +93,7 @@ export default function ViewNoteDetails({ note, onClose }) {
             </div>
             <div className="modal-body">
                 <h4 className='mb-3'>{note.headline}</h4>
-                <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
+                <img src={isPortraitBlob ? note.portrait_url : `/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
                 <div className="mb-3 text-muted">
                     Por: <strong>{note.user ? note.user.name : 'Desconocido'}</strong>
                     <br />

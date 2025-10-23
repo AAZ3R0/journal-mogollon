@@ -1,13 +1,16 @@
 // resources/js/Pages/Admin/Partials/CreateNoteForm.jsx
 
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import { useForm } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import ExtensionBlock from '@/Components/ExtensionBlock';
-import { PlusCircle, PlusCircleDotted, PlusCircleFill } from 'react-bootstrap-icons';
+import { PlusCircle, PlusCircleDotted, PlusCircleFill, EyeFill } from 'react-bootstrap-icons';
+import Modal from '@/Components/Modal';
+import ViewNoteDetails from '@/Components/ViewNoteDetails'; // Importa el componente de visualización
+
 
 // Recibimos la función para cerrar el modal como una prop
 export default function CreateNoteForm({ onClose, sections = [] }) { 
@@ -26,6 +29,88 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
             closing: [],
         }
     });
+
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    // Guarda los datos formateados para la previsualización (incluye URLs blob:)
+    const [previewData, setPreviewData] = useState(null); 
+    // Guarda una referencia a las URLs blob: creadas para poder limpiarlas después
+    const blobUrlsRef = useRef([]); 
+
+    const createBlobUrl = (file) => {
+        if (!file || !(file instanceof File)) {
+            return null; // Si no es un archivo válido, devuelve null
+        }
+        const url = URL.createObjectURL(file);
+        blobUrlsRef.current.push(url); // Guarda la URL para revocarla después
+        
+        // ✅ Devuelve un objeto con la URL y el tipo
+        return {
+            url: url,
+            type: file.type // ej. "image/jpeg", "video/mp4"
+        };
+    };
+
+    // Genera el objeto 'nota falsa' para la previsualización
+    const generatePreviewData = () => {
+        // ... (limpieza de blobUrlsRef - sin cambios) ...
+        blobUrlsRef.current.forEach(URL.revokeObjectURL);
+        blobUrlsRef.current = [];
+
+        const previewNote = {
+            headline: data.headline,
+            lead: data.lead,
+            body: data.body,
+            closing: data.closing,
+            
+            // ✅ Pasamos la URL blob: directamente a 'portrait_url'
+            portrait_url: data.portrait_url ? createBlobUrl(data.portrait_url)?.url : null, 
+            
+            user: { name: 'Vista Previa' }, 
+            publish_date: new Date().toISOString(),
+            sections: sections.filter(s => data.sections.includes(s.section_id)), 
+            
+            // Procesa los archivos multimedia principales
+            media: [
+                // ✅ Pasamos el objeto { url, type }
+                data.media_files[0] ? { ...createBlobUrl(data.media_files[0]), position: 0 } : null,
+                data.media_files[1] ? { ...createBlobUrl(data.media_files[1]), position: 1 } : null,
+            ].filter(m => m !== null),
+
+            // Procesa las extensiones y sus archivos
+            extensions: Object.entries(data.extensions).flatMap(([type, group]) => 
+                group.map((ext, index) => ({
+                    note_extension_id: `preview_${type}_${index}`,
+                    type: type,
+                    content: ext.content,
+                    position: index,
+                    // ✅ Pasamos el objeto { url, type }
+                    media: ext.media_file ? createBlobUrl(ext.media_file) : null, 
+                }))
+            ),
+        };
+        
+        // ... (Tu lógica para añadir media de extensiones al arreglo 'media' principal) ...
+        
+        return previewNote;
+    };
+
+    // Abre el modal de previsualización
+    const openPreviewModal = () => {
+        const previewNoteData = generatePreviewData();
+        setPreviewData(previewNoteData); // Guarda los datos formateados
+        setIsPreviewOpen(true); // Abre el modal
+    };
+
+    // Cierra el modal de previsualización y limpia las URLs blob:
+    const closePreviewModal = () => {
+        setIsPreviewOpen(false); // Cierra el modal
+        // Limpia todas las URLs blob: que se crearon
+        blobUrlsRef.current.forEach(URL.revokeObjectURL);
+        blobUrlsRef.current = []; // Resetea la referencia
+        setPreviewData(null); // Limpia los datos de previsualización
+    };
+    // --- Fin Funciones de Previsualización ---
+
 
     //Limite de caracteres
     const charLimits = {
@@ -128,13 +213,27 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
     return ( 
         <div>
             <div className='modal-header'>
+                
                 <h2 className="modal-title">Crear Nueva Nota</h2>
                 <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
+
+            
             
             {/* ✅ LA ETIQUETA <form> ENVUELVE TODO EL CONTENIDO Y EL FOOTER */}
             <form onSubmit={submit}>
                 <div className='modal-body'>
+
+
+                    {/* ✅ Botón de Previsualizar */}
+                    <button 
+                        type="button" 
+                        className="btn btn-lg btn-primary rounded-pill m-auto mt-3" // Lo ponemos a la izquierda
+                        onClick={openPreviewModal}
+                        disabled={!data.headline || !data.lead || !data.body || !data.closing || !data.portrait_url} // Deshabilitado si faltan campos clave
+                    >
+                        <EyeFill className='me-1'/> Previsualizar
+                    </button>
                     
                     {/* Campo: Título */}
                     <div className='mt-4 p-3 rounded bg-warning bg-opacity-50'>
@@ -310,6 +409,29 @@ export default function CreateNoteForm({ onClose, sections = [] }) {
                     </PrimaryButton>
                 </div>
             </form>
+
+
+            {/* --- ✅ Modal de Previsualización --- */}
+            {/* Usamos un Modal grande (lg o xl) y que pueda hacer scroll (scrollable) */}
+            <Modal show={isPreviewOpen} onClose={closePreviewModal} maxWidth="xl" closeable={true}>
+                {/* Añadimos padding y un fondo blanco para que se vea bien */}
+                <div className="p-4"> 
+                    <h4 className="fw-bold mb-3">Vista Previa</h4>
+                    {/* Renderiza ViewNoteDetails solo si hay datos */}
+                    {previewData ? (
+                        <ViewNoteDetails note={previewData} onClose={closePreviewModal} /> 
+                    ) : (
+                        <p>Cargando previsualización...</p> 
+                    )}
+                    {/* Botón para cerrar la previsualización */}
+                    <div className="text-end mt-3">
+                        <button type="button" className="btn btn-secondary rounded-pill" onClick={closePreviewModal}>
+                            Cerrar Previsualización
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
         </div>
     );
 }
