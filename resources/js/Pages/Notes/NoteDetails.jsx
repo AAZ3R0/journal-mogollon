@@ -5,34 +5,16 @@ import { MediaRenderer } from '@/Components/ViewNoteDetails'; // Reuse the rende
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
+import CommentItem from '@/Components/CommentItem';
 import { formatDistanceToNow } from 'date-fns'; // Importa la función de date-fns
 import { es } from 'date-fns/locale';
+
 
 // Helper function (same as in Welcome.jsx)
 const formatDate = (dateString) => {
     if (!dateString) return '';
     const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Use 'long' month for detail page
     return new Date(dateString).toLocaleDateString('es-ES', options);
-};
-
-const CommentItem = ({ comment }) => {
-    return (
-        <div className="d-flex mb-3 pb-3 border-bottom">
-            {/* Puedes añadir un avatar aquí si quieres */}
-            {/* <img src={comment.user.avatar_url || '/default-avatar.png'} alt="avatar" className="rounded-circle me-3" width="50" height="50"/> */}
-            <div className="flex-grow-1">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold">{comment.user ? comment.user.name : 'Usuario Anónimo'}</span>
-                    <span className="text-muted small">
-                        {comment.publish_date 
-                            ? formatDistanceToNow(new Date(comment.publish_date), { addSuffix: true, locale: es })
-                            : ''}
-                    </span>
-                </div>
-                <p className="mb-0">{comment.message}</p>
-            </div>
-        </div>
-    );
 };
 
 export default function Show({ note, relatedNotes = [] }) { // Receives the 'note' prop from the controller
@@ -235,7 +217,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
 
                             {/* Formulario para añadir comentario (solo si está autenticado) */}
                             {auth.user ? (
-                                <div className='bg-light p-3 rounded mb-4 shadow-sm'>
+                                <div className='bg-accent1 p-3 rounded mb-4 shadow-sm'>
                                     <h5 className='mb-2'>Deja tu comentario:</h5>
                                     <form onSubmit={submitComment}>
                                         <textarea 
@@ -261,15 +243,22 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
 
                             {/* Lista de comentarios existentes */}
                             
+                                
                                 {note.comments && note.comments.length > 0 ? (
                                     note.comments.map(comment => (
-                                        <div className='bg-light mb-3 p-3 rounded shadow-sm'>
-                                            <CommentItem className='mb-3' key={comment.comment_id} comment={comment} />
-                                        </div>
+                                        // ✅ Pasa el ID del usuario actual como prop
+                                        <div className='bg-accent1 p-3 rounded shadow-sm mb-3'>
+                                            <CommentItem 
+                                                key={comment.comment_id} 
+                                                comment={comment} 
+                                                authUserId={auth.user?.user_id} // Pasa el ID (o null si es invitado)
+                                            />
+                                            </div>
                                     ))
                                 ) : (
                                     <p className="text-center text-muted">Aún no hay comentarios. ¡Sé el primero!</p>
                                 )}
+                               
 
 
                             

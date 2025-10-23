@@ -19,6 +19,8 @@ Route::get('/notes/{note}', [NotesController::class, 'showNote'])->name('notes.p
 //Operaciones comentarios en las notas
 Route::middleware('auth')->group(function () {
     Route::post('/notes/{note}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 //Operaciones de notas del administrador
