@@ -14,6 +14,12 @@ use App\Http\Controllers\Users\WorkspaceController;
 //Home universal
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+//About Us
+Route::get('/aboutUs', function (){
+
+    return Inertia::render('AboutUs');
+})->name('index.aboutus');
+
 //Ver notas universal
 Route::get('/notes/{note}', [NotesController::class, 'showNote'])->name('notes.public.show');
 
@@ -27,14 +33,20 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::get('/dashboard', function () {
+Route::get('/notes', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('index.notes');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    //Panel de control (Administrador)
+    Route::get('/dashboard', function(){
+        return Inertia::render('Admin/Dashboard');
+    })->name('admin.panel');
 
     //Operaciones de notas del administrador
     Route::get('/notesManager', [NotesController::class, 'index'])->name('notes.index');

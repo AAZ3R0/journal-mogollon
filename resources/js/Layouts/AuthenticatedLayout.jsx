@@ -40,7 +40,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             
                             {/* 1. Enlace "Notas" (Para todos los usuarios autenticados) */}
                             <li className="nav-item me-3">
-                                <NavLink href={route('dashboard')} className="nav-link d-flex align-items-center" active={route().current('dashboard')}>
+                                <NavLink href={route('index.notes')} className="nav-link d-flex align-items-center" active={route().current('index.notes')}>
                                     Notas
                                 </NavLink>
                             </li>
@@ -74,7 +74,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             
                             {/* 5. Enlace "Sobre nosotros" (Para todos) */}
                             <li className="nav-item me-3">
-                                <NavLink href="#" className="nav-link d-flex align-items-center">
+                                <NavLink href={route('index.aboutus')} className="nav-link d-flex align-items-center" active={route().current('index.aboutus')}>
                                     Sobre nosotros
                                 </NavLink>
                             </li>
