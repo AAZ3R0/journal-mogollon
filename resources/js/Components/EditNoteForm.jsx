@@ -6,6 +6,7 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { MediaRenderer } from '@/Components/ViewNoteDetails';
 import ExtensionBlock from '@/Components/ExtensionBlock';
+import { PencilSquare } from 'react-bootstrap-icons';
 
 
 
@@ -46,6 +47,9 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
         lead: 200,
         body: 280,
         closing: 200,
+        leadExtension: 200,
+        bodyExtension: 280,
+        closingExtension: 200,
     }
 
     const addExtension = (type) => {
@@ -91,7 +95,11 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
     const isLeadOverLimit = data.lead.length > charLimits.lead;
     const isBodyOverLimit = data.body.length > charLimits.body;
     const isClosingOverLimit = data.closing.length > charLimits.closing;
-    const isFormInvalid = isHeadlineOverLimit || isLeadOverLimit || isBodyOverLimit || isClosingOverLimit;
+    const isAnyExtensionOverLimit = 
+        data.extensions.lead.some(ext => ext.content.length > charLimits.leadExtension) ||
+        data.extensions.body.some(ext => ext.content.length > charLimits.bodyExtension) ||
+        data.extensions.closing.some(ext => ext.content.length > charLimits.closingExtension);
+    const isFormInvalid = isHeadlineOverLimit || isLeadOverLimit || isBodyOverLimit || isClosingOverLimit || isAnyExtensionOverLimit;
 
 
     // Lógica simplificada: encuentra el archivo específico para cada posición
@@ -142,7 +150,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
 
             <form onSubmit={submit}>
                 <div className="modal-body">
-                    <div>
+                    <div className='bg-warning bg-opacity-50 p-3 rounded'>
                         <InputLabel htmlFor="headline" value="Título" />
                         <TextInput id="headline" value={data.headline} className="form-control mt-1" onChange={(e) => setData('headline', e.target.value)} />
 
@@ -152,7 +160,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                         <InputError message={errors.headline} className="mt-2" />
 
                         {/* Imagen de PORTADA*/}        
-                        <div className="mt-4">
+                        <div className="mt-4 bg-light bg-opacity-50 p-3 rounded">
                             <InputLabel htmlFor="portrait_url" value="Cambiar Imagen de Portada (Opcional)" />
                             <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
                             <input type="file" className="form-control mt-1" onChange={(e) => setData('portrait_url', e.target.files[0])} />
@@ -161,7 +169,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
 
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <label className="form-label fw-bold">Secciones</label>
                         <div className="d-flex flex-wrap">
                             {sections.map((section) => (
@@ -174,7 +182,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                         <InputError message={errors.sections} className="mt-2" />
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="lead" value="Entrada" />
                         <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
                         <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
@@ -188,10 +196,11 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
                                 borderColorClass="border-secondary" isEditing={true}
+                                charLimit={charLimits.leadExtension}
                             />
                         )}
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
                         <textarea id="body" value={data.body} className="form-control mt-1" rows="6" onChange={(e) => setData('body', e.target.value)}></textarea>
                         <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
@@ -222,13 +231,14 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
                                 borderColorClass="border-info" isEditing={true}
+                                charLimit={charLimits.bodyExtension}
                             />
                         )}
                     </div>
 
                     
                     
-                    <div className="mt-4">
+                    <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="closing" value="Remate" />
                         <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
                         <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
@@ -259,6 +269,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
                                 borderColorClass="border-secondary" isEditing={true}
+                                charLimit={charLimits.closingExtension}
                             />
                         )}
                     </div>
@@ -266,8 +277,9 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className="btn btn-warning" disabled={processing}>
-                        {processing ? 'Actualizando...' : 'Guardar Cambios'}
+                    <PrimaryButton type="submit" className="btn btn-lg btn-warning rounded-pill fw-bold text-dark d-flex align-items-center" disabled={processing || isFormInvalid}>
+                        <PencilSquare className='fs-4 me-2' ></PencilSquare>
+                        {processing ? 'Actualizando...' : 'Actualizar'}
                     </PrimaryButton>
                 </div>
             </form>

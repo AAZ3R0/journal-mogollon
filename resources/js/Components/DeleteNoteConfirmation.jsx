@@ -21,14 +21,13 @@ export default function DeleteNoteConfirmation({ note, onClose }) {
     return (
         <div className="text-center">
 
-            <div className='modal-header mb-3'>
+            <div className='modal-header'>
                 <h2 className='moda-title'>Eliminar nota</h2>
-                <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
+                <button type="button" className="btn-close btn btn-lg" onClick={onClose} ></button>
             </div>
             
-
-            <h3>¿Estás seguro?</h3>
-            <p className="mb-4">
+            <p className="mb-4 bg-light bg-opacity-50 p-3 rounded">
+                <h3 className='fw-bold'>¿Estás seguro?</h3>
                 Estás a punto de eliminar permanentemente la nota:
                 <br />
                 <strong>"{note.headline}"</strong>
@@ -37,10 +36,10 @@ export default function DeleteNoteConfirmation({ note, onClose }) {
             </p>
 
             <div className="d-flex justify-content-center">
-                <button type="button" onClick={onClose} className="btn btn-secondary me-3">
+                <PrimaryButton type="button" onClick={onClose} className="btn btn-secondary me-3 btn-lg rounded-pill">
                     Cancelar
-                </button>
-                <PrimaryButton className="btn btn-danger" onClick={deleteNote} disabled={processing}>
+                </PrimaryButton>
+                <PrimaryButton className="btn btn-danger btn-lg rounded-pill" onClick={deleteNote} disabled={processing}>
                     {processing ? 'Eliminando...' : 'Sí, eliminar'}
                 </PrimaryButton>
             </div>

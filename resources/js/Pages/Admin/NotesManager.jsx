@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Head } from '@inertiajs/react';
+import { Link, Head, useForm, usePage } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -13,58 +13,87 @@ import { CircleFill, Newspaper, Paperclip, PencilFill, PencilSquare, PlusCircleF
 
 export default function NotesManager({auth, notes, sections, featuredNote, success }) {
 
-    // Modal de Creación
+    // --- LÓGICA DEL FORMULARIO DE CREACIÓN (AHORA VIVE AQUÍ) ---
+    const { 
+        data: createFormData, 
+        setData: setCreateFormData, 
+        post: postCreateForm, 
+        processing: createProcessing, 
+        errors: createErrors, 
+        reset: resetCreateForm 
+    } = useForm({
+        headline: '',
+        lead: '',
+        body: '',
+        closing: '',
+        portrait_url: null,
+        sections: [],
+        media_files: [null, null],
+        extensions: {
+            lead: [],
+            body: [],
+            closing: [],
+        }
+    });
+
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const openCreateModal = () => setCreateModalOpen(true);
+    
+    // Modificamos el cierre: ya no resetea el formulario
     const closeCreateModal = () => setCreateModalOpen(false);
 
-    // Modal de Visualización
+    // La función 'submit' ahora vive aquí y usa los datos del estado padre
+    const submitCreateNote = (e) => {
+        e.preventDefault();
+        postCreateForm(route('notes.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                resetCreateForm(); // Resetea el formulario SOLO si fue exitoso
+                closeCreateModal(); // Cierra el modal
+            },
+        });
+    };
+    // --- FIN LÓGICA DEL FORMULARIO DE CREACIÓN ---
+
+
+    // --- (Tus otros estados de modal no cambian) ---
     const [viewingNote, setViewingNote] = useState(null);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
-
     const openViewModal = (note) => {
         axios.get(route('notes.show', note.note_id)).then(response => {
             setViewingNote(response.data);
             setViewModalOpen(true);
         });
     }
-
     const closeViewModal = () => {
         setViewModalOpen(false);
         setViewingNote(null);
     }
-
-    // Modal de Edición
     const [editingNote, setEditingNote] = useState(null);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-    
-    // ✅✅✅ ESTA ES LA ÚNICA CORRECCIÓN NECESARIA ✅✅✅
     const openEditModal = (note) => {
-        // Debe llamar a 'notes.show' para OBTENER los datos, no a 'notes.update'.
         axios.get(route('notes.show', note.note_id)).then(response => {
-            setEditingNote(response.data); // Ahora sí recibe el objeto 'note' con su arreglo 'media'
+            setEditingNote(response.data);
             setEditModalOpen(true);
         });
     };
-
     const closeEditModal = () => {
         setEditModalOpen(false);
         setEditingNote(null);
     };
-
-    // Modal de Eliminación
     const [deletingNote, setDeletingNote] = useState(null);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
     const openDeleteModal = (note) => {
         setDeletingNote(note);
         setDeleteModalOpen(true);
     };
-
     const closeDeleteModal = () => {
         setDeleteModalOpen(false);
         setDeletingNote(null);
     };
+
+
+    const user = auth.user;
 
     return (
         <AuthenticatedLayout>
@@ -73,15 +102,15 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
             <div className="container py-5">
                 <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                     <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
-                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark mt-3 rounded-pill d-flex align-items-stretch'>
-                        <PlusCircleFill className='fs-3 mx-2'/>CREAR NOTA
+                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark fw-bold mt-3 rounded-pill d-flex align-items-center'>
+                        <PlusCircleFill className='fs-3 me-2'/>CREAR NOTA
                     </PrimaryButton>
                 </div>
 
                 {featuredNote && (
-                    <div className="card mb-4 border-primary border-2 shadow">
+                    <div className="card mb-4 bg-light bg-opacity-50 border-primary shadow">
                         <div className="card-header bg-primary text-white">
-                            <h5 className="mb-0">⭐ Nota en Portada</h5>
+                            <h5 className="mb-0">⭐ Nota de Portada</h5>
                         </div>
                         <div className="row g-0">
                             <div className="col-md-4">
@@ -89,7 +118,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                     src={`/storage/${featuredNote.portrait_url}`} 
                                     className="img-fluid rounded-start" 
                                     alt={`Portada de ${featuredNote.headline}`} 
-                                    style={{ objectFit: 'cover', height: '100%' }} // Adjust styling as needed
+                                    style={{ objectFit: 'cover', height: '100%' }}
                                 />
                             </div>
                             <div className="col-md-8">
@@ -97,14 +126,15 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                     <h4 className="card-title">{featuredNote.headline}</h4>
                                     <p className="card-text"><small className="text-muted">Por: {featuredNote.user?.name || 'Desconocido'} - {new Date(featuredNote.publish_date).toLocaleDateString()}</small></p>
                                     <p className="card-text">{featuredNote.lead}</p>
-                                    {/* Add buttons or links if needed */}
-                                    <button onClick={() => openViewModal(featuredNote)} className='btn btn-sm btn-outline-primary me-2'>Ver Detalles</button>
-                                    <button onClick={() => openEditModal(featuredNote)} className='btn btn-sm btn-outline-secondary'>Editar</button>
+                                    <div className='d-flex'>
+                                        <button onClick={() => openViewModal(featuredNote)} className='btn btn-lg btn-outline-info rounded-pill me-2 text-dark'><Newspaper className='fs-3'></Newspaper> Ver Detalles</button>
+                                        <button onClick={() => openEditModal(featuredNote)} className='btn btn-lg btn-outline-warning rounded-pill me-2 text-dark'><PencilSquare className='fs-3'></PencilSquare> Editar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                )}              
+                )} 
 
                 <div className="table-responsive">
                     <table className="table table-bordered border-dark">
@@ -120,41 +150,24 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                             </tr>
                         </thead>
                         <tbody className='text-center'>
-
                             {notes.map((note) => (
+                                // ✅ La lógica de permisos se ha ido.
+                                // Si estás en esta página, eres Admin y puedes hacerlo todo.
                                 <tr key={note.note_id}>
                                     <td className='bg-accent2 bg-opacity-50 align-middle'>
-                                        <Link 
-                                            href={route('notes.toggleFeatured', note.note_id)} 
-                                            method="patch" // Important: Tells Inertia to make a PUT request
-                                            as="button" // Renders as a button but behaves like a link
-                                            className="btn border-0 p-0" // Style as needed, here removing default button styles
-                                            preserveScroll // Prevents page from scrolling to top on click
-                                            preserveState // Optional: Keeps component state (like modal open/closed)
-                                            aria-label={`Marcar ${note.headline} como portada`}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                className="form-check-input fs-4" // Bootstrap classes for styling
-                                                checked={note.is_featured}
-                                                readOnly // The actual state change is handled by the backend redirect
-                                                style={{ cursor: 'pointer' }} // Indicate it's clickable
-                                            />
+                                        <Link href={route('notes.toggleFeatured', note.note_id)} method="patch" as="button" /* ... */ >
+                                            <input type="checkbox" checked={note.is_featured} readOnly /* ... */ />
                                         </Link>
                                     </td> 
                                     <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
                                     <td className='bg-accent2 bg-opacity-50 align-middle'>
-                                        <div className="d-flex flex-wrap justify-content-center">
-                                            {Array.isArray(note.sections) && note.sections.map((section) => (
-                                                <span key={section.section_id} className="badge bg-primary me-1 mb-1">
-                                                    {section.name}
-                                                </span>
-                                            ))}
-                                        </div>
+                                        {/* ... (mapeo de secciones) ... */}
                                     </td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{new Date(note.publish_date).toLocaleDateString()}</td>
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.user? note.user.name : 'Autor no encontrado'}</td>
+                                    
+                                    {/* ✅ MOSTRAR SIEMPRE LOS BOTONES */}
                                     <td className='bg-accent2 bg-opacity-50 text-dark h5'>
                                         <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
                                         <button onClick={() => openEditModal(note)} className='badge text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
@@ -167,9 +180,22 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                 </div>
             </div>
 
+            {/* --- Modales --- */}
+            
+            {/* ✅ Modal de Creación AHORA RECIBE PROPS */}
             <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
-                <CreateNoteForm onClose={closeCreateModal} sections={sections} />
+                <CreateNoteForm
+                    // Pasamos los datos y funciones al componente hijo
+                    data={createFormData}
+                    setData={setCreateFormData}
+                    errors={createErrors}
+                    processing={createProcessing}
+                    onSubmit={submitCreateNote} // Pasamos la función de envío
+                    onClose={closeCreateModal}  // Pasamos la función de cierre
+                    sections={sections} // Sigue recibiendo las secciones
+                />
             </Modal>
+
             <Modal show={isViewModalOpen} onClose={closeViewModal}>
                 {viewingNote && <ViewNoteDetails note={viewingNote} onClose={closeViewModal} />}
             </Modal>

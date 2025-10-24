@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'; // Importa useEffect
 import GuestLayout from '@/Layouts/GuestLayout';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 
 // Ayudante para formatear fechas (opcional pero buena práctica)
@@ -35,8 +36,10 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
          }
     };
 
+    const Layout = auth.user? AuthenticatedLayout : GuestLayout;
+
     return (
-        <GuestLayout>
+        <Layout>
             <Head title="Inicio" /> {/* Título cambiado */}
             <div className="container rounded p-5 my-5 bg-white bg-opacity-50">
                 
@@ -146,6 +149,6 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                 )}
             </div>
             {/* Aquí podrías añadir un footer u otras secciones */}
-        </GuestLayout>
+        </Layout>
     );
 }

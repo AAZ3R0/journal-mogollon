@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,13 @@ use Inertia\Response;
 
 class NotesController extends Controller
 {
+
+    use AuthorizesRequests;
+
     public function index(){
+
+        $this->authorize('viewAny', Note::class);
+
         $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
         $sections = Section::all();
 
@@ -44,6 +51,9 @@ class NotesController extends Controller
 
     public function store(Request $request)
     {
+
+        $this->authorize('create', Note::class);
+
         $validated = $request->validate([
             'headline' => 'required|string|max:50',
             'lead' => 'required|string|max:200',
@@ -130,13 +140,16 @@ class NotesController extends Controller
             }
         }
 
-        return redirect()->route('notes.index')->with('success', '¡Nota creada exitosamente!');
+        return back()->with('success', '¡Nota eliminada exitosamente!');
     }
 
     
 
     public function update(Request $request, Note $note)
     {
+
+        $this->authorize('update', $note);
+
         // 1. --- VALIDACIÓN ---
         // Añadimos las mismas reglas de validación para 'extensions' que en el método store.
         $validated = $request->validate([
@@ -254,7 +267,7 @@ class NotesController extends Controller
             }
         }
         
-        return redirect()->route('notes.index')->with('success', '¡Nota actualizada exitosamente!');
+        return back()->with('success', '¡Nota actualizada exitosamente!');
     }
 
 
@@ -317,6 +330,8 @@ class NotesController extends Controller
 
     public function destroy(Note $note){
 
+        $this->authorize('delete', $note);
+
         $note->extensions()->delete();
         
         // 1. Eliminar las relaciones en la tabla pivote (note_sections)
@@ -340,6 +355,6 @@ class NotesController extends Controller
         $note->delete();
 
         // 4. Redirigir de vuelta con un mensaje de éxito
-        return redirect()->route('notes.index')->with('success', '¡Nota eliminada exitosamente!');
+        return back()->with('success', '¡Nota eliminada exitosamente!');
     }
 }

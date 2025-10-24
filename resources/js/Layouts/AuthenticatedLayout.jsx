@@ -5,9 +5,13 @@ import NavLink from '@/Components/NavLink';
 import Footer from '@/Components/Footer';
 import { Link, usePage } from '@inertiajs/react';
 
+import { Speedometer2, JournalText } from 'react-bootstrap-icons';
+
 
 export default function AuthenticatedLayout({ header, children }) {
     const { auth } = usePage().props;
+
+    const userRole = auth.user?.role?.name;
 
     return (
         // Estructura principal para que el footer (si lo añades) se pegue abajo
@@ -31,23 +35,51 @@ export default function AuthenticatedLayout({ header, children }) {
                             <ApplicationLogo style={{ height: '100px', width: 'auto' }} />
                         </Link>
 
-                        {/* Enlaces de Navegación */}
+                        {/* --- ENLACES DE NAVEGACIÓN DINÁMICOS --- */}
                         <ul className="navbar-nav flex-row">
+                            
+                            {/* 1. Enlace "Notas" (Para todos los usuarios autenticados) */}
                             <li className="nav-item me-3">
                                 <NavLink href={route('dashboard')} className="nav-link d-flex align-items-center" active={route().current('dashboard')}>
                                     Notas
                                 </NavLink>
                             </li>
+
+                            {/* 4. Enlace de Perfil (Para todos) */}
                             <li className="nav-item me-3">
                                 <NavLink href={route('profile.edit')} className="nav-link d-flex align-items-center" active={route().current('profile.edit')}>
-                                    {auth.user.name}
+                                    {auth.user.username}
                                 </NavLink>
                             </li>
+
+                            {/* 2. Enlace "Workspace" (Solo para Reportero y Editor) */}
+                            {(userRole === 'Reportero' || userRole === 'Editor') && (
+                                <li className="nav-item me-3">
+                                    <NavLink href={route('workspace.index')} className="nav-link d-flex align-items-center" active={route().current('workspace.index')}>
+                                        <JournalText className='me-1' />
+                                        Workspace
+                                    </NavLink>
+                                </li>
+                            )}
+
+                            {/* 3. Enlace "Panel de Control" (Solo para Administrador) */}
+                            {userRole === 'Administrador' && (
+                                <li className="nav-item me-3">
+                                    <NavLink href={route('admin.panel')} className="nav-link d-flex align-items-center" active={route().current('admin.panel')}>
+                                        <Speedometer2 className='me-1' />
+                                        Panel de Control
+                                    </NavLink>
+                                </li>
+                            )}
+                            
+                            {/* 5. Enlace "Sobre nosotros" (Para todos) */}
                             <li className="nav-item me-3">
                                 <NavLink href="#" className="nav-link d-flex align-items-center">
                                     Sobre nosotros
                                 </NavLink>
                             </li>
+                            
+                            {/* 6. Cerrar Sesión (Para todos) */}
                             <li className="nav-item">
                                 <NavLink href={route('logout')} method="post" as="button" className="nav-link d-flex align-items-center btn btn-link text-danger">
                                     Cerrar sesión

@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\NotesController;
 use App\Http\Controllers\Users\CommentController;
+use App\Http\Controllers\Users\WorkspaceController;
 
 
 //Home universal
@@ -23,13 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
-//Operaciones de notas del administrador
-Route::get('/notesManager', [NotesController::class, 'index'])->name('notes.index');
-Route::post('/notesManager', [NotesController::class, 'store'])->name('notes.store');
-Route::get('/notesManager/{note}', [NotesController::class, 'show'])->name('notes.show');
-Route::put('/notesManager/{note}', [NotesController::class, 'update'])->name('notes.update');
-Route::patch('/noteManager/{note}/toggle-featured', [NotesController::class, 'toggleFeatured'])->name('notes.toggleFeatured');
-Route::delete('/notesManager/{note}', [NotesController::class, 'destroy'])->name('notes.destroy');
+
 
 
 Route::get('/dashboard', function () {
@@ -40,6 +35,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Operaciones de notas del administrador
+    Route::get('/notesManager', [NotesController::class, 'index'])->name('notes.index');
+    Route::post('/notesManager', [NotesController::class, 'store'])->name('notes.store');
+    Route::get('/notesManager/{note}', [NotesController::class, 'show'])->name('notes.show');
+    Route::put('/notesManager/{note}', [NotesController::class, 'update'])->name('notes.update');
+    Route::patch('/noteManager/{note}/toggle-featured', [NotesController::class, 'toggleFeatured'])->name('notes.toggleFeatured');
+    Route::delete('/notesManager/{note}', [NotesController::class, 'destroy'])->name('notes.destroy');
+
+    //Espacio de trabajo (Reportero y Editor)
+    Route::get('/workspace', [WorkspaceController::class, 'index'])
+         ->name('workspace.index')
+         ->can('access-workspace');
 });
 
 require __DIR__.'/auth.php';

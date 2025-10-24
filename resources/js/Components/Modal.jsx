@@ -5,9 +5,9 @@ import { Modal as BootstrapModal } from 'react-bootstrap'; // Importamos el moda
 
 
 // Recibimos las mismas props: show para mostrar/ocultar y onClose para la función de cierre.
-export default function Modal({ children, show = false, onClose = () => {} }) {
+export default function Modal({ children, show = false, onClose = () => {}, unmountOnClose = true }) {
     return (
-        <BootstrapModal show={show} onHide={onClose} centered contentClassName="modal-transparent-bg">
+        <BootstrapModal show={show} onHide={onClose} centered contentClassName="modal-transparent-bg" unmountOnClose={unmountOnClose}>
             {/* onHide es el evento de react-bootstrap para cuando se intenta cerrar el modal */}
             <BootstrapModal.Body>
                 {/* Aquí renderizamos el formulario que pasamos como hijo */}
