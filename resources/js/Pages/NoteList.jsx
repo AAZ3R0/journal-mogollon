@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/react';
 
 export default function Notes(auth) {
 
-    const Layout = auth.user? AuthenticatedLayout : GuestLayout;
+    const Layout = auth.user? GuestLayout : AuthenticatedLayout;
     return (
         <Layout>
             <div className="p-3 bg-light bg-opacity-50 rounded">
