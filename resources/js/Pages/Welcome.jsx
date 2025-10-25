@@ -41,7 +41,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
     return (
         <Layout>
             <Head title="Inicio" /> {/* Título cambiado */}
-            <div className="container rounded p-5 my-5 bg-white bg-opacity-50">
+            <div className="rounded p-5 m-5 bg-white bg-opacity-50">
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}
@@ -52,17 +52,17 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                               <img 
                                   src={`/storage/${featuredNote.portrait_url}`} 
                                   alt={`Portada de ${featuredNote.headline}`}
-                                  className="img-fluid w-100 rounded-start" style={{ height: '18rem'}}
+                                  className="img-fluid w-100 rounded-start" style={{ height: '28rem'}}
                                   
                               />
                           </div>
-                          <div className="col-md-7 p-4 ps-md-5">
+                          <div className="col-md-7 p-4">
                               <div className="d-flex justify-content-between align-items-start mb-2">
                                   <span>
                                       {/* Muestra el nombre de la primera sección si está disponible */}
 
                                       {Array.isArray(featuredNote.sections) && featuredNote.sections.map((section) => (
-                                                <span key={section.section_id} className="badge bg-secondary me-2 mb-1">
+                                                <span key={section.section_id} className="badge bg-secondary me-2 mb-5">
                                                     {section.name}
                                                 </span>
                                       ))}
@@ -72,13 +72,13 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                                       {formatDate(featuredNote.publish_date)}
                                   </span>
                               </div>
-                              <h1 className="fw-bold mb-3">
+                              <h1 className="fw-bold mb-5">
                                   {/* Usa Link para hacer el título clickeable (asume ruta 'notes.show') */}
                                   
                                       {featuredNote.headline}
                                   
                               </h1>
-                              <p className="mb-0">
+                              <p className="mb-5">
                                   <span style={{ fontWeight: '600' }}>Autor:</span> {featuredNote.user?.name || 'Desconocido'}
                               </p>
                               {/* Opcional: Añadir un fragmento del 'lead' */}
@@ -110,26 +110,26 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
 
                                 {/* Contenido del Carrusel */}
                                 <Link href={route('notes.public.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
-                                  <div className="row g-0 align-items-center shadow-sm bg-warning bg-opacity-25 rounded" style={{ minHeight: '130px' }}>
-                                      <div className="col-md-5">
-                                          <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start' style={{ width: '25rem', height: '14rem', objectFit: 'cover' }} />
+                                  <div className="d-flex g-0 shadow-sm bg-warning bg-opacity-25 rounded">
+                                      <div className="">
+                                          <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start' style={{ width: '26rem', height:'14rem', objectFit: 'cover' }} />
                                       </div>
-                                      <div className="col-md px-3">
-                                          <div className="d-flex justify-content-between mb-5">
+                                      <div className="flex-fill mx-3 my-3">
+                                          <div className="d-flex justify-content-between">
                                               <span>
 
                                                   {Array.isArray(newsItems[currentSlide].sections) && newsItems[currentSlide].sections.map((section) => (
-                                                              <span key={section.section_id} className="badge bg-secondary me-2 mb-1">
+                                                              <span key={section.section_id} className="badge bg-secondary me-2 mb-5">
                                                                   {section.name}
                                                               </span>
                                                   ))}
                                               </span>
                                               <span style={{ fontSize: '0.85rem' }}>{formatDate(newsItems[currentSlide].publish_date)}</span>
                                           </div>
-                                          <h3 className='fw-bold mb-5' style={{ fontSize: '1.5rem'}}>
+                                          <h1 className='fw-bold mb-5'>
                                               {newsItems[currentSlide].headline}
-                                          </h3>
-                                          <p style={{ fontSize: '0.85rem', margin: 0 }}>
+                                          </h1>
+                                          <p style={{ margin: 0 }}>
                                               <span style={{ fontWeight: '600' }}>Autor:</span> {newsItems[currentSlide].user?.name || 'Desconocido'}
                                           </p>
                                       </div>

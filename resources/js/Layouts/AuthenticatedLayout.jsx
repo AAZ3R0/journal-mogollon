@@ -26,7 +26,7 @@ export default function AuthenticatedLayout({ header, children }) {
                   justify-content-between: empuja los grupos a los extremos
                   align-items-center: centra todo verticalmente
                 */}
-                <div className="container d-flex justify-content-between align-items-center">
+                <div className="container-fluid mx-5 d-flex justify-content-between align-items-center">
 
                     {/* GRUPO IZQUIERDO: Logo y Enlaces */}
                     <div className="d-flex align-items-center">
@@ -111,7 +111,7 @@ export default function AuthenticatedLayout({ header, children }) {
               necesario y que el contenido no quede oculto
               debajo de la barra de navegación fija.
             */}
-            <main className="container flex-grow-1 py-4 mt-5">
+            <main className="container-fluid flex-grow-1 py-4 mt-5">
                 {/* Cabecera de la página (si existe) */}
                 {header && (
                     <header className="bg-white shadow-sm mb-4">

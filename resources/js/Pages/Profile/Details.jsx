@@ -24,26 +24,24 @@ export default function Details({ mustVerifyEmail, status }) {
                   y de 10 en medianas (md). Esto reemplaza a 'max-w-7xl'.
                   Esto centrará y dará el ancho deseado a tus tarjetas.
                 */}
-                <div className="bg-col-lg-8 col-md-8">
+                
 
-                    {/* Este componente ya tiene la <div class="card"> DENTRO
-                      gracias a la modificación anterior.
-                      Añadimos un margen inferior 'mb-4' para separarlo del siguiente.
-                    */}
-                    <div className="mb-4">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                        />
-                    </div>
-
-                    {/* Estos componentes aún no los hemos modificado internamente.
-                      Así que los envolvemos en la misma estructura de tarjeta
-                      para que se vean igual que el primero.
-                    */}
-              
-
+                {/* Este componente ya tiene la <div class="card"> DENTRO
+                  gracias a la modificación anterior.
+                  Añadimos un margen inferior 'mb-4' para separarlo del siguiente.
+                */}
+                <div className="mb-4">
+                    <UpdateProfileInformationForm
+                        mustVerifyEmail={mustVerifyEmail}
+                        status={status}
+                    />
                 </div>
+
+                {/* Estos componentes aún no los hemos modificado internamente.
+                  Así que los envolvemos en la misma estructura de tarjeta
+                  para que se vean igual que el primero.
+                */}
+                
             </div>
         </AuthenticatedLayout>
     );

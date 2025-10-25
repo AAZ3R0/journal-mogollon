@@ -8,7 +8,7 @@ export default function Navbar() {
     return (
         // Quitamos 'navbar-expand-lg' para que la barra nunca se colapse.
         <nav className="navbar navbar-light bg-accent1  bg-opacity-75 shadow-sm ">
-            <div className="container d-flex justify-content-between align-items-center">
+            <div className="container-fluid mx-5 d-flex justify-content-between align-items-center">
                 {/* GRUPO IZQUIERDO: Logo y Enlaces */}
                 <div className="d-flex align-items-center">
                     {/* Logo */}
@@ -22,9 +22,9 @@ export default function Navbar() {
                     <ul className="navbar-nav flex-row ms-4">
                         <li className="nav-item me-3"> {/* 'me-3' agrega espacio entre los enlaces */}
                             <NavLink
-                                href={route('login')}
+                                href={route('index.notes')}
                                 className="nav-link"
-                                active={route().current('login')}
+                                active={route().current('index.notes')}
                             >
                                 Notas
                             </NavLink>
@@ -40,9 +40,9 @@ export default function Navbar() {
                         </li>
                         <li className="nav-item">
                             <NavLink
-                                href={route('register')}
+                                href={route('index.aboutus')}
                                 className="nav-link"
-                                active={route().current('register')}
+                                active={route().current('index.aboutus')}
                             >
                                 Sobre Nosotros
                             </NavLink>

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotesController;
 use App\Http\Controllers\Users\CommentController;
 use App\Http\Controllers\Users\WorkspaceController;
@@ -34,8 +35,8 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/notes', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('index.notes');
+    return Inertia::render('NoteList');
+})->name('index.notes');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -44,9 +45,7 @@ Route::middleware('auth')->group(function () {
 
 
     //Panel de control (Administrador)
-    Route::get('/dashboard', function(){
-        return Inertia::render('Admin/Dashboard');
-    })->name('admin.panel');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.panel');
 
     //Operaciones de notas del administrador
     Route::get('/notesManager', [NotesController::class, 'index'])->name('notes.index');
@@ -55,6 +54,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/notesManager/{note}', [NotesController::class, 'update'])->name('notes.update');
     Route::patch('/noteManager/{note}/toggle-featured', [NotesController::class, 'toggleFeatured'])->name('notes.toggleFeatured');
     Route::delete('/notesManager/{note}', [NotesController::class, 'destroy'])->name('notes.destroy');
+
+    //Operaciones de usuarios del administrador
+    Route::get('/usersManager', function(){
+        return Inertia::render('Admin/AccountsManager');
+    })->name('admin.users');
+
+    //Operaciones de comentarios del administrador
+    Route::get('/commentsManager', function(){
+        return Inertia::render('Admin/CommentsManager');
+    })->name('admin.comments');
 
     //Espacio de trabajo (Reportero y Editor)
     Route::get('/workspace', [WorkspaceController::class, 'index'])
