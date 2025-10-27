@@ -7,7 +7,9 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\NotesController;
+use App\Http\Controllers\Admin\CommentsController;
 use App\Http\Controllers\Users\CommentController;
 use App\Http\Controllers\Users\WorkspaceController;
 
@@ -34,9 +36,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::get('/notes', function () {
-    return Inertia::render('NoteList');
-})->name('index.notes');
+Route::get('/notes', [NotesController::class, 'viewList'])->name('index.notes');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,14 +56,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notesManager/{note}', [NotesController::class, 'destroy'])->name('notes.destroy');
 
     //Operaciones de usuarios del administrador
-    Route::get('/usersManager', function(){
-        return Inertia::render('Admin/AccountsManager');
-    })->name('admin.users');
+    Route::get('/usersManager', [UserController::class, 'index'])->name('admin.users')->can('access-admin-panel');
+
+    Route::get('/admin/users/{user}', [UserController::class, 'show'])->name('admin.users.show')->can('access-admin-panel');
+
+    Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy')->can('access-admin-panel');
 
     //Operaciones de comentarios del administrador
-    Route::get('/commentsManager', function(){
-        return Inertia::render('Admin/CommentsManager');
-    })->name('admin.comments');
+    Route::get('/commentsManager',[CommentsController::class, 'index'])->name('admin.comments');
 
     //Espacio de trabajo (Reportero y Editor)
     Route::get('/workspace', [WorkspaceController::class, 'index'])

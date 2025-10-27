@@ -167,7 +167,11 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                         <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
                                         <td className='bg-accent2 bg-opacity-50 align-middle'>
-                                            {/* ... (mapeo de secciones) ... */}
+                                            {Array.isArray(note.sections) && note.sections.map((section) => (
+                                                    <span key={section.section_id} className="badge bg-primary me-1 mb-1">
+                                                        {section.name}
+                                                    </span>
+                                            ))}
                                         </td>
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5'>{new Date(note.publish_date).toLocaleDateString()}</td>
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.user? note.user.name : 'Autor no encontrado'}</td>

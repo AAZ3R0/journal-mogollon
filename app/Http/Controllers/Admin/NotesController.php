@@ -46,7 +46,9 @@ class NotesController extends Controller
     }
 
     public function viewList(){
-        return Inertia::render('Notes/NoteList');
+        $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
+        $sections = Section::all();
+        return Inertia::render('NoteList', ['notes' => $notes, 'sections' => $sections]);
     }
 
     public function store(Request $request)

@@ -43,6 +43,10 @@ class AppServiceProvider extends ServiceProvider
             return in_array($user->role->name, ['Reportero', 'Editor']);
         });
 
+        Gate::define('access-admin-panel', function (User $user) {
+            return $user->role->name === 'Administrador';
+        });
+
         Vite::prefetch(concurrency: 3);
     }
 }

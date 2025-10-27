@@ -1,6 +1,7 @@
 import React , { useState, useEffect } from 'react';
 import { Head, Link, usePage, useForm } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout'; // Use your guest layout
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { MediaRenderer } from '@/Components/ViewNoteDetails'; // Reuse the renderer
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
@@ -66,8 +67,10 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
     // Calcula qué notas mostrar en la página actual del carrusel
     const currentRelatedNotes = relatedNotes.slice(relatedIndex, relatedIndex + relatedItemsPerPage);
 
+    const Layout = auth.user? AuthenticatedLayout : GuestLayout;
+
     return (
-        <GuestLayout>
+        <Layout>
             {/* Set the page title */}
             <Head title={note.headline} />
 
@@ -267,6 +270,6 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     </div>
                 </article>
             </div>
-        </GuestLayout>
+        </Layout>
     );
 }
