@@ -41,29 +41,29 @@ export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'com
                     </div>
 
                     {/* --- Tabla de Comentarios --- */}
-                    <div className="table-responsive bg-white rounded shadow-sm">
-                        <table className="table table-hover align-middle mb-0">
+                    <div className="table-responsive rounded shadow-sm">
+                        <table className="table table-hover align-middle mb-0 table-bordered border-dark">
                             <thead className='bg-light'>
                                 <tr className='text-center'>
-                                    <th className='p-3' style={{width: '50%'}}>Comentario</th>
-                                    <th className='p-3'>Usuario</th>
-                                    <th className='p-3'>Fecha</th>
-                                    <th className='p-3 text-end'>Acción</th>
+                                    <th className='py-4 bg-warning text-dark h4' style={{width: '50%'}}>Comentario</th>
+                                    <th className='py-4 bg-warning text-dark h4'>Usuario</th>
+                                    <th className='py-4 bg-warning text-dark h4'>Fecha</th>
+                                    <th className='py-4 bg-warning text-dark h4'>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {comments.data.map((comment) => ( // .data porque usamos paginate
                                     <tr key={comment.comment_id} className='text-center'>
-                                        <td className='p-3 text-start'>
+                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50 text-start'>
                                             <p className='mb-0'>{comment.message}</p>
                                         </td>
-                                        <td className='p-3'>
+                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
                                             {comment.user ? comment.user.name : 'Usuario Eliminado'}
                                         </td>
-                                        <td className='p-3'>{formatDate(comment.publish_date)}</td>
-                                        <td className='p-3 text-end'>
+                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50 '>{formatDate(comment.publish_date)}</td>
+                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
                                             <button 
-                                                className='btn btn-sm btn-outline-danger' 
+                                                className='btn btn-sm btn-outline-danger fs-5' 
                                                 title="Eliminar comentario"
                                                 onClick={() => openDeleteModal(comment)}
                                             >
