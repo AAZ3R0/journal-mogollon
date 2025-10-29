@@ -3,13 +3,29 @@
 import ApplicationLogo from '@/Components/ApplicationLogoFigure';
 import NavLink from '@/Components/NavLink';
 import Footer from '@/Components/Footer';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, useForm } from '@inertiajs/react';
 
-import { Speedometer2, JournalText } from 'react-bootstrap-icons';
+import { Speedometer2, JournalText, Search } from 'react-bootstrap-icons';
 
 
 export default function AuthenticatedLayout({ header, children }) {
-    const { auth } = usePage().props;
+    const { auth, searchQuery } = usePage().props;
+
+    // ✅ PASO 1: Inicializa useForm para el campo de búsqueda
+    // Pre-llena el campo con el valor de búsqueda actual (si existe)
+    const { data, setData, get, processing } = useForm({
+        query: searchQuery || '',
+    });
+
+    // ✅ PASO 2: Crea la función de envío
+    const submitSearch = (e) => {
+        e.preventDefault();
+        // Hacemos una petición GET a la ruta 'index.notes'
+        // Esto recargará la página de 'Notes' con los datos filtrados
+        get(route('search'), {
+            preserveState: true, // Mantiene el estado (ej. scroll)
+        });
+    };
 
     const userRole = auth.user?.role?.name;
 
@@ -56,8 +72,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             {(userRole === 'Reportero' || userRole === 'Editor') && (
                                 <li className="nav-item me-3">
                                     <NavLink href={route('workspace.index')} className="nav-link d-flex align-items-center" active={route().current('workspace.index')}>
-                                        <JournalText className='me-1' />
-                                        Workspace
+                                        Espacio de trabajo
                                     </NavLink>
                                 </li>
                             )}
@@ -66,7 +81,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             {userRole === 'Administrador' && (
                                 <li className="nav-item me-3">
                                     <NavLink href={route('admin.panel')} className="nav-link d-flex align-items-center" active={route().current('admin.panel')}>
-                                        <Speedometer2 className='me-1' />
                                         Panel de Control
                                     </NavLink>
                                 </li>
@@ -89,17 +103,22 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
 
                     {/* GRUPO DERECHO: Barra de Búsqueda */}
-                    <form className="d-flex">
+                    <form className="d-flex w-25" onSubmit={submitSearch}>
                         <div className="input-group">
-                            <span className="input-group-text" id="basic-addon1">
-                                🔍
-                            </span>
+                            
+                            {/* El botón ahora es de tipo 'submit' */}
+                            <button className="btn btn-accent2" type="submit" id="button-addon1" disabled={processing}>
+                                <Search className='fs-4'></Search>
+                            </button>
+                            
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Buscar"
+                                placeholder="Buscar por título..."
                                 aria-label="Buscar"
                                 aria-describedby="basic-addon1"
+                                value={data.query} // Controlado por el estado
+                                onChange={(e) => setData('query', e.target.value)} // Actualiza el estado
                             />
                         </div>
                     </form>
