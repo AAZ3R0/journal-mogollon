@@ -49,24 +49,22 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     return (
         // El div principal ahora necesita un <></> o <Fragment> si pones el Modal fuera
         // Lo mantendremos simple y pondremos el Modal dentro del div principal.
-        <div className={`card mx-5 bg-light bg-opacity-50 shadow-sm ${className}`}>
-            <div className="card-body p-4 p-md-5">
+        <div className={`w-75 m-auto bg-light bg-opacity-50 shadow-sm ${className}`}>
+            <div className="p-5">
 
                 {/* --- Contenedor para reducir el ancho del formulario --- */}
                 <div className="row justify-content-center">
-                    
+
                     {/* --- CONTENEDOR 1: FORMULARIO (VISUALIZACIÓN) --- */}
                     <div className=" bg-light bg-opacity-50 p-4 rounded">
-                        <header>
-                            <h1 className="fw-bold text-dark mb-4">
-                                Perfil de: {user.username || user.name}
-                            </h1>
-                        </header>
+                        <h1 className="fw-bold text-dark mb-5" style={{ fontSize: '4.5rem' }}>
+                            Perfil de: {user.username || user.name}
+                        </h1>
 
                         {/* Formulario de solo lectura */}
                         <form>
                             {/* Fila: Nombre */}
-                            <div className="row mb-3 align-items-center">
+                            <div className="row mb-3 align-items-middle">
                                 <label htmlFor="name" className="col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Nombre:
                                 </label>
@@ -74,7 +72,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="name"
                                         type="text"
-                                        className="form-control border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)} // Mantenemos esto por si acaso
                                         required
@@ -88,7 +86,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             </div>
 
                             {/* Fila: Usuario */}
-                            <div className="row mb-3 align-items-center">
+                            <div className="row mb-3 align-items-middle">
                                 <label htmlFor="username" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Usuario:
                                 </label>
@@ -96,7 +94,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="username"
                                         type="text"
-                                        className="form-control border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
                                         value={data.username}
                                         onChange={(e) => setData('username', e.target.value)}
                                         autoComplete="username"
@@ -108,7 +106,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             </div>
 
                             {/* Fila: Correo */}
-                            <div className="row mb-3 align-items-center">
+                            <div className="row mb-3 align-items-middle">
                                 <label htmlFor="email" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Correo electrónico:
                                 </label>
@@ -116,7 +114,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="email"
                                         type="email"
-                                        className="form-control border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                         required
@@ -138,7 +136,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             )}
 
                             {/* Fila: Rol */}
-                            <div className="row mb-3 align-items-center">
+                            <div className="row mb-3 align-items-middle">
                                 <label htmlFor="rol_id" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Rol:
                                 </label>
@@ -146,12 +144,12 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="rol_name_display" // Cambiamos el ID para claridad
                                         type="text"
-                                        className="form-control border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
                                         // ✅ Mostramos el nombre del rol aquí
                                         value={user.role ? user.role.name : 'Rol no asignado'}
                                         readOnly // Sigue siendo de solo lectura en esta vista
-                                        disabled 
-                                        
+                                        disabled
+
                                     />
                                     <InputError className="mt-2" message={errors.rol_id} />
                                 </div>
@@ -164,36 +162,36 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         {/* --- MODIFICACIÓN AQUÍ: Añadir onClick --- */}
                         <button
                             type="button"
-                            className="btn btn-warning btn-lg rounded-pill me-3 px-4 text-dark"
+                            className="btn btn-warning fw-bold btn-lg rounded-pill me-3 px-4 text-dark"
                             onClick={openModal} // <-- AÑADIDO
                         >
                             <PencilSquare className='fs-3 mx-2'></PencilSquare>
                             Editar perfil
                         </button>
-                        
-                        <button 
-                            type="button" 
-                            className="btn btn-danger btn-lg rounded-pill px-4"
+
+                        <button
+                            type="button"
+                            className="btn btn-danger fw-bold btn-lg rounded-pill px-4"
                             onClick={openDeleteModal}
                         >
                             <TrashFill className='fs-3 mx-2'></TrashFill>
                             Eliminar perfil
                         </button>
                     </div>
-                    
+
                 </div>
             </div>
 
-            <EditProfileModal 
-                user={user} 
-                show={isModalOpen} 
-                onClose={closeModal} 
+            <EditProfileModal
+                user={user}
+                show={isModalOpen}
+                onClose={closeModal}
             />
 
             <DeleteUserForm
-                user={user} 
-                show={isDeleteModalOpen} 
-                onClose={closeDeleteModal} 
+                user={user}
+                show={isDeleteModalOpen}
+                onClose={closeDeleteModal}
             />
 
 
