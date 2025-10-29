@@ -30,118 +30,128 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
 
 
                     <div className='d-flex justify-content-between mb-3 text-center'>
-                        <div className='bg-accent1 bg-opacity-75 rounded p-3 px-5 border border-dark'>
-                            <h1>{stats.notes}</h1>
-                            <p>Notas publicadas</p>
+                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                            <h1 className='fw-bold'>{stats.notes}</h1>
+                            <p className='fs-5'>Notas publicadas</p>
                         </div>
-                        <div className='bg-accent1 bg-opacity-75 rounded p-3 px-5 border border-dark'>
-                            <h1>{stats.users}</h1>
-                            <p>Usuarios registrados</p>
+                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                            <h1 className='fw-bold'>{stats.users}</h1>
+                            <p className='fs-5'>Usuarios registrados</p>
                         </div>
-                        <div className='bg-accent1 bg-opacity-75 rounded p-3 px-5 border border-dark'>
-                            <h1>{stats.comments}</h1>
-                            <p>Comentarios publicados</p>
+                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                            <h1 className='fw-bold'>{stats.comments}</h1>
+                            <p className='fs-5'>Comentarios publicados</p>
 
                         </div>
                     </div>
 
                     <div className='d-flex'>
-                        <table className=' bg-accent1 bg-opacity-75 w-75 me-3'>
-                            <thead className='bg-warning'>
-                                {/* Fila 1: Título */}
-                                <tr className='border border-dark'>
-                                    {/* 2. Añadimos colSpan="5" para que el título ocupe las 5 columnas */}
-                                    <th className='p-3 h3' colSpan="5">Notas recientes</th>
-                                </tr>
-                                {/* Fila 2: Cabeceras de columna (movidas aquí desde la tabla anidada) */}
-                                <tr className='bg-secondary bg-opacity-50 border border-dark text-center'>
-                                    <th className='p-2 border border-dark'>Portada</th>
-                                    <th className='p-2 border border-dark'>Título</th>
-                                    <th className='p-2 border border-dark'>Autor</th>
-                                    <th className='p-2 border border-dark'>Secciones</th>
-                                    <th className='p-2 border border-dark'>Fecha</th>
-                                </tr>
-                            </thead>
-                            {/* El <tbody> ahora es hijo directo de la tabla principal */}
-                            <tbody>
-                                {recentNotes.map((note) => (
-                                    <tr key={note.note_id} className='border border-dark'>
-                                        <td className='align-middle border border-dark'>
-                                            <img src={`/storage/${note.portrait_url}`} alt={note.headline} style={{ width: '15.7rem', height: 'auto' }} />
-                                        </td>
-                                        <td className='p-2 align-middle border border-dark'>{note.headline}</td>
-                                        <td className='p-2 align-middle border border-dark'>{note.user?.name || 'N/A'}</td>
-                                        <td className='p-2 align-middle border border-dark'>
-                                            {note.sections.slice(0, 2).map(s => s.name).join(', ')}
-                                        </td>
-                                        <td className='p-2 align-middle border border-dark'>{formatDate(note.publish_date)}</td>
+                        <div className='rounded overflow-hidden w-75 me-3'>
+                            <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2'>
+                                <thead>
+                                    {/* Fila 1: Título */}
+                                    {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
+                                    <tr>
+                                        <th className='bg-warning p-3 px-3 h3 mb-0 fw-bold text-dark' colSpan="5">Notas recientes</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
+                                    {/* Fila 2: Cabeceras */}
+                                    {/* 4. Quitamos 'border', aumentamos padding a 'p-3' y añadimos 'fw-bold' */}
+                                    <tr className='text-center border-top border-dark border-opacity-25'>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Portada</th>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Título</th>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Autor</th>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Secciones</th>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Fecha</th>
+                                    </tr>
+                                </thead>
+                                {/* El <tbody> ahora es hijo directo de la tabla principal */}
+                                <tbody className='fs-5'>
+                                    {recentNotes.map((note) => (
+                                        <tr key={note.note_id} className='text-center'>
+                                            {/* 7. Quitamos 'border' y 'p-2'. 'p-0' para que la imagen toque el borde. */}
+                                            <td className='p-0 bg-accent1 bg-opacity-50 '>
+                                                <img src={`/storage/${note.portrait_url}`} alt={note.headline} style={{ width: '15.7rem', height: 'auto', display: 'block' }} />
+                                            </td>
+                                            {/* 8. Padding 'p-3' para más espacio. Quitamos 'fs-5' (ya está en tbody) y 'border' */}
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>{note.headline}</td>
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>{note.user?.name || 'N/A'}</td>
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>
+                                                {note.sections.slice(0, 2).map(s => s.name).join(', ')}
+                                            </td>
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>{formatDate(note.publish_date)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                         {/* --- TABLA 2: USUARIOS NUEVOS (CORREGIDA) --- */}
                         {/* 1. Esta también es UNA sola tabla */}
-                        <table className=' bg-accent1 bg-opacity-75 w-25 '>
-                            <thead className='bg-warning'>
+
+                        <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-25 d-flex flex-column'> {/* Mantenemos flexbox aquí */}
+                            <table className='table align-middle mb-0 h-100 border border-dark border-opacity-25 border-2'> {/* Mantenemos h-100 aquí */}
+                                <thead className='align-middle'>
+                                    {/* Fila 1: Título */}
+                                    {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
+                                    <tr>
+                                        <th className='bg-warning p-3 px-3 h3 mb-0 fw-bold text-dark' colSpan="5">Usuarios recientes</th>
+                                    </tr>
+                                    {/* Fila 2: Cabeceras */}
+                                    {/* 4. Quitamos 'border', aumentamos padding a 'p-3' y añadimos 'fw-bold' */}
+                                    <tr className='text-center border-top'>
+                                        <th className='p-1 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
+                                        <th className='p-1 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Rol</th>
+                                    </tr>
+                                </thead>
+
+                                {/* --- CAMBIO 1: Quitamos clases flex del tbody --- */}
+                                <tbody className='fs-5'>
+                                    {recentUsers.map((user) => (
+                                        < tr key={user.user_id} className='text-center  ' >
+                                            <td className='py-4 px-3 text-start align-middle bg-accent1 bg-opacity-50'> {user.name}</td>
+                                            <td className='py-4 px-3 text-start align-middle bg-accent1 bg-opacity-50'>{user.role?.name || 'N/A'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* --- TABLA 3: COMENTARIOS RECIENTES (CORREGIDA) --- */}
+                    {/* 1. Aplicamos la misma corrección estructural aquí */}
+                    <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-100 mt-3 '>
+                        {/* 2. Tabla 'table-hover' y 'align-middle' */}
+                        <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2'>
+                            <thead className=''>
                                 {/* Fila 1: Título */}
-                                {/* 2. CORRECCIÓN DE DESFASE: El borde ahora está en el TR, igual que en la otra tabla */}
-                                <tr className='border border-dark'>
-                                    {/* 3. Añadimos colSpan="2" para que el título ocupe 2 columnas */}
-                                    {/* 4. Quitamos el 'border' de aquí para alinear */}
-                                    <th className='px-3 py-0 h3' colSpan="2">Usuarios nuevos</th>
+                                {/* 3. Padding 'p-4' y 'mb-0' */}
+                                <tr>
+                                    <th className='bg-warning p-3 px-3 h3 mb-0 fw-bold text-dark' colSpan="3">Comentarios recientes</th>
                                 </tr>
                                 {/* Fila 2: Cabeceras */}
-                                <tr className='bg-secondary bg-opacity-50 text-center'>
-                                    <th className='px-2 py-0 border border-dark'>Nombre</th>
-                                    <th className='px-2 py-0 border border-dark'>Rol</th>
+                                {/* 4. Padding 'p-3' y 'fw-bold' */}
+                                <tr className='bg-opacity-50 text-center border-top border-dark border-opacity-25'>
+                                    <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Comentario</th>
+                                    <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
+                                    <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Fecha</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {recentUsers.map((user) => (
-                                    <tr key={user.user_id} className='text-center border border-dark'>
-                                        {/* 5. CORRECCIÓN ESPACIO VACÍO: Cambiamos 'p-5' por 'p-2' */}
-                                        <td className='p-2 border border-dark'>{user.name}</td>
-                                        <td className='p-2 border border-dark'>{user.role?.name || 'N/A'}</td>
+                            {/* 5. 'fs-5' en el tbody */}
+                            <tbody className='fs-5 '>
+                                {recentComments.map((comment) => (
+                                    <tr key={comment.comment_id} className='text-center  border-top border-dark border-opacity-25'>
+                                        <td className='p-3 text-start bg-accent1 bg-opacity-50'>{comment.message.substring(0, 100)}...</td>
+                                        <td className='p-3 text-start bg-accent1 bg-opacity-50'>{comment.user?.username || 'N/A'}</td>
+                                        <td className='p-3 text-start bg-accent1 bg-opacity-50'>{formatDate(comment.publish_date)}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
 
-                    {/* --- TABLA 3: COMENTARIOS RECIENTES (CORREGIDA) --- */}
-                    {/* 1. Aplicamos la misma corrección estructural aquí */}
-                    <table className=' bg-accent1 bg-opacity-75 w-100 mt-3'>
-                        <thead className='bg-warning'>
-                            {/* Fila 1: Título */}
-                            <tr>
-                                {/* 2. colSpan="3" para las 3 columnas */}
-                                {/* 3. Añadimos 'border' al 'th' aquí para que sea consistente con las cabeceras de abajo */}
-                                <th className='p-3 border border-dark h3' colSpan="3">Comentarios recientes</th>
-                            </tr>
-                            {/* Fila 2: Cabeceras */}
-                            <tr className='bg-secondary bg-opacity-50 text-center'>
-                                <th className='p-2 border border-dark'>Comentario</th>
-                                <th className='p-2 border border-dark'>Usuario</th>
-                                <th className='p-2 border border-dark'>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentComments.map((comment) => (
-                                <tr key={comment.comment_id}>
-                                    {/* 4. CORRECCIÓN ESPACIO VACÍO: Cambiamos 'p-5' por 'p-2' */}
-                                    <td className='p-2 border border-dark'>{comment.message.substring(0, 100)}...</td>
-                                    <td className='p-2 border border-dark'>{comment.user?.username || 'N/A'}</td>
-                                    <td className='p-2 border border-dark'>{formatDate(comment.publish_date)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
                 </div>
 
-            </div>
+            </div >
 
-        </Layout>
+        </Layout >
     );
 }
