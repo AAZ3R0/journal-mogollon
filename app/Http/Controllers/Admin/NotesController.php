@@ -45,10 +45,45 @@ class NotesController extends Controller
         return Inertia::render('Editor_Reporter/WorkSpace');
     }
 
-    public function viewList(){
-        $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
-        $sections = Section::all();
-        return Inertia::render('NoteList', ['notes' => $notes, 'sections' => $sections]);
+    public function viewList(Request $request){
+        // 1. Obtener los filtros de la URL (ej. /notes?section_id=9&year=2025)
+        $filters = $request->only(['section_id', 'day', 'month', 'year']);
+        
+        // 2. Empezar la consulta de notas
+        $notesQuery = Note::query()->with(['user', 'sections']);
+
+        // 3. Aplicar los filtros dinámicamente
+        $notesQuery->when($request->input('section_id'), function ($query, $sectionId) {
+            // Filtra notas que pertenezcan a esa sección
+            $query->whereHas('sections', function ($q) use ($sectionId) {
+                $q->where('sections.section_id', $sectionId);
+            });
+        });
+
+        $notesQuery->when($request->input('day'), function ($query, $day) {
+            $query->whereDay('publish_date', $day);
+        });
+
+        $notesQuery->when($request->input('month'), function ($query, $month) {
+            $query->whereMonth('publish_date', $month);
+        });
+
+        $notesQuery->when($request->input('year'), function ($query, $year) {
+            $query->whereYear('publish_date', $year);
+        });
+
+        // 4. Obtener resultados paginados
+        $notes = $notesQuery->orderBy('publish_date', 'desc')
+                        ->paginate(12) // 12 por página (puedes cambiarlo)
+                        ->withQueryString(); // MUY IMPORTANTE: Mantiene los filtros en los enlaces de paginación
+
+        return Inertia::render('NoteList', [ // Asegúrate que el nombre de la vista sea 'NoteList'
+            'auth' => [
+                'user' => $request->user() ? $request->user()->load('role') : null,],
+            'notes' => $notes,
+            'sections' => Section::all(), // Pasa todas las secciones para el dropdown
+            'filters' => $filters,     // Devuelve los filtros aplicados al frontend
+        ]);
     }
 
     public function store(Request $request)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note; // Importa el modelo Note
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Inertia\Inertia; // Importa Inertia
 
@@ -33,6 +34,35 @@ class HomeController extends Controller
             // Puede que aún necesites estas para el footer u otras partes
             'laravelVersion' => app()->version(),
             'phpVersion' => PHP_VERSION,
+        ]);
+    }
+
+
+    public function search(Request $request){
+        // 1. Validar que el término de búsqueda exista
+        $validated = $request->validate([
+            'query' => 'nullable|string',
+        ]);
+
+        $query = $validated['query'] ?? null;
+
+        $notesQuery = Note::query()->with(['user', 'sections']);
+        $sections = Section::all();
+
+
+        $notesQuery->when($query, function ($q, $search) {
+        return $q->where('headline', 'LIKE', '%' . $search . '%');
+            });
+
+            $results = $notesQuery->orderBy('publish_date', 'desc')
+                                ->paginate(12)
+                                ->withQueryString();
+
+        // 3. Devolver una nueva vista de Inertia con los resultados
+        return Inertia::render('NoteList', [
+            'notes' => $results,
+            'searchQuery' => $query, // Devuelve el término para mostrarlo en la vista
+            'sections' => $sections,
         ]);
     }
 }

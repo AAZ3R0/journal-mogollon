@@ -2,9 +2,32 @@
 import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogoFigure';
 import NavLink from '@/Components/NavLink';
-import { Link } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
+import { Search } from 'react-bootstrap-icons';
 
 export default function Navbar() {
+
+    // Obtenemos el 'searchQuery' actual de las props de la página
+    const { searchQuery } = usePage().props;
+
+    // ✅ PASO 1: Inicializa useForm para el campo de búsqueda
+    // Pre-llena el campo con el valor de búsqueda actual (si existe)
+    const { data, setData, get, processing } = useForm({
+        query: searchQuery || '',
+    });
+
+    // ✅ PASO 2: Crea la función de envío
+    const submitSearch = (e) => {
+        e.preventDefault();
+        // Hacemos una petición GET a la ruta 'index.notes'
+        // Esto recargará la página de 'Notes' con los datos filtrados
+        get(route('search'), {
+            preserveState: true, // Mantiene el estado (ej. scroll)
+        });
+    };
+
+
+
     return (
         // Quitamos 'navbar-expand-lg' para que la barra nunca se colapse.
         <nav className="navbar navbar-light bg-accent1  bg-opacity-75 shadow-sm ">
@@ -19,7 +42,7 @@ export default function Navbar() {
                     {/* Enlaces de Navegación */}
                     {/* 'flex-row' fuerza a los elementos de la lista a estar en horizontal */}
                     {/* 'ms-4' agrega un margen a la izquierda para separar los enlaces del logo */}
-                    <ul className="navbar-nav flex-row ms-4">
+                    <ul className="navbar-nav flex-row">
                         <li className="nav-item me-3"> {/* 'me-3' agrega espacio entre los enlaces */}
                             <NavLink
                                 href={route('index.notes')}
@@ -51,17 +74,22 @@ export default function Navbar() {
                 </div>
 
                 {/* GRUPO DERECHO: Barra de Búsqueda */}
-                <form className="d-flex">
+                <form className="d-flex w-25" onSubmit={submitSearch}>
                     <div className="input-group">
-                        <span className="input-group-text" id="basic-addon1">
-                            🔍
-                        </span>
+                       
+                        {/* El botón ahora es de tipo 'submit' */}
+                        <button className="btn btn-accent2" type="submit" id="button-addon1" disabled={processing}>
+                            <Search className='fs-4'></Search>
+                        </button>
+                        
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Buscar"
+                            placeholder="Buscar por título..."
                             aria-label="Buscar"
                             aria-describedby="basic-addon1"
+                            value={data.query} // Controlado por el estado
+                            onChange={(e) => setData('query', e.target.value)} // Actualiza el estado
                         />
                     </div>
                 </form>

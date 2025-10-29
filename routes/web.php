@@ -17,6 +17,9 @@ use App\Http\Controllers\Users\WorkspaceController;
 //Home universal
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+//Búsqueda de notas
+Route::get('notes/search', [HomeController::class, 'search'])->name('search');
+
 //About Us
 Route::get('/aboutUs', function (){
 
