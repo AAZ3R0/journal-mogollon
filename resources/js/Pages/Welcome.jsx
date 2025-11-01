@@ -45,8 +45,9 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}
-                <Link href={route('notes.public.show', featuredNote.note_id)} className="text-decoration-none text-reset">
+
                   {featuredNote ? (
+                    <Link href={route('notes.public.show', featuredNote.note_id)} className="text-decoration-none text-reset">
                       <div className="row g-0 align-items-center bg-warning bg-opacity-25 mb-5 shadow-sm rounded"> {/* Añadí shadow */}
                           <div className="col-md-5">
                               <img 
@@ -85,14 +86,14 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                               <p className="mt-2 display-6 fst-italic" style={{fontSize: "1.5rem"}}>{featuredNote.lead.substring(0, 100)}...</p> 
                           </div>
                       </div>
-                  
+                    </Link>
                   ) : (
                       // Opcional: Muestra un mensaje si no hay nota destacada
-                      <div className="alert alert-info text-center" role="alert">
-                          No hay nota destacada en este momento.
+                      <div className="alert bg-warning bg-opacity-50 text-center" role="alert">
+                          No hay nota una destacada en este momento.
                       </div>
                   )}
-                </Link>
+                
                 {/* --- Sección Carrusel (Notas del Día) --- */}
                 {/* Renderiza el carrusel solo si hay notas para hoy */}
                 {newsItems.length > 0 ? (
