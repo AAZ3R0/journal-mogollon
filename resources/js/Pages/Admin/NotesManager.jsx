@@ -196,7 +196,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
             {/* --- Modales --- */}
             
             {/* ✅ Modal de Creación AHORA RECIBE PROPS */}
-            <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
+            <Modal show={isCreateModalOpen} onClose={closeCreateModal} size="lg">
                 <CreateNoteForm
                     // Pasamos los datos y funciones al componente hijo
                     data={createFormData}
@@ -209,13 +209,13 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                 />
             </Modal>
 
-            <Modal show={isViewModalOpen} onClose={closeViewModal}>
+            <Modal show={isViewModalOpen} onClose={closeViewModal} size="lg">
                 {viewingNote && <ViewNoteDetails note={viewingNote} onClose={closeViewModal} />}
             </Modal>
-            <Modal show={isEditModalOpen} onClose={closeEditModal} >
+            <Modal show={isEditModalOpen} onClose={closeEditModal} size="lg">
                 {editingNote && <EditNoteForm note={editingNote} sections={sections} onClose={closeEditModal} />}
             </Modal>
-            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal}>
+            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size="lg">
                 {deletingNote && <DeleteNoteConfirmation note={deletingNote} onClose={closeDeleteModal} />}
             </Modal>
         </AuthenticatedLayout>

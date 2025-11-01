@@ -82,7 +82,7 @@ export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'com
             </div>
 
             {/* --- Modal de Confirmación de Borrado --- */}
-            <Modal show={deletingComment !== null} onClose={closeDeleteModal}>
+            <Modal show={deletingComment !== null} onClose={closeDeleteModal} size="lg">
                 {deletingComment && (
                     <form onSubmit={deleteComment} className="p-4 text-center">
                         <h5 className="fw-bold fs-3 text-dark mb-3">Eliminar Comentario</h5>
