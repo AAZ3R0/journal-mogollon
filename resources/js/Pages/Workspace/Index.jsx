@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, Head, useForm } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -8,10 +9,23 @@ import CreateNoteForm from '@/Components/CreateNoteForm';
 import ViewNoteDetails from '@/Components/ViewNoteDetails';
 import EditNoteForm from '@/Components/EditNoteForm';
 import DeleteNoteConfirmation from '@/Components/DeleteNoteConfirmation';
+import BootstrapPagination from '@/Components/BootstrapPagination';
 import axios from 'axios';
 import { CircleFill, Newspaper, Paperclip, PencilFill, PencilSquare, PlusCircleFill, Trash2Fill, TrashFill } from 'react-bootstrap-icons';
 
-export default function Workspace({ auth, notes, sections, success }) {
+
+// --- Listas para los dropdowns de fecha ---
+const days = Array.from({ length: 31 }, (_, i) => i + 1);
+const months = [
+    { value: 1, name: 'Enero' }, { value: 2, name: 'Febrero' }, { value: 3, name: 'Marzo' },
+    { value: 4, name: 'Abril' }, { value: 5, name: 'Mayo' }, { value: 6, name: 'Junio' },
+    { value: 7, name: 'Julio' }, { value: 8, name: 'Agosto' }, { value: 9, name: 'Septiembre' },
+    { value: 10, name: 'Octubre' }, { value: 11, name: 'Noviembre' }, { value: 12, name: 'Diciembre' }
+];
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
+export default function Workspace({ auth, notes, sections, success, filters = {} }) {
 
     // --- LÓGICA DEL FORMULARIO DE CREACIÓN (MOVIDA AQUÍ) ---
     const { 
@@ -90,6 +104,24 @@ export default function Workspace({ auth, notes, sections, success }) {
         setDeletingNote(null);
     };
 
+    // --- Lógica de Filtros ---
+    const currentFilters = useMemo(() => ({
+        section_id: filters.section_id || '',
+        day: filters.day || '',
+        month: filters.month || '',
+        year: filters.year || '',
+    }), [filters]);
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        const newFilters = { ...currentFilters, [name]: value };
+        
+        Inertia.get(route('workspace.index'), newFilters, { // Usa la ruta del workspace
+            preserveState: true,
+            replace: true,
+        });
+    };
+
     const user = auth.user;
 
     return (
@@ -102,7 +134,44 @@ export default function Workspace({ auth, notes, sections, success }) {
                     <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark mt-3 rounded-pill d-flex align-items-stretch'>
                         <PlusCircleFill className='fs-3 mx-2'/>CREAR NOTA
                     </PrimaryButton>
-                </div> 
+                </div>
+
+                {/* --- Panel de Filtros --- */}
+                <div className='p-4 mx-0 bg-light bg-opacity-50 rounded mb-4 shadow-sm'>
+                    <h5 className='fw-bold mb-3'>Filtrar Notas</h5>
+                    <div className='row g-3'>
+                        <div className='col-md-4'>
+                            <label htmlFor="filter_section" className="form-label small fw-bold">Sección</label>
+                            <select id="filter_section" className='form-select' name="section_id" value={currentFilters.section_id} onChange={handleFilterChange}>
+                                <option value="">Todas las secciones</option>
+                                {sections.map(section => (
+                                    <option key={section.section_id} value={section.section_id}>{section.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='col-md-2'>
+                            <label htmlFor="filter_day" className="form-label small fw-bold">Día</label>
+                            <select id="filter_day" className='form-select' name="day" value={currentFilters.day} onChange={handleFilterChange}>
+                                <option value="">Cualquier día</option>
+                                {days.map(day => <option key={day} value={day}>{day}</option>)}
+                            </select>
+                        </div>
+                        <div className='col-md-3'>
+                            <label htmlFor="filter_month" className="form-label small fw-bold">Mes</label>
+                            <select id="filter_month" className='form-select' name="month" value={currentFilters.month} onChange={handleFilterChange}>
+                                <option value="">Cualquier mes</option>
+                                {months.map(month => <option key={month.value} value={month.value}>{month.name}</option>)}
+                            </select>
+                        </div>
+                        <div className='col-md-3'>
+                            <label htmlFor="filter_year" className="form-label small fw-bold">Año</label>
+                            <select id="filter_year" className='form-select' name="year" value={currentFilters.year} onChange={handleFilterChange}>
+                                <option value="">Cualquier año</option>
+                                {years.map(year => <option key={year} value={year}>{year}</option>)}
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="table-responsive">
                     <table className="table table-bordered border-dark">
@@ -118,7 +187,7 @@ export default function Workspace({ auth, notes, sections, success }) {
                             </tr>
                         </thead>
                         <tbody className='text-center'>
-                            {notes.map((note) => {
+                            {notes.data.map((note) => {
                                 let canUpdateOrDelete = false;
                                 if (user.role.name === 'Editor') {
                                     if (note.user.rol_id === user.rol_id || note.user.role.name === 'Reportero') {
@@ -157,13 +226,21 @@ export default function Workspace({ auth, notes, sections, success }) {
                             })}
                         </tbody>
                     </table>
+                    {/* Mensaje si no hay resultados */}
+                    {notes.data.length === 0 && (
+                        <div className="alert bg-warning bg-opacity-50 text-center mt-3" role="alert">
+                            No se encontraron notas que coincidan con tus filtros.
+                        </div>
+                    )}
                 </div>
+
+                <BootstrapPagination links={notes.links} />
             </div>
 
             {/* --- Modales --- */}
             
             {/* ✅ Modal de Creación AHORA RECIBE PROPS */}
-            <Modal show={isCreateModalOpen} onClose={closeCreateModal} unmountOnClose={false}>
+            <Modal show={isCreateModalOpen} onClose={closeCreateModal} unmountOnClose={false} size={"lg"}>
                 <CreateNoteForm
                     // Pasamos los datos y funciones al componente hijo
                     data={createFormData}
@@ -176,13 +253,13 @@ export default function Workspace({ auth, notes, sections, success }) {
                 />
             </Modal>
 
-            <Modal show={isViewModalOpen} onClose={closeViewModal}>
+            <Modal show={isViewModalOpen} onClose={closeViewModal} size={"lg"}>
                 {viewingNote && <ViewNoteDetails note={viewingNote} onClose={closeViewModal} />}
             </Modal>
-            <Modal show={isEditModalOpen} onClose={closeEditModal} >
+            <Modal show={isEditModalOpen} onClose={closeEditModal} size={"lg"}>
                 {editingNote && <EditNoteForm note={editingNote} sections={sections} onClose={closeEditModal} />}
             </Modal>
-            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal}>
+            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size={"lg"}>
                 {deletingNote && <DeleteNoteConfirmation note={deletingNote} onClose={closeDeleteModal} />}
             </Modal>
         </AuthenticatedLayout>

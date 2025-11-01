@@ -49,6 +49,11 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
     const [relatedIndex, setRelatedIndex] = useState(0); // Índice del primer artículo visible (0, 2, 4...)
     const relatedItemsPerPage = 2; // Mostrar de 2 en 2
 
+    // Limite de caracteres en los comentarios
+
+    const commentCharLimit = 150;
+    const isCommentOverLimit = data.message.length > commentCharLimit;
+
     // Reinicia el índice si las notas relacionadas cambian
     useEffect(() => {
         setRelatedIndex(0);
@@ -224,12 +229,15 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                     <h5 className='mb-2'>Deja tu comentario:</h5>
                                     <form onSubmit={submitComment}>
                                         <textarea 
-                                            className={`form-control ${errors.message ? 'is-invalid' : ''}`} 
+                                            className={`form-control ${isCommentOverLimit ? 'is-invalid' : ''} ${errors.message ? 'is-invalid' : ''}`} 
                                             rows="4"
                                             value={data.message}
                                             onChange={(e) => setData('message', e.target.value)}
                                             placeholder='Escribe tu opinión...'
                                         ></textarea>
+                                        <div className={`text-end small ${isCommentOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                                            {data.message.length} / {commentCharLimit}
+                                        </div>
                                         <InputError message={errors.message} className="mt-2" />
                                         <div className='d-flex justify-content-end mt-2'>
                                             <PrimaryButton className='btn btn-primary rounded-pill' disabled={processing}>

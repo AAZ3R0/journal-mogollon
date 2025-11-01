@@ -4,27 +4,47 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
+        // 1. Obtener filtros de la URL
+        $filters = $request->only(['query', 'role_id']);
         $adminUserId = Auth::id();
-        // Obtenemos todos los usuarios, cargando su relación 'role'
-        // y ordenándolos por el más reciente.
-        $users = User::with('role')
-                     ->where('user_id', '!=', $adminUserId)
-                     ->orderBy('created_at', 'desc')
-                     ->get();
 
-        // Renderiza la vista de Inertia (que tú llamaste CommentsManager)
-        // Te recomiendo renombrar el archivo a 'Admin/UsersManager.jsx'
-        return Inertia::render('Admin/AccountsManager', [
-            'users' => $users
+        // 2. Empezar la consulta
+        $usersQuery = User::with('role')
+                          ->where('user_id', '!=', $adminUserId) // Excluye al admin actual
+                          ->orderBy('created_at', 'desc');
+
+        // 3. Aplicar filtro de búsqueda (query)
+        $usersQuery->when($request->input('query'), function ($query, $search) {
+            // Busca en múltiples columnas
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('username', 'LIKE', '%' . $search . '%')
+                  ->orWhere('email', 'LIKE', '%' . $search . '%');
+            });
+        });
+
+        // 4. Aplicar filtro de Rol
+        $usersQuery->when($request->input('role_id'), function ($query, $roleId) {
+            $query->where('rol_id', $roleId);
+        });
+
+        // 5. Paginar los resultados
+        $users = $usersQuery->paginate(15)->withQueryString(); // 15 por página
+
+        return Inertia::render('Admin/AccountsManager', [ // Renderiza tu vista
+            'users' => $users, // Objeto de paginación
+            'roles' => Role::all(), // Pasa todos los roles para el dropdown
+            'filters' => $filters, // Devuelve los filtros activos
         ]);
     }
 

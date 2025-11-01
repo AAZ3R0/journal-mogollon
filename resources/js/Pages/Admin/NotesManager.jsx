@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, Head, useForm, usePage } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -9,11 +10,24 @@ import ViewNoteDetails from '@/Components/ViewNoteDetails';
 import EditNoteForm from '@/Components/EditNoteForm';
 import DeleteNoteConfirmation from '@/Components/DeleteNoteConfirmation';
 import axios from 'axios';
+import BootstrapPagination from '@/Components/BootstrapPagination';
 import { CircleFill, Newspaper, Paperclip, PencilFill, PencilSquare, PlusCircleFill, Trash2Fill, TrashFill } from 'react-bootstrap-icons';
 import DashboardOptions from '@/Components/Dashboard';
 
 
-export default function NotesManager({auth, notes, sections, featuredNote, success }) {
+// --- Listas para los dropdowns de fecha ---
+const days = Array.from({ length: 31 }, (_, i) => i + 1);
+const months = [
+    { value: 1, name: 'Enero' }, { value: 2, name: 'Febrero' }, { value: 3, name: 'Marzo' },
+    { value: 4, name: 'Abril' }, { value: 5, name: 'Mayo' }, { value: 6, name: 'Junio' },
+    { value: 7, name: 'Julio' }, { value: 8, name: 'Agosto' }, { value: 9, name: 'Septiembre' },
+    { value: 10, name: 'Octubre' }, { value: 11, name: 'Noviembre' }, { value: 12, name: 'Diciembre' }
+];
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
+
+export default function NotesManager({auth, notes, sections, featuredNote, success, filters = {} }) {
 
     // --- LÓGICA DEL FORMULARIO DE CREACIÓN (AHORA VIVE AQUÍ) ---
     const { 
@@ -56,6 +70,24 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
         });
     };
     // --- FIN LÓGICA DEL FORMULARIO DE CREACIÓN ---
+
+    // --- LÓGICA DE FILTROS DE BÚSQUEDA
+    const currentFilters = useMemo(() => ({
+        section_id: filters.section_id || '',
+        day: filters.day || '',
+        month: filters.month || '',
+        year: filters.year || '',
+    }), [filters]);
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        const newFilters = { ...currentFilters, [name]: value };
+        
+        Inertia.get(route('notes.index'), newFilters, { // Usa la ruta del admin
+            preserveState: true,
+            replace: true,
+        });
+    };
 
 
     // --- (Tus otros estados de modal no cambian) ---
@@ -112,6 +144,43 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                         </PrimaryButton>
                     </div>
 
+                    {/* --- ✅ Panel de Filtros --- */}
+                    <div className='p-4 mx-0 bg-light bg-opacity-50 rounded mb-4 shadow-sm'>
+                        <h3 className='fw-bold mb-3'>Filtrar Notas</h3>
+                        <div className='row g-3'>
+                            <div className='col-md-4'>
+                                <label htmlFor="filter_section" className="form-label small fw-bold">Sección</label>
+                                <select id="filter_section" className='form-select' name="section_id" value={currentFilters.section_id} onChange={handleFilterChange}>
+                                    <option value="">Todas las secciones</option>
+                                    {sections.map(section => (
+                                        <option key={section.section_id} value={section.section_id}>{section.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className='col-md-2'>
+                                <label htmlFor="filter_day" className="form-label small fw-bold">Día</label>
+                                <select id="filter_day" className='form-select' name="day" value={currentFilters.day} onChange={handleFilterChange}>
+                                    <option value="">Cualquier día</option>
+                                    {days.map(day => <option key={day} value={day}>{day}</option>)}
+                                </select>
+                            </div>
+                            <div className='col-md-3'>
+                                <label htmlFor="filter_month" className="form-label small fw-bold">Mes</label>
+                                <select id="filter_month" className='form-select' name="month" value={currentFilters.month} onChange={handleFilterChange}>
+                                    <option value="">Cualquier mes</option>
+                                    {months.map(month => <option key={month.value} value={month.value}>{month.name}</option>)}
+                                </select>
+                            </div>
+                            <div className='col-md-3'>
+                                <label htmlFor="filter_year" className="form-label small fw-bold">Año</label>
+                                <select id="filter_year" className='form-select' name="year" value={currentFilters.year} onChange={handleFilterChange}>
+                                    <option value="">Cualquier año</option>
+                                    {years.map(year => <option key={year} value={year}>{year}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     {featuredNote && (
                         <div className="card mb-4 bg-light bg-opacity-50 border-primary shadow">
                             <div className="card-header bg-primary text-white">
@@ -155,7 +224,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                 </tr>
                             </thead>
                             <tbody className='text-center'>
-                                {notes.map((note) => (
+                                {notes.data.map((note) => (
                                     // ✅ La lógica de permisos se ha ido.
                                     // Si estás en esta página, eres Admin y puedes hacerlo todo.
                                     <tr key={note.note_id}>
@@ -184,9 +253,21 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                         </td>
                                     </tr>
                                 ))}
+
+                                
                             </tbody>
+                            {/* Si no hay resultados */}
+                            
                         </table>
+                        {notes.data.length === 0 && (
+                            <div className="alert bg-warning bg-opacity-75 text-dark text-center mt-4" role="alert">
+                                No se encontraron notas que coincidan con tus filtros.
+                            </div>
+                        )}
                     </div>
+
+                    {/* ✅ Añadimos la paginación */}
+                    <BootstrapPagination links={notes.links} />
                 </div>
 
             </div>

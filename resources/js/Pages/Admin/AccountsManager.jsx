@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import React, { useState, useMemo } from 'react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import DashboardOptions from '@/Components/Dashboard';
 import Modal from '@/Components/Modal'; // <-- Importa el Modal
 import ViewUserDetailsModal from '@/Components/ViewUserDetailsModal'; // <-- Importa el nuevo modal
 import DeleteUserModal from '@/Components/DeleteUserModal'; // <-- Importa el nuevo modal
-import { EyeFill, TrashFill } from 'react-bootstrap-icons';
+import { EyeFill, TrashFill, Search } from 'react-bootstrap-icons';
+import BootstrapPagination from '@/Components/BootstrapPagination';
 import axios from 'axios'; // <-- Importa axios
 
 // (Función formatDate)
@@ -26,7 +28,7 @@ const getRoleBadge = (roleName) => {
     }
 };
 
-export default function UsersManager({ auth, users = [] }) {
+export default function UsersManager({ auth, users = { data: [] }, roles = [], filters = {} }) {
 
     // --- Estado para el Modal de "Ver Detalles" ---
     const [viewingUser, setViewingUser] = useState(null);
@@ -51,6 +53,38 @@ export default function UsersManager({ auth, users = [] }) {
     };
     const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
+    // --- Lógica de Filtros ---
+    
+    // Almacena los filtros actuales
+    const currentFilters = useMemo(() => ({
+        query: filters.query || '',
+        role_id: filters.role_id || '',
+    }), [filters]);
+
+    // Estado local para el campo de búsqueda (para no buscar en cada tecla)
+    const [searchQuery, setSearchQuery] = useState(currentFilters.query);
+
+    // Se dispara al cambiar el dropdown de Rol
+    const handleRoleChange = (e) => {
+        const { name, value } = e.target;
+        const newFilters = { ...currentFilters, [name]: value };
+        
+        Inertia.get(route('admin.users'), newFilters, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    // Se dispara al enviar el formulario de búsqueda
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        const newFilters = { ...currentFilters, query: searchQuery };
+        Inertia.get(route('admin.users'), newFilters, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title="Administrar Usuarios" />
@@ -59,6 +93,50 @@ export default function UsersManager({ auth, users = [] }) {
                 <div className="container-fluid">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR USUARIOS</b></h1>
+                    </div>
+
+                    {/* --- ✅ Panel de Filtros --- */}
+                    <div className="p-4 mx-0 bg-light bg-opacity-50 rounded mb-4 shadow-sm">
+                        <div className="row g-3 align-items-end">
+                            {/* Columna de Búsqueda */}
+                            <div className="col-md-8">
+                                <form onSubmit={handleSearchSubmit}>
+                                    <label htmlFor="search_query" className="form-label fw-bold">Buscar por nombre, usuario o correo</label>
+                                    <div className="input-group">
+                                        <input
+                                            type="text"
+                                            id="search_query"
+                                            name="query"
+                                            className="form-control"
+                                            placeholder="Buscar..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                        />
+                                        <button type="submit" className="btn btn-accent2">
+                                            <Search />
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            {/* Columna de Rol */}
+                            <div className="col-md-4">
+                                <label htmlFor="role_filter" className="form-label fw-bold">Filtrar por Rol</label>
+                                <select 
+                                    id="role_filter"
+                                    className='form-select' 
+                                    name="role_id" 
+                                    value={currentFilters.role_id} 
+                                    onChange={handleRoleChange} // <-- Nota: handler diferente
+                                >
+                                    <option value="">Todos los roles</option>
+                                    {roles.map(role => (
+                                        <option key={role.rol_id} value={role.rol_id}>
+                                            {role.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="table-responsiv rounded shadow-sm">
@@ -73,7 +151,7 @@ export default function UsersManager({ auth, users = [] }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user) => (
+                                {users.data.map((user) => (
                                     <tr key={user.user_id} className='text-center '>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50 text-start'>
                                             <strong>{user.name}</strong>
@@ -109,7 +187,13 @@ export default function UsersManager({ auth, users = [] }) {
                                 ))}
                             </tbody>
                         </table>
+                        {users.data.length === 0 && (
+                            <div className="alert bg-warning bg-opacity-75 text-dark text-center mt-4" role="alert">
+                                No se encontró ningún usuario que coincidan con tus filtros.
+                            </div>
+                        )}
                     </div>
+                    <BootstrapPagination links={users.links} />
                 </div>
             </div>
 

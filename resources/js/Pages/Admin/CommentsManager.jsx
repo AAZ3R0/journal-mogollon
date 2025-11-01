@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import DashboardOptions from '@/Components/Dashboard';
 import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { TrashFill } from 'react-bootstrap-icons';
+import BootstrapPagination from '@/Components/BootstrapPagination';
+import { TrashFill, Search } from 'react-bootstrap-icons';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -14,7 +15,7 @@ const formatDate = (dateString) => {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: es });
 };
 
-export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'comments'
+export default function CommentsManager({ auth, comments, filters = {} }) {
 
     const { delete: destroy, processing } = useForm();
     const [deletingComment, setDeletingComment] = useState(null);
@@ -30,6 +31,22 @@ export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'com
         });
     };
 
+
+    // --- Lógica de Filtros ---
+    const { data, setData, get, processing: filterProcessing } = useForm({
+        query_message: filters.query_message || '',
+        query_user: filters.query_user || '',
+    });
+
+    const submitFilters = (e) => {
+        e.preventDefault();
+        // Hacemos una petición GET a esta misma página con los datos del formulario
+        get(route('admin.comments'), {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title="Administrar Comentarios" />
@@ -38,6 +55,48 @@ export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'com
                 <div className="container-fluid">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR COMENTARIOS</b></h1>
+                    </div>
+
+                    {/* --- ✅ Panel de Filtros --- */}
+                    <div className="p-4 mx-0 bg-light bg-opacity-50 rounded mb-4 shadow-sm">
+                        <form onSubmit={submitFilters}>
+                            <div className="row g-3 align-items-end">
+                                <div className="col-md-6">
+                                    <label htmlFor="query_message" className="form-label fw-bold">Buscar en Comentario</label>
+                                    <div className='input-group'>
+                                        <input
+                                            type="text"
+                                            id="query_message"
+                                            className="form-control"
+                                            placeholder="Contenido del mensaje..."
+                                            value={data.query_message}
+                                            onChange={(e) => setData('query_message', e.target.value)}
+                                        />
+                                        <button type="submit" className="btn btn-accent2">
+                                            <Search />
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                                <div className="col-md-6">
+                                    <label htmlFor="query_user" className="form-label fw-bold">Buscar por Usuario</label>
+                                    <div className='input-group'>
+                                        <input
+                                            type="text"
+                                            id="query_user"
+                                            className="form-control"
+                                            placeholder="Nombre, @usuario o email..."
+                                            value={data.query_user}
+                                            onChange={(e) => setData('query_user', e.target.value)}
+                                        />
+                                        <button type="submit" className="btn btn-accent2">
+                                            <Search />
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     {/* --- Tabla de Comentarios --- */}
@@ -74,10 +133,15 @@ export default function CommentsManager({ auth, comments }) { // ✅ Recibe 'com
                                 ))}
                             </tbody>
                         </table>
+                        {/* Mensaje si no hay resultados */}
+                        {comments.data.length === 0 && (
+                            <div className="alert bg-warning bg-opacity-75 text-center mt-3" role="alert">
+                                No se encontraron comentarios que coincidan con los filtros.
+                            </div>
+                        )}
                     </div>
-
-                    {/* Aquí puedes añadir la paginación si lo deseas */}
-
+                    {/* ✅ Añadimos la Paginación */}
+                    <BootstrapPagination links={comments.links} />
                 </div>
             </div>
 

@@ -23,25 +23,50 @@ class NotesController extends Controller
 
     use AuthorizesRequests;
 
-    public function index(){
+    public function index(Request $request){
 
+        // 1. Autorización (ya la tienes)
         $this->authorize('viewAny', Note::class);
 
-        $notes = Note::with('user', 'sections', 'media')->orderBy('publish_date', 'desc')->get();
-        $sections = Section::all();
+        // 2. Obtener filtros de la URL
+        $filters = $request->only(['section_id', 'day', 'month', 'year']);
 
+        // 3. Empezar la consulta
+        $notesQuery = Note::query()->with(['user', 'sections', 'media']);
+
+        // 4. Aplicar filtros (lógica idéntica a viewList)
+        $notesQuery->when($request->input('section_id'), function ($query, $sectionId) {
+            $query->whereHas('sections', function ($q) use ($sectionId) {
+                $q->where('sections.section_id', $sectionId);
+            });
+        });
+        $notesQuery->when($request->input('day'), function ($query, $day) {
+            $query->whereDay('publish_date', $day);
+        });
+        $notesQuery->when($request->input('month'), function ($query, $month) {
+            $query->whereMonth('publish_date', $month);
+        });
+        $notesQuery->when($request->input('year'), function ($query, $year) {
+            $query->whereYear('publish_date', $year);
+        });
+
+        // 5. Paginar los resultados en lugar de usar get()
+        $notes = $notesQuery->orderBy('publish_date', 'desc')
+                        ->paginate(15) // Puedes ajustar este número
+                        ->withQueryString(); // Mantiene los filtros en los enlaces de paginación
+
+        // 6. Obtener la nota destacada (de los resultados paginados actuales, si existe)
         $featuredNote = $notes->firstWhere('is_featured', true);
-
-        $notes->each->append('media_by_position');
 
         return Inertia::render('Admin/NotesManager', [
             'featuredNote' => $featuredNote,
-            'notes' => $notes,
-            'sections' => $sections,
+            'notes' => $notes, // 'notes' ahora es un objeto de paginación
+            'sections' => Section::all(),
+            'filters' => $filters, // ✅ Pasa los filtros a la vista
         ]);
     }
 
-    public function workSpaceIndex(){
+    public function workSpaceIndex(Request $request){
         return Inertia::render('Editor_Reporter/WorkSpace');
     }
 

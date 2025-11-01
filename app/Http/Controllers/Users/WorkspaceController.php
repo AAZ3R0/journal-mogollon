@@ -16,42 +16,59 @@ class WorkspaceController extends Controller
     {
         $user = $request->user()->load('role');
         
-        // Carga las relaciones clave, incluyendo el rol del autor de la nota
+        // 1. Obtener filtros de la URL
+        $filters = $request->only(['section_id', 'day', 'month', 'year']);
+
+        // 2. Carga las relaciones clave
         $notesQuery = Note::query()->with(['user.role', 'sections', 'media']);
 
-        // --- ESTA ES LA LÓGICA DE FILTRADO DE ROLES ---
+        // 3. --- LÓGICA DE FILTRADO DE ROLES (NO CAMBIA) ---
         if ($user->role->name === 'Editor') {
-            // 1. Busca el ID del rol 'Reportero'
             $reporterRoleId = Role::where('name', 'Reportero')->value('rol_id');
-            
-            // 2. El Editor ve sus propias notas O las notas de todos los Reporteros
             $notesQuery->where(function ($query) use ($user, $reporterRoleId) {
-                $query->where('user_id', $user->user_id) // Sus propias notas
+                $query->where('user_id', $user->user_id)
                       ->orWhereHas('user', function ($subQuery) use ($reporterRoleId) {
-                          $subQuery->where('rol_id', $reporterRoleId); // Notas de Reporteros
+                          $subQuery->where('rol_id', $reporterRoleId);
                       });
             });
-
         } elseif ($user->role->name === 'Reportero') {
-            // 3. El Reportero solo ve sus propias notas
             $notesQuery->where('user_id', $user->user_id);
         }
-        // No necesitamos un 'else' porque el Gate ya bloqueó a otros roles
-        // --- FIN DE LA LÓGICA DE FILTRADO ---
+        // --- FIN DE LA LÓGICA DE FILTRADO DE ROLES ---
 
-        // Obtenemos todas las notas permitidas
-        $allAllowedNotes = $notesQuery->orderBy('publish_date', 'desc')->get();
+        // 4. --- AÑADIR LÓGICA DE FILTROS DE BÚSQUEDA ---
+        $notesQuery->when($request->input('section_id'), function ($query, $sectionId) {
+            $query->whereHas('sections', function ($q) use ($sectionId) {
+                $q->where('sections.section_id', $sectionId);
+            });
+        });
+        $notesQuery->when($request->input('day'), function ($query, $day) {
+            $query->whereDay('publish_date', $day);
+        });
+        $notesQuery->when($request->input('month'), function ($query, $month) {
+            $query->whereMonth('publish_date', $month);
+        });
+        $notesQuery->when($request->input('year'), function ($query, $year) {
+            $query->whereYear('publish_date', $year);
+        });
+        // --- FIN DE LA LÓGICA DE FILTROS ---
 
-        // Replicamos la lógica de "Nota Destacada" de tu NotesManager
-        $featuredNote = $allAllowedNotes->firstWhere('is_featured', true);
+        // 5. Paginar los resultados (en lugar de get())
+        $notes = $notesQuery->orderBy('publish_date', 'desc')
+                           ->paginate(15) // 15 por página
+                           ->withQueryString(); // Mantiene los filtros
+
+        // 6. Obtener nota destacada (de los resultados paginados)
+        $featuredNote = $notes->firstWhere('is_featured', true);
         
-        // Pasamos TODAS las notas a la tabla (tu lógica de 'notes' en el index)
-        $allAllowedNotes->each->append('media_by_position'); 
+        // 7. El 'append' se hace en los items paginados
+        $notes->getCollection()->each->append('media_by_position');
 
         return Inertia::render('Workspace/Index', [
             'featuredNote' => $featuredNote,
-            'notes' => $allAllowedNotes,
+            'notes' => $notes, // 'notes' ahora es un objeto de paginación
             'sections' => Section::all(),
+            'filters' => $filters, // Pasa los filtros a la vista
         ]);
     }
 }
