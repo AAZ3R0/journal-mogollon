@@ -35,7 +35,7 @@ export default function Register() {
              <Head title="Registrarse" />
 
             {/* Se usa la misma estructura de layout que en el Login */}
-            <div className="container-fluid min-vh-100  d-flex align-items-center justify-content-center">
+            <div className="container-fluid d-flex align-items-center justify-content-center">
                 
                 <div className="bg-accent2 bg-opacity-50  rounded col-12 col-sm-8 col-md-5 col-lg-4 p-4 p-md-5 rounded-3 shadow-sm form-card">
                     
@@ -139,7 +139,7 @@ export default function Register() {
 
                         {/* --- Botón de Registrarse (Centrado) --- */}
                         <div className="d-flex justify-content-center mt-4">
-                            <PrimaryButton className="btn btn-primary btn-lg rounded-5" disabled={processing}>
+                            <PrimaryButton className="btn btn-primary btn-lg rounded-pill px-5" disabled={processing}>
                                 Registrarse
                             </PrimaryButton>
                         </div>

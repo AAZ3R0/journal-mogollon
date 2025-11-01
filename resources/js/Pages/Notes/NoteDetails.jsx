@@ -60,13 +60,30 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
     }, [relatedNotes]);
 
     const nextRelated = () => {
-        // Avanza al siguiente par, asegurándose de no pasar del final
-        setRelatedIndex(prev => Math.min(prev + relatedItemsPerPage, relatedNotes.length - relatedItemsPerPage));
+        // Si hay notas, calcula el próximo índice
+        if (relatedNotes.length > 0) {
+            setRelatedIndex(prev => {
+                // Suma el número de items por página
+                const nextIndex = prev + relatedItemsPerPage;
+                // Si el próximo índice es mayor o igual al total, vuelve a 0
+                return nextIndex >= relatedNotes.length ? 0 : nextIndex;
+            });
+        }
     };
 
     const prevRelated = () => {
-        // Retrocede al par anterior, asegurándose de no ir antes del inicio
-        setRelatedIndex(prev => Math.max(prev - relatedItemsPerPage, 0));
+        // Si hay notas, calcula el índice anterior
+        if (relatedNotes.length > 0) {
+            setRelatedIndex(prev => {
+                // Si estamos en el primer item (0), salta al último par
+                if (prev === 0) {
+                    // Calcula el índice del último par (ej. si hay 6 notas, el último par empieza en 4)
+                    return (relatedNotes.length - 1) - ((relatedNotes.length - 1) % relatedItemsPerPage);
+                }
+                // Si no, simplemente retrocede
+                return prev - relatedItemsPerPage;
+            });
+        }
     };
 
     // Calcula qué notas mostrar en la página actual del carrusel
@@ -79,7 +96,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
             {/* Set the page title */}
             <Head title={note.headline} />
 
-            <div className="container my-5">
+            <div className="mx-5">
                 <article className="bg-white bg-opacity-50 p-4 p-md-5 rounded shadow-sm"> {/* Added styling */}
                     {/* Header Section */}
                     <header className="mb-4">
@@ -102,7 +119,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
 
                         
                         {/* Portrait Image */}
-                        <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-4" style={{width:'100%', height: '40rem'}} alt="Portada" />
+                        <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-4" style={{width:'100%', height: 'auto'}} alt="Portada" />
                     </header>
 
                     {/* Content Section */}
@@ -145,13 +162,13 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                         ))}
                     </section>
                     {/* You could add a comments section here later */}
-                    <div className='bg-dark bg-opacity-25 rounded pb-5'>
-                        <div className='container'>
+                    <div className='bg-dark bg-opacity-25 rounded pb-5 pt-3 mt-5'>
+                        <div className='container-fluid px-5'>
                             <h3 className='fw-bold text-decoration-underline text-black p-3'>Notas relacionadas</h3>
                             <div className=''>
                                 {/* Agregar un carrusel parecido al del home page con noticias relacionadas a esta nota a partir de sus secciones */}
                                 {relatedNotes.length > 0 && (
-                                    <div className='mt-5 pt-4 border-top rounded p-3'> {/* Contenedor Estilizado */}
+                                    <div className='mt-3 pt-4 border-top rounded p-3'> {/* Contenedor Estilizado */}
                                         
                                         <div className="position-relative">
                                             <div className='row g-3 align-items-center justify-content-center'> {/* Fila principal */}
@@ -160,9 +177,8 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                                 <div className="col-auto bg-danger rounded-start py-5">
                                                     <button 
                                                         className='bg-danger border-0 text-white' 
-                                                        onClick={prevRelated} 
-                                                        disabled={relatedIndex === 0} // Deshabilitado si está al principio
-                                                        style={{ width: '2.5rem', height: '10.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                        onClick={prevRelated}
+                                                        style={{ width: '2.5vw', height:'25vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                                         aria-label="Notas relacionadas anteriores"
                                                     >
                                                         <h1>‹</h1>
@@ -176,7 +192,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                                             <div className='col-md-6' key={relatedNote.note_id}> 
                                                                 <div className="card h-100 shadow-sm bg-light bg-opacity-50"> 
                                                                     <Link href={route('notes.public.show', relatedNote.note_id)}>
-                                                                        <img src={`/storage/${relatedNote.portrait_url}`} className="card-img-top" alt={`Portada de ${relatedNote.headline}`} style={{ height:'9rem',objectFit: 'cover' }} />
+                                                                        <img src={`/storage/${relatedNote.portrait_url}`} className="card-img-top" alt={`Portada de ${relatedNote.headline}`} style={{ height:'25vh',objectFit: 'cover' }} />
                                                                     </Link>
                                                                     <div className="card-body d-flex flex-column">
                                                                         <h5 className="card-title fw-bold">
@@ -201,8 +217,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                                     <button 
                                                         className='bg-danger border-0 text-white' 
                                                         onClick={nextRelated} 
-                                                        disabled={relatedIndex >= relatedNotes.length - relatedItemsPerPage} // Deshabilitado si está al final
-                                                        style={{ width: '2.5rem', height: '10.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                        style={{ width: '2.5vw', height:'25vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                                         aria-label="Notas relacionadas siguientes"
                                                     >
                                                         <h1>›</h1>
@@ -220,7 +235,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     {/* SECCIÓN CAJA DE COMENTARIOS*/}
 
                     <div className='bg-dark bg-opacity-25 rounded pb-3 mt-5 pt-3'>
-                        <div className='container'>
+                        <div className='container-fluid px-5'>
                             <h3 className='fw-bold text-black mb-4 p-3'>Comentarios ({note.comments ? note.comments.length : 0})</h3>
 
                             {/* Formulario para añadir comentario (solo si está autenticado) */}
@@ -247,7 +262,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                     </form>
                                 </div>
                             ) : (
-                                <div className="alert alert-secondary text-center">
+                                <div className="alert bg-accent3 bg-opacity-75 text-center">
                                     <Link href={route('login')}>Inicia sesión</Link> para dejar un comentario.
                                 </div>
                             )}
@@ -267,7 +282,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                             </div>
                                     ))
                                 ) : (
-                                    <p className="text-center text-muted">Aún no hay comentarios. ¡Sé el primero!</p>
+                                    <p className="text-center text-light bg-dark bg-opacity-50 p-5 rounded">Aún no hay comentarios. ¡Sé el primero!</p>
                                 )}
                                
 

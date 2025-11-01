@@ -71,12 +71,12 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
 
 
                 </div>
-                <div className='bg-warning bg-opacity-50 p-5 container rounded'>
+                <div className='bg-warning bg-opacity-25 p-5 container rounded'>
                     <div className="row mb-5 align-items-center ">
                         <label htmlFor="modal_name" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Nombre:</label>
                         <div className="col-md-9">
                             <input
-                                id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-75"
+                                id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
                                 value={data.name} onChange={(e) => setData('name', e.target.value)}
                                 required autoComplete="name"
                                 disabled
@@ -90,7 +90,7 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                         <label htmlFor="modal_username" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Usuario:</label>
                         <div className="col-md-9 ">
                             <input
-                                id="modal_username" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-75"
+                                id="modal_username" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
                                 value={data.username} onChange={(e) => setData('username', e.target.value)}
                                 autoComplete="username"
                                 disabled
@@ -104,7 +104,7 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                         <label htmlFor="modal_email" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Correo electrónico:</label>
                         <div className="col-md-9">
                             <input
-                                id="modal_email" type="email" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-75"
+                                id="modal_email" type="email" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
                                 value={data.email} onChange={(e) => setData('email', e.target.value)}
                                 required autoComplete="email"
                                 disabled
@@ -118,7 +118,7 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                         <label htmlFor="modal_name" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Rol:</label>
                         <div className="col-md-9">
                             <input
-                                id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-75"
+                                id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
                                 value={user.role ? user.role.name : 'Rol no asignado'}
                                 required autoComplete="name"
                                 disabled

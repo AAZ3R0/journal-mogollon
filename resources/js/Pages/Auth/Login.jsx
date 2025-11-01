@@ -28,7 +28,7 @@ export default function Login({ status }) {
             <Head title="Iniciar sesión" />
 
             {/* Contenedor principal con la clase para el fondo */}
-            <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center page-background">
+            <div className="container-fluid mt-5 d-flex align-items-center justify-content-center page-background">
                 <div className="bg-accent2 bg-opacity-50 rounded col-12 col-sm-8 col-md-5 col-lg-4">
 
                     {/* Contenedor del formulario con clase personalizada */}
@@ -77,7 +77,7 @@ export default function Login({ status }) {
                             </div>
 
                             <div className="d-flex justify-content-center mt-4">
-                                <PrimaryButton className="btn btn-primary btn-lg rounded-5" disabled={processing}>
+                                <PrimaryButton className="btn btn-primary btn-lg rounded-pill px-5" disabled={processing}>
                                     Iniciar sesión
                                 </PrimaryButton>
                             </div>

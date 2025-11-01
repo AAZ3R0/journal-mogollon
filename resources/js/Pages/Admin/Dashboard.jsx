@@ -30,15 +30,15 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
 
 
                     <div className='d-flex justify-content-between mb-3 text-center'>
-                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.notes}</h1>
                             <p className='fs-5'>Notas publicadas</p>
                         </div>
-                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.users}</h1>
                             <p className='fs-5'>Usuarios registrados</p>
                         </div>
-                        <div className='bg-accent1 bg-opacity-50 rounded p-3 px-5 border border-dark border-opacity-75 border-2'>
+                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.comments}</h1>
                             <p className='fs-5'>Comentarios publicados</p>
 
@@ -98,8 +98,8 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                                     {/* Fila 2: Cabeceras */}
                                     {/* 4. Quitamos 'border', aumentamos padding a 'p-3' y añadimos 'fw-bold' */}
                                     <tr className='text-center border-top'>
-                                        <th className='p-1 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
-                                        <th className='p-1 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Rol</th>
+                                        <th className='p-3 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
+                                        <th className='p-3 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Rol</th>
                                     </tr>
                                 </thead>
 

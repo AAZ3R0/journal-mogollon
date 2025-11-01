@@ -200,9 +200,9 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
                                 return (
                                     <tr key={note.note_id}>
                                         <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.headline}</td>
                                         <td className='bg-accent2 bg-opacity-50 align-middle'>
-                                            <div className="d-flex flex-wrap justify-content-center">
+                                            <div className="d-flex flex-wrap justify-content-center align-middle">
                                                 {Array.isArray(note.sections) && note.sections.map((section) => (
                                                     <span key={section.section_id} className="badge bg-primary me-1 mb-1">
                                                         {section.name}
@@ -210,16 +210,20 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{new Date(note.publish_date).toLocaleDateString()}</td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.user? note.user.name : 'Autor no encontrado'}</td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>
-                                            <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
-                                            {canUpdateOrDelete && (
-                                                <button onClick={() => openEditModal(note)} className='badge text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
-                                            )}
-                                            {canUpdateOrDelete && (
-                                                <button onClick={() => openDeleteModal(note)} className='badge text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
-                                            )}
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{new Date(note.publish_date).toLocaleDateString()}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.user? note.user.name : 'Autor no encontrado'}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>
+
+                                            <div className='d-flex justify-content-center align-items-center'>
+                                                <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
+                                                {canUpdateOrDelete && (
+                                                <button onClick={() => openEditModal(note)} className=' text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
+                                                )}
+                                                {canUpdateOrDelete && (
+                                                <button onClick={() => openDeleteModal(note)} className=' text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
+                                                )}
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 );

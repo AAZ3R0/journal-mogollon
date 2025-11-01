@@ -201,8 +201,8 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                         <p className="card-text"><small className="text-muted">Por: {featuredNote.user?.name || 'Desconocido'} - {new Date(featuredNote.publish_date).toLocaleDateString()}</small></p>
                                         <p className="card-text">{featuredNote.lead}</p>
                                         <div className='d-flex'>
-                                            <button onClick={() => openViewModal(featuredNote)} className='btn btn-lg btn-outline-info rounded-pill me-2 text-dark'><Newspaper className='fs-3'></Newspaper> Ver Detalles</button>
-                                            <button onClick={() => openEditModal(featuredNote)} className='btn btn-lg btn-outline-warning rounded-pill me-2 text-dark'><PencilSquare className='fs-3'></PencilSquare> Editar</button>
+                                            <button onClick={() => openViewModal(featuredNote)} className='btn btn-trasnparent btn-lg rounded-pill me-2 text-dark'><Newspaper className='fs-2'></Newspaper> Ver Detalles</button>
+                                            <button onClick={() => openEditModal(featuredNote)} className='btn btn-trasnparent btn-lg rounded-pill me-2 text-dark'><PencilSquare className='fs-2'></PencilSquare> Editar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +234,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                             </a>
                                         </td> 
                                         <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.headline}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.headline}</td>
                                         <td className='bg-accent2 bg-opacity-50 align-middle'>
                                             {Array.isArray(note.sections) && note.sections.map((section) => (
                                                     <span key={section.section_id} className="badge bg-primary me-1 mb-1">
@@ -242,14 +242,17 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                                     </span>
                                             ))}
                                         </td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{new Date(note.publish_date).toLocaleDateString()}</td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>{note.user? note.user.name : 'Autor no encontrado'}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{new Date(note.publish_date).toLocaleDateString()}</td>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.user? note.user.name : 'Autor no encontrado'}</td>
                                         
                                         {/* ✅ MOSTRAR SIEMPRE LOS BOTONES */}
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5'>
-                                            <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
-                                            <button onClick={() => openEditModal(note)} className='badge text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
-                                            <button onClick={() => openDeleteModal(note)} className='badge text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>
+                                            <div className='d-flex justify-content-center align-items-center'>
+                                                <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
+                                                <button onClick={() => openEditModal(note)} className=' text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
+                                                <button onClick={() => openDeleteModal(note)} className=' text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 ))}

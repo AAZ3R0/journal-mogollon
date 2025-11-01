@@ -57,7 +57,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                     {/* --- CONTENEDOR 1: FORMULARIO (VISUALIZACIÓN) --- */}
                     <div className=" bg-light bg-opacity-50 p-4 rounded">
-                        <h1 className="fw-bold text-dark mb-5" style={{ fontSize: '4.5rem' }}>
+                        <h1 className="fw-bold text-dark mb-5" style={{ fontSize: '4.5vw' }}>
                             Perfil de: {user.username || user.name}
                         </h1>
 
@@ -65,7 +65,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         <form>
                             {/* Fila: Nombre */}
                             <div className="row mb-3 align-items-middle">
-                                <label htmlFor="name" className="col-md-4 col-form-label text-md-start fw-bold fs-3">
+                                <label htmlFor="name" className="col-md-4 col-form-label text-md-start fw-bold" style={{ fontSize: '1.5vw' }}>
                                     Nombre:
                                 </label>
                                 <div className="col-md-7 offset-md-1 mb-5">

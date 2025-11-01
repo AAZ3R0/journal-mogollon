@@ -6,7 +6,7 @@ import { Envelope, Telephone, Facebook } from 'react-bootstrap-icons';
 export default function Footer() {
     return (
         <footer className="bg-accent1 bg-opacity-75 text-dark py-3 container-fluid">
-            <div className="mx-4">
+            <div className="">
                 {/*
                  * CAMBIO: Usamos el sistema Grid de Bootstrap en lugar de 'd-flex'.
                  * 'row': Contenedor principal de la grilla.

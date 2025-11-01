@@ -41,7 +41,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
     return (
         <Layout>
             <Head title="Inicio" /> {/* Título cambiado */}
-            <div className="rounded p-5 m-5 bg-white bg-opacity-50">
+            <div className="rounded p-5 mx-5 bg-light bg-opacity-50">
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}
@@ -52,7 +52,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                               <img 
                                   src={`/storage/${featuredNote.portrait_url}`} 
                                   alt={`Portada de ${featuredNote.headline}`}
-                                  className="img-fluid w-100 rounded-start" style={{ height: '28rem'}}
+                                  className="img-fluid w-100 rounded-start" style={{ height: '50vh'}}
                                   
                               />
                           </div>
@@ -105,7 +105,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
 
                                 {/* Botón Anterior */}
                                 <div className="col-auto bg-danger  rounded-start py-5"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
-                                    <button className='bg-danger text-white border-0' onClick={prevSlide} style={{ width: '3rem', height:'8rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
+                                    <button className='bg-danger text-white border-0' onClick={prevSlide} style={{ width: '2vw', height:'14vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
                                 </div>
 
                                 {/* Contenido del Carrusel */}
@@ -137,7 +137,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                                 </Link>
                                 {/* Botón Siguiente */}
                                 <div className="col-auto rounded-end bg-danger py-5"> {/* Usamos col-auto */}
-                                    <button className='bg-danger text-white border-0 ' onClick={nextSlide} style={{ width: '2.5rem', height:'8rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
+                                    <button className='bg-danger text-white border-0 ' onClick={nextSlide} style={{ width: '2vw', height:'14vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
                                 </div>
                             </div>
                         </div>
