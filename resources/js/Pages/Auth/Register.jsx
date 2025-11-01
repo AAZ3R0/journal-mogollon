@@ -4,6 +4,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -14,6 +15,11 @@ export default function Register() {
         password_confirmation: '',
     });
 
+    useEffect(() => {
+        // Asumiendo que 'name' es tu primer campo
+        // Esto reemplaza 'isFocused={true}'
+    }, []);
+
     const submit = (e) => {
         e.preventDefault();
 
@@ -21,6 +27,8 @@ export default function Register() {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
+
+    const hasErrors = Object.keys(errors).length > 0;
 
     return (
         <GuestLayout>
@@ -36,11 +44,26 @@ export default function Register() {
                     </h1>
 
                     <form onSubmit={submit}>
+
+                        {/* --- Errores */}
+
+                        {hasErrors && (
+                            <div className='alert bg-danger bg-opacity-75 text-light'>
+                                <h5 className='fw-bold'>¡Ups! Algo salió mal.</h5>
+                                <ul className='mb-0'>
+                                    {/* Mapea sobre todas las claves de error y muestra el mensaje */}
+                                    {Object.keys(errors).map((key, index) => (
+                                        <li key={index}>{errors[key]}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
                         {/* --- Campo de Nombre Completo --- */}
                         <div className="mb-3">
                             <TextInput
                                 id="name"
-                                name="name"
+                                name="nombre"
                                 value={data.name}
                                 className="bg- form-control form-control-lg"
                                 autoComplete="name"
@@ -49,14 +72,14 @@ export default function Register() {
                                 required
                                 placeholder="Nombre completo..."
                             />
-                            <InputError message={errors.name} className="mt-2 text-danger" />
+                            
                         </div>
 
                         {/* --- Campo de Nombre de Usuario --- */}
                         <div className="mb-3">
                             <TextInput
                                 id="username"
-                                name="username"
+                                name="nombre de usuario"
                                 value={data.username}
                                 className="form-control form-control-lg"
                                 autoComplete="username"
@@ -64,7 +87,7 @@ export default function Register() {
                                 required
                                 placeholder="Nombre de usuario..."
                             />
-                            <InputError message={errors.username} className="mt-2 text-danger" />
+                            
                         </div>
 
                         {/* --- Campo de Correo Electrónico --- */}
@@ -72,7 +95,7 @@ export default function Register() {
                             <TextInput
                                 id="email"
                                 type="email"
-                                name="email"
+                                name="correo electrónico"
                                 value={data.email}
                                 className="form-control form-control-lg"
                                 autoComplete="email"
@@ -80,7 +103,7 @@ export default function Register() {
                                 required
                                 placeholder="Correo electrónico..."
                             />
-                            <InputError message={errors.email} className="mt-2 text-danger" />
+                            
                         </div>
 
                         {/* --- Campo de Contraseña --- */}
@@ -88,7 +111,7 @@ export default function Register() {
                             <TextInput
                                 id="password"
                                 type="password"
-                                name="password"
+                                name="contraseña"
                                 value={data.password}
                                 className="form-control form-control-lg"
                                 autoComplete="new-password"
@@ -96,7 +119,7 @@ export default function Register() {
                                 required
                                 placeholder="Contraseña..."
                             />
-                            <InputError message={errors.password} className="mt-2 text-danger" />
+
                         </div>
 
                         {/* --- Campo de Confirmar Contraseña --- */}
@@ -104,7 +127,7 @@ export default function Register() {
                             <TextInput
                                 id="password_confirmation"
                                 type="password"
-                                name="password_confirmation"
+                                name="confirmación de contraseña"
                                 value={data.password_confirmation}
                                 className="form-control form-control-lg"
                                 autoComplete="new-password"
@@ -112,7 +135,6 @@ export default function Register() {
                                 required
                                 placeholder="Confirmar contraseña..."
                             />
-                            <InputError message={errors.password_confirmation} className="mt-2 text-danger" />
                         </div>
 
                         {/* --- Botón de Registrarse (Centrado) --- */}

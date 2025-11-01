@@ -45,6 +45,10 @@ export default function Login({ status }) {
                         )}
 
                         <form onSubmit={submit}>
+
+                            <InputError message={errors.email} className="mt-2 alert bg-danger bg-opacity-75 text-light" />
+                            <InputError message={errors.password} className="mt-2 alert bg-danger bg-opacity-75 text-light" />
+
                             <div className="">
                                 <TextInput
                                     id="email"
@@ -56,7 +60,7 @@ export default function Login({ status }) {
                                     isFocused={true}
                                     autoComplete="username"
                                 />
-                                <InputError message={errors.email} className="mt-2 text-danger" />
+                                
                             </div>
 
                             <div className="mb-4">
@@ -69,7 +73,7 @@ export default function Login({ status }) {
                                     placeholder="Contraseña..."
                                     autoComplete="current-password"
                                 />
-                                <InputError message={errors.password} className="mt-2 text-danger" />
+                                
                             </div>
 
                             <div className="d-flex justify-content-center mt-4">
