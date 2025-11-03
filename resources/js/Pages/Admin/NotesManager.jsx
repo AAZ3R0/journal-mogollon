@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link, Head, useForm, usePage } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
+import { Link, Head, useForm, usePage, router } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
 import { Inertia } from '@inertiajs/inertia';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -27,16 +27,16 @@ const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
 
-export default function NotesManager({auth, notes, sections, featuredNote, success, filters = {} }) {
+export default function NotesManager({ auth, notes, sections, featuredNote, success, filters = {} }) {
 
     // --- LÓGICA DEL FORMULARIO DE CREACIÓN (AHORA VIVE AQUÍ) ---
-    const { 
-        data: createFormData, 
-        setData: setCreateFormData, 
-        post: postCreateForm, 
-        processing: createProcessing, 
-        errors: createErrors, 
-        reset: resetCreateForm 
+    const {
+        data: createFormData,
+        setData: setCreateFormData,
+        post: postCreateForm,
+        processing: createProcessing,
+        errors: createErrors,
+        reset: resetCreateForm
     } = useForm({
         headline: '',
         lead: '',
@@ -54,7 +54,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
 
     const [isCreateModalOpen, setCreateModalOpen] = useState(false);
     const openCreateModal = () => setCreateModalOpen(true);
-    
+
     // Modificamos el cierre: ya no resetea el formulario
     const closeCreateModal = () => setCreateModalOpen(false);
 
@@ -82,7 +82,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         const newFilters = { ...currentFilters, [name]: value };
-        
+
         Inertia.get(route('notes.index'), newFilters, { // Usa la ruta del admin
             preserveState: true,
             replace: true,
@@ -135,12 +135,12 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
 
             <div className='d-flex'>
 
-                <DashboardOptions/>
+                <DashboardOptions />
                 <div className="container-fluid">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
                         <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark fw-bold mt-3 rounded-pill d-flex align-items-center'>
-                            <PlusCircleFill className='fs-3 me-2'/>CREAR NOTA
+                            <PlusCircleFill className='fs-3 me-2' />CREAR NOTA
                         </PrimaryButton>
                     </div>
 
@@ -188,10 +188,10 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                             </div>
                             <div className="row g-0">
                                 <div className="col-md-4">
-                                    <img 
-                                        src={`/storage/${featuredNote.portrait_url}`} 
-                                        className="img-fluid rounded-start" 
-                                        alt={`Portada de ${featuredNote.headline}`} 
+                                    <img
+                                        src={`/storage/${featuredNote.portrait_url}`}
+                                        className="img-fluid rounded-start"
+                                        alt={`Portada de ${featuredNote.headline}`}
                                         style={{ objectFit: 'cover', height: '100%' }}
                                     />
                                 </div>
@@ -208,7 +208,7 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                 </div>
                             </div>
                         </div>
-                    )} 
+                    )}
 
                     <div className="table-responsive">
                         <table className="table table-bordered border-dark">
@@ -229,38 +229,50 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                                     // Si estás en esta página, eres Admin y puedes hacerlo todo.
                                     <tr key={note.note_id}>
                                         <td className='bg-accent2 bg-opacity-50 align-middle'>
-                                            <a href={route('notes.toggleFeatured', note.note_id)} method="patch" as="button" /* ... */ >
-                                                <input className='form-check-input fs-3' type="checkbox" checked={note.is_featured} />
-                                            </a>
-                                        </td> 
-                                        <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{width:"20rem",height:"auto"}}/></td>
+                                            <input
+                                                className='form-check-input fs-3'
+                                                type="checkbox"
+                                                checked={note.is_featured}
+                                                onChange={() => {
+                                                    router.patch(
+                                                        route('notes.toggleFeatured', note.note_id),
+                                                        {}, // Puedes enviar datos aquí si es necesario
+                                                        {
+                                                            preserveState: true, // No resetea el estado local de React
+                                                            preserveScroll: true, // No mueve el scroll de la página
+                                                        }
+                                                    );
+                                                }}
+                                            />
+                                        </td>
+                                        <td className='bg-accent2 bg-opacity-50 '><img src={`/storage/${note.portrait_url}`} className='img-thumbnail' style={{ width: "20rem", height: "auto" }} /></td>
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.headline}</td>
                                         <td className='bg-accent2 bg-opacity-50 align-middle'>
                                             {Array.isArray(note.sections) && note.sections.map((section) => (
-                                                    <span key={section.section_id} className="badge bg-primary me-1 mb-1">
-                                                        {section.name}
-                                                    </span>
+                                                <span key={section.section_id} className="badge bg-primary me-1 mb-1">
+                                                    {section.name}
+                                                </span>
                                             ))}
                                         </td>
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{new Date(note.publish_date).toLocaleDateString()}</td>
-                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.user? note.user.name : 'Autor no encontrado'}</td>
-                                        
+                                        <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>{note.user ? note.user.name : 'Autor no encontrado'}</td>
+
                                         {/* ✅ MOSTRAR SIEMPRE LOS BOTONES */}
                                         <td className='bg-accent2 bg-opacity-50 text-dark h5 align-middle'>
                                             <div className='d-flex justify-content-center align-items-center'>
-                                                <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1'/></button> 
-                                                <button onClick={() => openEditModal(note)} className=' text-dark btn btn-transparent'><PencilSquare className='fs-1'/></button> 
-                                                <button onClick={() => openDeleteModal(note)} className=' text-dark btn btn-transparent'><TrashFill className='fs-1'/></button>
+                                                <button onClick={() => openViewModal(note)} className='text-dark btn btn-transparent'><Newspaper className='fs-1' /></button>
+                                                <button onClick={() => openEditModal(note)} className=' text-dark btn btn-transparent'><PencilSquare className='fs-1' /></button>
+                                                <button onClick={() => openDeleteModal(note)} className=' text-dark btn btn-transparent'><TrashFill className='fs-1' /></button>
                                             </div>
-                                            
+
                                         </td>
                                     </tr>
                                 ))}
 
-                                
+
                             </tbody>
                             {/* Si no hay resultados */}
-                            
+
                         </table>
                         {notes.data.length === 0 && (
                             <div className="alert bg-warning bg-opacity-75 text-dark text-center mt-4" role="alert">
@@ -274,11 +286,11 @@ export default function NotesManager({auth, notes, sections, featuredNote, succe
                 </div>
 
             </div>
-            
-            
+
+
 
             {/* --- Modales --- */}
-            
+
             {/* ✅ Modal de Creación AHORA RECIBE PROPS */}
             <Modal show={isCreateModalOpen} onClose={closeCreateModal} size="lg">
                 <CreateNoteForm
