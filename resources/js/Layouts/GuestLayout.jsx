@@ -1,5 +1,5 @@
 // resources/js/Layouts/GuestLayout.jsx
-import Navbar from '@/Components/Navbar';
+import Navbar from '@/Components/NavBar';
 import Footer from '@/Components/Footer';
 
 export default function GuestLayout({ children }) {

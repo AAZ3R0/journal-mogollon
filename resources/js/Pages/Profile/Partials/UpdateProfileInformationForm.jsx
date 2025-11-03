@@ -49,15 +49,15 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     return (
         // El div principal ahora necesita un <></> o <Fragment> si pones el Modal fuera
         // Lo mantendremos simple y pondremos el Modal dentro del div principal.
-        <div className={`w-75 m-auto bg-light bg-opacity-50 shadow-sm ${className}`}>
-            <div className="p-5">
+        <div className={`container rounded p-3 p-md-5 mx-md-2 mx-xlg-5 bg-white bg-opacity-50 shadow-sm ${className}`}>
+            <div className="p-lg-3 p-2">
 
                 {/* --- Contenedor para reducir el ancho del formulario --- */}
                 <div className="row justify-content-center">
 
                     {/* --- CONTENEDOR 1: FORMULARIO (VISUALIZACIÓN) --- */}
                     <div className=" bg-light bg-opacity-50 p-4 rounded">
-                        <h1 className="fw-bold text-dark mb-5" style={{ fontSize: '4.5vw' }}>
+                        <h1 className="fw-bold text-dark mb-5">
                             Perfil de: {user.username || user.name}
                         </h1>
 
@@ -65,14 +65,14 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         <form>
                             {/* Fila: Nombre */}
                             <div className="row mb-3 align-items-middle">
-                                <label htmlFor="name" className="col-md-4 col-form-label text-md-start fw-bold" style={{ fontSize: '1.5vw' }}>
-                                    Nombre:
+                                <label htmlFor="name" className="col-md-4 col-form-label text-md-start">
+                                   <p className='h3 fw-bold'>Nombre:</p> 
                                 </label>
                                 <div className="col-md-7 offset-md-1 mb-5">
                                     <input
                                         id="name"
                                         type="text"
-                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill"
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)} // Mantenemos esto por si acaso
                                         required
@@ -87,14 +87,14 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                             {/* Fila: Usuario */}
                             <div className="row mb-3 align-items-middle">
-                                <label htmlFor="username" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
-                                    Usuario:
+                                <label htmlFor="username" className="text-dark col-md-4 col-form-label text-md-start">
+                                    <h3 className='fw-bold'>Usuario:</h3>
                                 </label>
                                 <div className="col-md-7 offset-md-1 mb-5">
                                     <input
                                         id="username"
                                         type="text"
-                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill"
                                         value={data.username}
                                         onChange={(e) => setData('username', e.target.value)}
                                         autoComplete="username"
@@ -114,7 +114,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="email"
                                         type="email"
-                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill"
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                         required
@@ -144,7 +144,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                     <input
                                         id="rol_name_display" // Cambiamos el ID para claridad
                                         type="text"
-                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill fs-3"
+                                        className="form-control px-4 py-2 border-0 bg-secondary bg-opacity-50 rounded-pill"
                                         // ✅ Mostramos el nombre del rol aquí
                                         value={user.role ? user.role.name : 'Rol no asignado'}
                                         readOnly // Sigue siendo de solo lectura en esta vista
@@ -158,23 +158,23 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                     </div> {/* --- FIN DEL CONTENEDOR 1 --- */}
 
                     {/* --- CONTENEDOR 2: BOTONES DE ACCIÓN --- */}
-                    <div className="bg-light rounded py-4 px-4 bg-opacity-50 mt-4 d-flex justify-content-end">
+                    <div className="row bg-light rounded py-4 px-4 bg-opacity-50 mt-4 d-flex justify-content-end">
                         {/* --- MODIFICACIÓN AQUÍ: Añadir onClick --- */}
                         <button
                             type="button"
-                            className="btn btn-warning fw-bold btn-lg rounded-pill me-3 px-4 text-dark"
+                            className="col-md-12 col-lg-4 mb-lg-0 mb-2 btn btn-warning fw-bold btn-lg rounded-pill px-lg-4 me-lg-3 text-dark"
                             onClick={openModal} // <-- AÑADIDO
                         >
-                            <PencilSquare className='fs-3 mx-2'></PencilSquare>
+                            <PencilSquare className='fs-3 me-2'></PencilSquare>
                             Editar perfil
                         </button>
 
                         <button
                             type="button"
-                            className="btn btn-danger fw-bold btn-lg rounded-pill px-4"
+                            className="col-md-12 col-lg-4 btn btn-danger fw-bold btn-lg rounded-pill px-lg-4"
                             onClick={openDeleteModal}
                         >
-                            <TrashFill className='fs-3 mx-2'></TrashFill>
+                            <TrashFill className='fs-3 me-2'></TrashFill>
                             Eliminar perfil
                         </button>
                     </div>

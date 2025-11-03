@@ -53,7 +53,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
             <Head title="Lista de Noticias" />
 
             {/* --- Panel de Filtros --- */}
-            <div className='p-5 mx-5 bg-light bg-opacity-50 rounded mb-5'>
+            <div className='p-5 mx-lg-5 bg-light bg-opacity-50 rounded mb-5'>
                 <h3 className='fw-bold mb-4'>Filtros de búsqueda</h3>
                 
                 {/* Usamos el sistema de Grid (row/col) */}
@@ -98,7 +98,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
             </div>
 
             {/* --- Listado de Notas --- */}
-            <div className="p-5 mx-5 bg-light bg-opacity-50 rounded"> 
+            <div className="p-5 mx-lg-5 bg-light bg-opacity-50 rounded"> 
                 <div className="h1 mb-4">
                     Lista de noticias
                 </div>

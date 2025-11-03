@@ -14,7 +14,7 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
         <Layout>
             <Head title="Sobre Nosotros" />
 
-            <div className="row justify-content-center px-5">
+            <div className="row justify-content-center px-lg-5">
                 {/* --- CAMBIO 1: Contenedor principal más grande --- */}
                 {/* Cambiamos col-lg-8 por col-lg-10 */}
                 <div className="col-lg col-md">
@@ -28,7 +28,7 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
                             <div className="row align-items-center p-3">
 
                                 {/* --- CAMBIO 1: Título más grande (fs-2 -> fs-1) --- */}
-                                <h1 className="fw-bold text-dark" style={{fontSize: '3vw'}}>
+                                <h1 className="fw-bold text-dark">
                                     Sobre nosotros
                                 </h1>
 

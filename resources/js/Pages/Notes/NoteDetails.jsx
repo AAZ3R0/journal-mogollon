@@ -9,6 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import CommentItem from '@/Components/CommentItem';
 import { formatDistanceToNow } from 'date-fns'; // Importa la función de date-fns
 import { es } from 'date-fns/locale';
+import { Send } from 'react-bootstrap-icons';
 
 
 // Helper function (same as in Welcome.jsx)
@@ -96,7 +97,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
             {/* Set the page title */}
             <Head title={note.headline} />
 
-            <div className="mx-5">
+            <div className="mx-lg-5 m-auto">
                 <article className="bg-white bg-opacity-50 p-4 p-md-5 rounded shadow-sm"> {/* Added styling */}
                     {/* Header Section */}
                     <header className="mb-4">
@@ -109,13 +110,13 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                             ))}
                         </div>
                         {/* Headline */}
-                        <h1 className="fw-bold mb-3" style={{ fontSize: '2.8rem' }}>{note.headline}</h1>
+                        <h1 className="fw-bold mb-3">{note.headline}</h1>
                         {/* Author and Date */}
                         <div className="text-muted mb-3">
-                            <strong>{note.user ? note.user.name : 'Desconocido'}</strong> | <strong>{formatDate(note.publish_date)}</strong> 
+                            <p><strong>{note.user ? note.user.name : 'Desconocido'}</strong> | <strong>{formatDate(note.publish_date)}</strong> </p>
                         </div>
                         {/* Lead */}
-                        <p className="fst-italic display-6" style={{fontSize:'1.5rem'}}>{note.lead}</p>
+                        <p className="fst-italic h5 mb-3">{note.lead}</p>
 
                         
                         {/* Portrait Image */}
@@ -235,7 +236,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     {/* SECCIÓN CAJA DE COMENTARIOS*/}
 
                     <div className='bg-dark bg-opacity-25 rounded pb-3 mt-5 pt-3'>
-                        <div className='container-fluid px-5'>
+                        <div className='container-fluid px-lg-5'>
                             <h3 className='fw-bold text-black mb-4 p-3'>Comentarios ({note.comments ? note.comments.length : 0})</h3>
 
                             {/* Formulario para añadir comentario (solo si está autenticado) */}
@@ -255,7 +256,8 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                         </div>
                                         <InputError message={errors.message} className="mt-2" />
                                         <div className='d-flex justify-content-end mt-2'>
-                                            <PrimaryButton className='btn btn-primary rounded-pill' disabled={processing}>
+                                            <PrimaryButton className='btn btn-primary btn-lg rounded-pill col-12 col-lg-2 ' disabled={processing}>
+                                                <Send className='me-2 fs-3'></Send>
                                                 {processing ? 'Enviando...' : 'Comentar'}
                                             </PrimaryButton>
                                         </div>
