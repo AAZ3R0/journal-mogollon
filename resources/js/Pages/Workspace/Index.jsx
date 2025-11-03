@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Link, Head, useForm } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
-import { Inertia } from '@inertiajs/inertia';
+import { Link, Head, useForm, router } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Modal from '@/Components/Modal';
 import CreateNoteForm from '@/Components/CreateNoteForm';
@@ -116,7 +114,7 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
         const { name, value } = e.target;
         const newFilters = { ...currentFilters, [name]: value };
         
-        Inertia.get(route('workspace.index'), newFilters, { // Usa la ruta del workspace
+        router.get(route('workspace.index'), newFilters, { // Usa la ruta del workspace
             preserveState: true,
             replace: true,
         });
