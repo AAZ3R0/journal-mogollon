@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import DashboardOptions from '@/Components/Dashboard';
 import Modal from '@/Components/Modal'; // <-- Importa el Modal
@@ -69,7 +68,7 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
         const { name, value } = e.target;
         const newFilters = { ...currentFilters, [name]: value };
         
-        Inertia.get(route('admin.users'), newFilters, {
+        router.get(route('admin.users'), newFilters, {
             preserveState: true,
             replace: true,
         });
@@ -79,7 +78,7 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         const newFilters = { ...currentFilters, query: searchQuery };
-        Inertia.get(route('admin.users'), newFilters, {
+        router.get(route('admin.users'), newFilters, {
             preserveState: true,
             replace: true,
         });

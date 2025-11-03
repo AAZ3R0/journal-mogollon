@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Link, Head, useForm, usePage, router } from '@inertiajs/react'; // <-- Importa useForm AQUÍ
-import { Inertia } from '@inertiajs/inertia';
+import { Link, Head, useForm, usePage, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import GuestLayout from '@/Layouts/GuestLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Modal from '@/Components/Modal';
 import CreateNoteForm from '@/Components/CreateNoteForm';
@@ -83,7 +81,7 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
         const { name, value } = e.target;
         const newFilters = { ...currentFilters, [name]: value };
 
-        Inertia.get(route('notes.index'), newFilters, { // Usa la ruta del admin
+        router.get(route('notes.index'), newFilters, { // Usa la ruta del admin
             preserveState: true,
             replace: true,
         });
