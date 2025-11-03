@@ -124,7 +124,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {/* El 'main' ahora necesita un padding-top (pt-5) mayor para compensar la altura de la navbar */}
-            <main className="container-fluid flex-grow-1 py-4" style={{ paddingTop: '130px' }}>
+            <main className="container flex-grow-1 py-4">
                 {header && (
                     <header className="bg-white shadow-sm mb-4">
                         <div className="py-4 px-4">

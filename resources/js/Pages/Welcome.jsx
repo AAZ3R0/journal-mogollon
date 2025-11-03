@@ -41,7 +41,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
     return (
         <Layout>
             <Head title="Inicio" /> {/* Título cambiado */}
-            <div className="rounded p-5 mx-5 bg-light bg-opacity-50">
+            <div className="container rounded p-3 p-md-5 mx-md-2 mx-xlg-5 bg-white bg-opacity-50">
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}
@@ -53,37 +53,37 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                               <img 
                                   src={`/storage/${featuredNote.portrait_url}`} 
                                   alt={`Portada de ${featuredNote.headline}`}
-                                  className="img-fluid w-100 rounded-start" style={{ height: '50vh'}}
+                                  className="img-fluid w-100 rounded-start"
                                   
                               />
                           </div>
                           <div className="col-md-7 p-4">
-                              <div className="d-flex justify-content-between align-items-start mb-2">
+                              <div className="mb-2 d-flex justify-content-between">
                                   <span>
                                       {/* Muestra el nombre de la primera sección si está disponible */}
 
                                       {Array.isArray(featuredNote.sections) && featuredNote.sections.map((section) => (
-                                                <span key={section.section_id} className="badge bg-secondary me-2 mb-5">
+                                                <span key={section.section_id} className="badge bg-secondary me-2">
                                                     {section.name}
                                                 </span>
                                       ))}
                                       
                                   </span>
-                                  <span style={{ fontSize: '0.85rem'}}>
+                                  <span>
                                       {formatDate(featuredNote.publish_date)}
                                   </span>
                               </div>
-                              <h1 className="fw-bold mb-5">
+                              <h1 className="fw-bold">
                                   {/* Usa Link para hacer el título clickeable (asume ruta 'notes.show') */}
                                   
                                       {featuredNote.headline}
                                   
                               </h1>
-                              <p className="mb-5">
-                                  <span style={{ fontWeight: '600' }}>Autor:</span> {featuredNote.user?.name || 'Desconocido'}
+                              <p className="">
+                                  <span className='fw-bold'>Autor:</span> {featuredNote.user?.name || 'Desconocido'}
                               </p>
                               {/* Opcional: Añadir un fragmento del 'lead' */}
-                              <p className="mt-2 display-6 fst-italic" style={{fontSize: "1.5rem"}}>{featuredNote.lead.substring(0, 100)}...</p> 
+                              <p className="mt-2 h5 text-muted fst-italic">{featuredNote.lead.substring(0, 100)}...</p> 
                           </div>
                       </div>
                     </Link>
@@ -96,49 +96,51 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                 
                 {/* --- Sección Carrusel (Notas del Día) --- */}
                 {/* Renderiza el carrusel solo si hay notas para hoy */}
+
+                <h1 className='fw-bold'>Noticias del día</h1>
                 {newsItems.length > 0 ? (
                     <div className='py-2 rounded'> {/* Contenedor general del carrusel */}
-
+                        
                         {/* Fila para el CONTENIDO del carrusel */}
                         <div className="position-relative">
+                            
                             <div className="row align-items-center justify-content-center"> {/* justify-content-center ayuda */}
-                                <h1 className='fw-bold'>Noticias del día</h1>
 
                                 {/* Botón Anterior */}
-                                <div className="col-auto bg-danger  rounded-start py-5"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
-                                    <button className='bg-danger text-white border-0' onClick={prevSlide} style={{ width: '2vw', height:'14vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
+                                <div className="col-auto bg-danger rounded-start align-self-stretch d-flex align-items-center"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
+                                    <button className='bg-danger text-white border-0' onClick={prevSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
                                 </div>
 
                                 {/* Contenido del Carrusel */}
                                 <Link href={route('notes.public.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
-                                  <div className="d-flex g-0 shadow-sm bg-warning bg-opacity-25 rounded">
-                                      <div className="">
-                                          <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start' style={{ width: '26rem', height:'14rem', objectFit: 'cover' }} />
+                                  <div className="row g-0 shadow-sm bg-warning bg-opacity-25 rounded">
+                                      <div className="col-md-4">
+                                          <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start img-fluid' style={{ width: '26rem', height:'14rem', objectFit: 'cover' }} />
                                       </div>
-                                      <div className="flex-fill mx-3 my-3">
-                                          <div className="d-flex justify-content-between">
+                                      <div className="col-md-8">
+                                          <div className="d-flex justify-content-between mx-2 my-3">
                                               <span>
 
                                                   {Array.isArray(newsItems[currentSlide].sections) && newsItems[currentSlide].sections.map((section) => (
-                                                              <span key={section.section_id} className="badge bg-secondary me-2 mb-5">
+                                                              <span key={section.section_id} className="badge bg-secondary me-2 mb-2">
                                                                   {section.name}
                                                               </span>
                                                   ))}
                                               </span>
-                                              <span style={{ fontSize: '0.85rem' }}>{formatDate(newsItems[currentSlide].publish_date)}</span>
+                                              <span>{formatDate(newsItems[currentSlide].publish_date)}</span>
                                           </div>
-                                          <h1 className='fw-bold mb-5'>
+                                          <h2 className='fw-bold ps-2 mb-3'>
                                               {newsItems[currentSlide].headline}
-                                          </h1>
-                                          <p style={{ margin: 0 }}>
-                                              <span style={{ fontWeight: '600' }}>Autor:</span> {newsItems[currentSlide].user?.name || 'Desconocido'}
+                                          </h2>
+                                          <p className='ps-2'>
+                                              <span className='fw-bold'>Autor:</span> {newsItems[currentSlide].user?.name || 'Desconocido'}
                                           </p>
                                       </div>
                                   </div>   
                                 </Link>
                                 {/* Botón Siguiente */}
-                                <div className="col-auto rounded-end bg-danger py-5"> {/* Usamos col-auto */}
-                                    <button className='bg-danger text-white border-0 ' onClick={nextSlide} style={{ width: '2vw', height:'14vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
+                                <div className="col-auto rounded-end bg-danger align-self-stretch d-flex align-items-center"> {/* Usamos col-auto */}
+                                    <button className='bg-danger text-white border-0 ' onClick={nextSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
                                 </div>
                             </div>
                         </div>

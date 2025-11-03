@@ -28,24 +28,24 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
                             <div className="row align-items-center p-3">
 
                                 {/* --- CAMBIO 1: Título más grande (fs-2 -> fs-1) --- */}
-                                <h1 className="fw-bold text-dark" style={{fontSize: '3.5rem'}}>
+                                <h1 className="fw-bold text-dark" style={{fontSize: '3vw'}}>
                                     Sobre nosotros
                                 </h1>
 
                                 {/* Columna Izquierda: Logo */}
-                                <div className="col-md-3 text-center p-1">
+                                <div className="col-md-4 text-center">
                                     <img
                                         src={Logo}
                                         alt="Journal Mogollón Logo"
                                         className="img-fluid"
                                         // --- CAMBIO 2: Límite de tamaño de imagen aumentado ---
-                                        style={{ width: '32rem', height: 'auto' }}
+                                        style={{ width: '100%', height: 'auto' }}
                                     />
                                 </div>
 
                                 {/* Columna Derecha: Texto */}
                                 {/* --- CAMBIO 2: Texto más grande (añadido fs-5) --- */}
-                                <div className="col-md-9 fs-5" style={{ textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>
+                                <div className="col-md-8" style={{ textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>
                                     <p className='text-dark' >
                                        <b>Journal Mogollón</b> es una empresa periodística que desarrolla información, investigación e historia a
                                         través de los principales sucesos que acontecen y afectan a Ciudad Juárez, nuestra Misión es servir de

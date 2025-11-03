@@ -11,7 +11,7 @@ export default function GuestLayout({ children }) {
             </header>
 
             {/* Contenido principal de la página */}
-            <main className="container-fluid flex-grow-1 py-4">
+            <main className="container flex-grow-1 py-4">
                 {/* Aquí es donde se renderizará el contenido de cada vista */}
                 <div className="w-full sm:max-w-md  shadow-md overflow-hidden sm:rounded-lg">
                     {children}

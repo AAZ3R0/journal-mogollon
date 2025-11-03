@@ -1,5 +1,4 @@
 import React, {useState, useRef} from 'react';
-// ❌ YA NO IMPORTAMOS useForm
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
@@ -9,7 +8,7 @@ import { PlusCircle, PlusCircleDotted, PlusCircleFill, EyeFill } from 'react-boo
 import Modal from '@/Components/Modal';
 import ViewNoteDetails from '@/Components/ViewNoteDetails';
 
-// ✅ Recibimos los datos y funciones como props
+
 export default function CreateNoteForm({ 
     data, 
     setData, 
@@ -19,8 +18,6 @@ export default function CreateNoteForm({
     onClose, 
     sections = [] 
 }) { 
-    
-    // ❌ La lógica de useForm se ha ido al padre (NotesManager)
 
     // --- Lógica de Previsualización (Sigue viviendo aquí) ---
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -167,7 +164,7 @@ export default function CreateNoteForm({
                     {/* Botón de Previsualizar */}
                     <button 
                         type="button" 
-                        className="btn btn-lg btn-primary rounded-pill m-auto mt-3"
+                        className="btn btn-lg btn-primary rounded-pill m-auto mt-3 col-12"
                         onClick={openPreviewModal}
                         disabled={!data.headline || !data.lead || !data.body || !data.closing || !data.portrait_url}
                     >
@@ -318,16 +315,16 @@ export default function CreateNoteForm({
                 </div>
             </form>
 
-            <Modal show={isPreviewOpen} onClose={closePreviewModal} maxWidth="xl" closeable={true}>
-                <div className="p-4"> 
-                    <h4 className="fw-bold mb-3">Vista Previa</h4>
+            <Modal show={isPreviewOpen} onClose={closePreviewModal} size="lg" closeable={true}>
+                <div className="p-3"> 
+                    <h2 className="fw-bold mb-3">Vista Previa</h2>
                     {previewData ? (
                         <ViewNoteDetails note={previewData} onClose={closePreviewModal} /> 
                     ) : (
                         <p>Cargando previsualización...</p> 
                     )}
                     <div className="text-end mt-3">
-                        <button type="button" className="btn btn-secondary rounded-pill" onClick={closePreviewModal}>
+                        <button type="button" className="btn btn-secondary rounded-pill col-12" onClick={closePreviewModal}>
                             Cerrar Previsualización
                         </button>
                     </div>
