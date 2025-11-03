@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
-import { Inertia } from '@inertiajs/inertia'; // <-- CORRECCIÓN: Importa Inertia
+import { Head, Link, router } from '@inertiajs/react';
 import BootstrapPagination from '@/Components/BootstrapPagination';
 
 // --- Listas para los dropdowns de fecha ---
@@ -37,7 +36,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
         };
         
         // ✅ CORRECCIÓN: Usamos Inertia.get() en lugar de router.get()
-        Inertia.get(route('index.notes'), newFilters, { // Asumiendo que esta es tu ruta de viewList
+        router.get(route('index.notes'), newFilters, { // Asumiendo que esta es tu ruta de viewList
             preserveState: true,
             replace: true, // No añade una entrada nueva al historial del navegador
         });
