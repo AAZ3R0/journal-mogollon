@@ -57,7 +57,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                     {/* --- CONTENEDOR 1: FORMULARIO (VISUALIZACIÓN) --- */}
                     <div className=" bg-light bg-opacity-50 p-4 rounded">
-                        <h1 className="fw-bold text-dark mb-5">
+                        <h1 className="fw-bold text-dark mb-lg-5 mb-3">
                             Perfil de: {user.username || user.name}
                         </h1>
 
@@ -68,7 +68,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                 <label htmlFor="name" className="col-md-4 col-form-label text-md-start">
                                    <p className='h3 fw-bold'>Nombre:</p> 
                                 </label>
-                                <div className="col-md-7 offset-md-1 mb-5">
+                                <div className="col-md-7 offset-md-1 mb-lg-5">
                                     <input
                                         id="name"
                                         type="text"
@@ -90,7 +90,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                 <label htmlFor="username" className="text-dark col-md-4 col-form-label text-md-start">
                                     <h3 className='fw-bold'>Usuario:</h3>
                                 </label>
-                                <div className="col-md-7 offset-md-1 mb-5">
+                                <div className="col-md-7 offset-md-1 mb-lg-5">
                                     <input
                                         id="username"
                                         type="text"
@@ -110,7 +110,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                 <label htmlFor="email" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Correo electrónico:
                                 </label>
-                                <div className="col-md-7 offset-md-1 mb-5">
+                                <div className="col-md-7 offset-md-1 mb-lg-5 ">
                                     <input
                                         id="email"
                                         type="email"
@@ -128,7 +128,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                             {/* Verificación de Email */}
                             {mustVerifyEmail && user.email_verified_at === null && (
-                                <div className="row mb-3">
+                                <div className="row">
                                     <div className="col-md-8 offset-md-4">
                                         {/* ... (código de verificación sin cambios) ... */}
                                     </div>
@@ -140,7 +140,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                                 <label htmlFor="rol_id" className="text-dark col-md-4 col-form-label text-md-start fw-bold fs-3">
                                     Rol:
                                 </label>
-                                <div className="col-md-7 offset-md-1 mb-5">
+                                <div className="col-md-7 offset-md-1 mb-lg-5">
                                     <input
                                         id="rol_name_display" // Cambiamos el ID para claridad
                                         type="text"

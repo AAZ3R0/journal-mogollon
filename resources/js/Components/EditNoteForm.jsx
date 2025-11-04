@@ -44,12 +44,12 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
 
     const charLimits = {
         headline: 50,
-        lead: 200,
-        body: 280,
-        closing: 200,
-        leadExtension: 200,
-        bodyExtension: 280,
-        closingExtension: 200,
+        lead: 500,
+        body: 1280,
+        closing: 500,
+        leadExtension: 500,
+        bodyExtension: 1280,
+        closingExtension: 500,
     }
 
     const addExtension = (type) => {
@@ -277,8 +277,8 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className="btn btn-lg btn-warning rounded-pill fw-bold text-dark d-flex align-items-center" disabled={processing || isFormInvalid}>
-                        <PencilSquare className='fs-4 me-2' ></PencilSquare>
+                    <PrimaryButton type="submit" className="btn btn-lg btn-warning rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormInvalid}>
+                        <PencilSquare className='me-2 fs-3' ></PencilSquare>
                         {processing ? 'Actualizando...' : 'Actualizar'}
                     </PrimaryButton>
                 </div>

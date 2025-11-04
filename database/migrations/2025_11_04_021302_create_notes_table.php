@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->integer('note_id', true);
-            $table->string('headline', 50);
-            $table->string('lead', 200);
-            $table->string('body', 280);
-            $table->string('closing', 200);
+            $table->text('headline');
+            $table->text('lead');
+            $table->text('body');
+            $table->text('closing');
             $table->dateTime('publish_date');
             $table->string('portrait_url');
             $table->boolean('is_featured');

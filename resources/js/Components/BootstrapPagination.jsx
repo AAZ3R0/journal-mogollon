@@ -14,7 +14,7 @@ export default function BootstrapPagination({ links = [] }) {
     }
 
     return (
-        <Pagination className="justify-content-center mt-5 rounded-pill" size='lg'>
+        <Pagination className="justify-content-center mt-3 flex-wrap-wrap rounded-pill">
             {links.map((link, index) => (
                 <Pagination.Item
                     key={index}

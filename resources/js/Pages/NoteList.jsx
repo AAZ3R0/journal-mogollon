@@ -60,7 +60,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
                 <div className='row g-3'> {/* g-3 añade espacio entre las columnas */}
                     
                     {/* --- Columna de Sección (ocupa 4 de 12 columnas en pantallas medianas) --- */}
-                    <div className='col-md-4'>
+                    <div className='col col-lg-4 col-md-2'>
                         <h4>Sección</h4>
                         <select className='form-select' name="section_id" value={currentFilters.section_id} onChange={handleFilterChange}>
                             <option value="">Todas las secciones</option>
@@ -109,7 +109,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
                     'row-cols-md-2' = 2 columnas en tablet
                     'row-cols-lg-4' = 4 columnas en escritorio (puedes cambiar este número)
                 */}
-                <div className='row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4'>
+                <div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4'>
                         
                         {notes.data.map((note) => (
                             

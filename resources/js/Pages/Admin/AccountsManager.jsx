@@ -87,9 +87,9 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
     return (
         <AuthenticatedLayout>
             <Head title="Administrar Usuarios" />
-            <div className='d-flex'>
+            <div className='row'>
                 <DashboardOptions/>
-                <div className="container-fluid">
+                <div className="col">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR USUARIOS</b></h1>
                     </div>

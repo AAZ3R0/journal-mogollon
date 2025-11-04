@@ -109,3 +109,20 @@ background-color: #664a25; /* Este es el amarillo 'warning' */
   border-bottom-right-radius: 50rem;
 }
 
+@media (max-width: 767px) {
+    
+    /* 1. Ocultamos TODOS los botones de números por defecto */
+    .pagination .page-item {
+        display: none;
+    }
+
+    /* 2. Mostramos SOLO los botones cruciales */
+    .pagination .page-item:first-child,  /* 'Anterior' (‹) */
+    .pagination .page-item:last-child,   /* 'Siguiente' (›) */
+    .pagination .page-item.active,       /* La página activa (ej: '4') */
+    .pagination .page-item.disabled {    /* Los '...' (que vienen de Laravel) */
+        
+        /* ¡Los volvemos a mostrar! */
+        display: block; /* o 'list-item' si algo se rompe */
+    }
+}

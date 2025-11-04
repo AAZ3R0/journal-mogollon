@@ -78,12 +78,12 @@ export default function CreateNoteForm({
     //Limite de caracteres
     const charLimits = {
         headline: 50,
-        lead: 200,
-        body: 280,
-        closing: 200,
-        leadExtension: 200,
-        bodyExtension: 280,
-        closingExtension: 200,
+        lead: 500,
+        body: 1280,
+        closing: 500,
+        leadExtension: 500,
+        bodyExtension: 1280,
+        closingExtension: 500,
     };
 
     // --- Funciones 'handle' ahora usan 'setData' de las props ---
@@ -308,7 +308,7 @@ export default function CreateNoteForm({
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className='btn btn-success btn-lg rounded-pill d-flex align-items-center text-dark fw-bold' disabled={processing || isFormInvalid}>
+                    <PrimaryButton type="submit" className='btn btn-primary btn-lg rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormInvalid}>
                         <PlusCircleFill className='me-2 fs-3'/>
                         {processing ? 'Guardando...' : 'Crear nota'}
                     </PrimaryButton>

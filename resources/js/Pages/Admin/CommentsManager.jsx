@@ -50,9 +50,9 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
     return (
         <AuthenticatedLayout>
             <Head title="Administrar Comentarios" />
-            <div className='d-flex'>
+            <div className='row'>
                 <DashboardOptions/>
-                <div className="container-fluid">
+                <div className="col">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR COMENTARIOS</b></h1>
                     </div>

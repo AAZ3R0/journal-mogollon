@@ -104,43 +104,62 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                         {/* Fila para el CONTENIDO del carrusel */}
                         <div className="position-relative">
                             
-                            <div className="row align-items-center justify-content-center"> {/* justify-content-center ayuda */}
+                            <div className="row align-items-center justify-content-center "> {/* justify-content-center ayuda */}
 
                                 {/* Botón Anterior */}
                                 <div className="col-auto bg-danger rounded-start align-self-stretch d-flex align-items-center"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
-                                    <button className='bg-danger text-white border-0' onClick={prevSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
+                                    <button className='bg-danger text-white border-0 h-100' onClick={prevSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
                                 </div>
 
-                                {/* Contenido del Carrusel */}
                                 <Link href={route('notes.public.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
-                                  <div className="row g-0 shadow-sm bg-warning bg-opacity-25 rounded">
-                                      <div className="col-md-4">
-                                          <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start img-fluid' style={{ width: '26rem', height:'14rem', objectFit: 'cover' }} />
-                                      </div>
-                                      <div className="col-md-8">
-                                          <div className="d-flex justify-content-between mx-2 my-3">
-                                              <span>
+                                    {/* ✅ PASO 1: Usamos 'align-items-stretch' (que es el default en .row) 
+                                        para que ambas columnas (img y texto) tengan la misma altura.
+                                        La imagen fija esa altura en '14rem'.
+                                    */}
+                                    <div className="row g-0 shadow-sm bg-warning bg-opacity-25 rounded" >
+                                        <div className="col-md-4">
+                                            <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start img-fluid h-100' style={{ width: '26rem', objectFit: 'cover' }} />
+                                        </div>
+                                        
+                                        {/* ✅ PASO 2: Añadimos 'd-flex flex-column' para controlar el contenido verticalmente.
+                                            Quitamos el padding 'mx-2 my-3' de adentro y lo ponemos aquí (ej: 'p-3').
+                                        */}
+                                        <div className="col-md-8 d-flex flex-column p-2"> 
+                                            <div className="d-flex justify-content-between"> {/* Quitamos mx-2 my-3 */}
+                                                <span>
+                                                    {Array.isArray(newsItems[currentSlide].sections) && newsItems[currentSlide].sections.map((section) => (
+                                                        <span key={section.section_id} className="badge bg-secondary me-2 mb-2">
+                                                            {section.name}
+                                                        </span>
+                                                    ))}
+                                                </span>
+                                                <span>{formatDate(newsItems[currentSlide].publish_date)}</span>
+                                            </div>
+                                            
+                                            {/* ✅ PASO 3: Aplicamos el clamp al título para evitar desbordamiento.
+                                                Ajusta el 'WebkitLineClamp' a cuántas líneas MÁXIMO quieres.
+                                            */}
+                                            <h2 className='fw-bold mb-3' style={{ // Quitamos ps-2
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2, 
+                                                WebkitBoxOrient: 'vertical'
+                                            }}>
+                                                {newsItems[currentSlide].headline}
+                                            </h2>
 
-                                                  {Array.isArray(newsItems[currentSlide].sections) && newsItems[currentSlide].sections.map((section) => (
-                                                              <span key={section.section_id} className="badge bg-secondary me-2 mb-2">
-                                                                  {section.name}
-                                                              </span>
-                                                  ))}
-                                              </span>
-                                              <span>{formatDate(newsItems[currentSlide].publish_date)}</span>
-                                          </div>
-                                          <h2 className='fw-bold ps-2 mb-3'>
-                                              {newsItems[currentSlide].headline}
-                                          </h2>
-                                          <p className='ps-2'>
-                                              <span className='fw-bold'>Autor:</span> {newsItems[currentSlide].user?.name || 'Desconocido'}
-                                          </p>
-                                      </div>
-                                  </div>   
+                                            {/* ✅ PASO 4: 'mt-auto' (margin-top: auto) empuja esto al fondo.
+                                            */}
+                                            <p className='mt-auto mb-0'> {/* Quitamos ps-2, añadimos mt-auto y mb-0 */}
+                                                <span className='fw-bold'>Autor:</span> {newsItems[currentSlide].user?.name || 'Desconocido'}
+                                            </p>
+                                        </div>
+                                    </div>   
                                 </Link>
                                 {/* Botón Siguiente */}
                                 <div className="col-auto rounded-end bg-danger align-self-stretch d-flex align-items-center"> {/* Usamos col-auto */}
-                                    <button className='bg-danger text-white border-0 ' onClick={nextSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
+                                    <button className='bg-danger text-white border-0 h-100 ' onClick={nextSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
                                 </div>
                             </div>
                         </div>

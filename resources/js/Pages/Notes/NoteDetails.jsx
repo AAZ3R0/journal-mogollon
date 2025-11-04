@@ -47,48 +47,61 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
     const closingExtensions = (note.extensions || []).filter(ext => ext.type === 'closing');
 
 
-    const [relatedIndex, setRelatedIndex] = useState(0); // Índice del primer artículo visible (0, 2, 4...)
-    const relatedItemsPerPage = 2; // Mostrar de 2 en 2
+    // --- ✅ LÓGICA DEL CARRUSEL RESPONSIVO ---
+    
+    // Función para saber si estamos en una pantalla móvil (de Bootstrap)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // 768px es el breakpoint 'md'
 
-    // Limite de caracteres en los comentarios
+    // El número de items a mostrar cambia según el tamaño de la pantalla
+    const relatedItemsPerPage = isMobile ? 1 : 2;
 
-    const commentCharLimit = 150;
-    const isCommentOverLimit = data.message.length > commentCharLimit;
+    const [relatedIndex, setRelatedIndex] = useState(0);
 
-    // Reinicia el índice si las notas relacionadas cambian
+    // Este useEffect ahora también detecta cambios de tamaño de pantalla
     useEffect(() => {
-        setRelatedIndex(0);
-    }, [relatedNotes]);
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener('resize', handleResize);
+        // Limpia el listener al desmontar el componente
+        return () => window.removeEventListener('resize', handleResize); 
+    }, []);
 
+    // Actualiza el índice si la cantidad de items por página cambia (ej. al girar el móvil)
+    useEffect(() => {
+        setRelatedIndex(0); 
+    }, [relatedNotes, relatedItemsPerPage]);
+
+    // Las funciones next/prev ahora usan la variable 'relatedItemsPerPage'
     const nextRelated = () => {
-        // Si hay notas, calcula el próximo índice
         if (relatedNotes.length > 0) {
             setRelatedIndex(prev => {
-                // Suma el número de items por página
                 const nextIndex = prev + relatedItemsPerPage;
-                // Si el próximo índice es mayor o igual al total, vuelve a 0
+                // Si el próximo índice se pasa, vuelve a 0
                 return nextIndex >= relatedNotes.length ? 0 : nextIndex;
             });
         }
     };
 
     const prevRelated = () => {
-        // Si hay notas, calcula el índice anterior
         if (relatedNotes.length > 0) {
             setRelatedIndex(prev => {
-                // Si estamos en el primer item (0), salta al último par
                 if (prev === 0) {
-                    // Calcula el índice del último par (ej. si hay 6 notas, el último par empieza en 4)
+                    // Salta al último "grupo"
                     return (relatedNotes.length - 1) - ((relatedNotes.length - 1) % relatedItemsPerPage);
                 }
-                // Si no, simplemente retrocede
                 return prev - relatedItemsPerPage;
             });
         }
     };
 
-    // Calcula qué notas mostrar en la página actual del carrusel
+    // 'slice' ahora es dinámico: mostrará 1 o 2 notas
     const currentRelatedNotes = relatedNotes.slice(relatedIndex, relatedIndex + relatedItemsPerPage);
+
+    // Limite de caracteres en los comentarios
+
+    const commentCharLimit = 150;
+    const isCommentOverLimit = data.message.length > commentCharLimit;
 
     const Layout = auth.user? AuthenticatedLayout : GuestLayout;
 
@@ -97,7 +110,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
             {/* Set the page title */}
             <Head title={note.headline} />
 
-            <div className="mx-lg-5 m-auto">
+            <div className="mx-2 mx-lg-5 my-3 my-md-5">
                 <article className="bg-white bg-opacity-50 p-4 p-md-5 rounded shadow-sm"> {/* Added styling */}
                     {/* Header Section */}
                     <header className="mb-4">
@@ -162,75 +175,83 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                             </div>
                         ))}
                     </section>
-                    {/* You could add a comments section here later */}
+                    
+                    {/* --- SECCIÓN NOTAS RELACIONADAS --- */}
                     <div className='bg-dark bg-opacity-25 rounded pb-5 pt-3 mt-5'>
-                        <div className='container-fluid px-5'>
+                        <div className='container-fluid px-0 px-lg-5'>
                             <h3 className='fw-bold text-decoration-underline text-black p-3'>Notas relacionadas</h3>
-                            <div className=''>
-                                {/* Agregar un carrusel parecido al del home page con noticias relacionadas a esta nota a partir de sus secciones */}
-                                {relatedNotes.length > 0 && (
-                                    <div className='mt-3 pt-4 border-top rounded p-3'> {/* Contenedor Estilizado */}
+                            {relatedNotes.length > 0 && (
+                                <div className='mt-3 pt-4 rounded p-3'> 
+                                    <div className="position-relative">
                                         
-                                        <div className="position-relative">
-                                            <div className='row g-3 align-items-center justify-content-center'> {/* Fila principal */}
-                                                
-                                                {/* Botón Anterior */}
-                                                <div className="col-auto bg-danger rounded-start py-5">
-                                                    <button 
-                                                        className='bg-danger border-0 text-white' 
-                                                        onClick={prevRelated}
-                                                        style={{ width: '2.5vw', height:'25vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        aria-label="Notas relacionadas anteriores"
-                                                    >
-                                                        <h1>‹</h1>
-                                                    </button>
-                                                </div>
+                                        {/* 'align-items-stretch' fuerza a los botones y al 'col' de las tarjetas a tener la misma altura */}
+                                        <div className='row g-0 align-items-stretch justify-content-center'> 
+                                            
+                                            {/* Botón Anterior */}
+                                            <div className="col-auto bg-danger rounded-start d-flex align-items-center">
+                                                <button 
+                                                    className='btn btn-danger text-white border-0 h-100' 
+                                                    onClick={prevRelated} 
+                                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                    aria-label="Notas relacionadas anteriores"
+                                                >
+                                                    <h1 className='m-0'>‹</h1>
+                                                </button>
+                                            </div>
 
-                                                {/* Contenedor de las Tarjetas (Ocupa el espacio restante) */}
-                                                <div className="col">
-                                                    <div className="row">
-                                                        {currentRelatedNotes.map((relatedNote) => (
-                                                            <div className='col-md-6' key={relatedNote.note_id}> 
-                                                                <div className="card h-100 shadow-sm bg-light bg-opacity-50"> 
-                                                                    <Link href={route('notes.public.show', relatedNote.note_id)}>
-                                                                        <img src={`/storage/${relatedNote.portrait_url}`} className="card-img-top" alt={`Portada de ${relatedNote.headline}`} style={{ height:'25vh',objectFit: 'cover' }} />
+                                            {/* Contenedor de las Tarjetas */}
+                                            <div className="col">
+                                                {/* 'h-100' aquí se asegura de que la fila interna ocupe toda la altura */}
+                                                <div className="row"> 
+                                                    {currentRelatedNotes.map((relatedNote) => (
+                                                        
+                                                        // Añadimos 'd-flex align-items-stretch' a la columna
+                                                        <div className='col-12 col-md-6' key={relatedNote.note_id}> 
+                                                            
+                                                            {/* 'h-100' ahora funcionará porque su padre (la columna) se está estirando */}
+                                                            <div className="card shadow-sm bg-light bg-opacity-50 rounded"> 
+                                                                <Link href={route('notes.public.show', relatedNote.note_id)}>
+                                                                    <img src={`/storage/${relatedNote.portrait_url}`} className="card-img-top" alt={`Portada de ${relatedNote.headline}`} style={{ height:'10rem', objectFit: 'cover' }} />
+                                                                </Link>
+                                                                <div className="card-body d-flex flex-column">
+                                                                    <h6 className="card-title fw-bold" style={{
+                                                                        minHeight: '4.5rem', // <-- La clave para títulos cortos
+                                                                        overflow: 'hidden',
+                                                                        textOverflow: 'ellipsis',
+                                                                        display: '-webkit-box',
+                                                                        WebkitLineClamp: 3,     // <-- La clave para títulos largos
+                                                                        WebkitBoxOrient: 'vertical'
+                                                                    }}>
+                                                                    <Link href={route('notes.public.show', relatedNote.note_id)} className="text-decoration-none text-dark">
+                                                                        {relatedNote.headline}
                                                                     </Link>
-                                                                    <div className="card-body d-flex flex-column">
-                                                                        <h5 className="card-title fw-bold">
-                                                                            <Link href={route('notes.public.show', relatedNote.note_id)} className="text-decoration-none text-dark stretched-link">
-                                                                                {relatedNote.headline}
-                                                                            </Link>
-                                                                        </h5>
-                                                                        <div className="mt-auto text-muted small">
-                                                                            <span>{relatedNote.sections?.[0]?.name || 'General'}</span> | <span>{formatDate(relatedNote.publish_date)}</span>
-                                                                        </div>
+                                                                    </h6>
+                                                                    <div className="row mt-auto text-muted small">
+                                                                        <span className='col-lg-2 col-md-12 badge bg-primary align-self-center'>{relatedNote.sections?.[0]?.name || 'General'}</span> <span className='col-lg-10 col-md-12'>{formatDate(relatedNote.publish_date)}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        ))}
-                                                        {/* Relleno si solo hay una nota en la última página */}
-                                                        {currentRelatedNotes.length === 1 && <div className="col-md-6 d-none d-md-block"></div>} 
-                                                    </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
+                                            </div>
 
-                                                {/* Botón Siguiente */}
-                                                <div className="col-auto bg-danger rounded-end py-5">
-                                                    <button 
-                                                        className='bg-danger border-0 text-white' 
-                                                        onClick={nextRelated} 
-                                                        style={{ width: '2.5vw', height:'25vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        aria-label="Notas relacionadas siguientes"
-                                                    >
-                                                        <h1>›</h1>
-                                                    </button>
-                                                </div>
+                                            {/* Botón Siguiente */}
+                                            <div className="col-auto bg-danger rounded-end d-flex align-items-center">
+                                                <button 
+                                                    className='btn btn-danger text-white border-0 h-100' 
+                                                    onClick={nextRelated} 
+                                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                    aria-label="Notas relacionadas siguientes"
+                                                >
+                                                    <h1 className='m-0'>›</h1>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
-                        
                     </div>
 
                     {/* SECCIÓN CAJA DE COMENTARIOS*/}

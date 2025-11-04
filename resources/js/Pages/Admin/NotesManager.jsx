@@ -131,13 +131,13 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
         <AuthenticatedLayout>
             <Head title="Administrador de Notas" />
 
-            <div className='d-flex'>
+            <div className='row'>
 
                 <DashboardOptions />
-                <div className="container-fluid">
+                <div className="col">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
-                        <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark fw-bold mt-3 rounded-pill d-flex align-items-center'>
+                        <PrimaryButton onClick={openCreateModal} className='btn btn-primary btn-lg fw-bold mt-3 rounded-pill d-flex align-items-center'>
                             <PlusCircleFill className='fs-3 me-2' />CREAR NOTA
                         </PrimaryButton>
                     </div>
@@ -279,8 +279,12 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
                         )}
                     </div>
 
-                    {/* ✅ Añadimos la paginación */}
-                    <BootstrapPagination links={notes.links} />
+                    <div className='bg-light p-3 bg-opacity-50'>
+                        {/* ✅ Añadimos la paginación */}
+                        <BootstrapPagination links={notes.links} />
+                    </div>
+
+                    
                 </div>
 
             </div>

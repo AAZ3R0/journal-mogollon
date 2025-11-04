@@ -129,8 +129,8 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
             <div className="container py-5">
                 <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                     <h1 className="h2"><b>MI ESPACIO DE TRABAJO</b></h1>
-                    <PrimaryButton onClick={openCreateModal} className='btn btn-success btn-lg text-dark mt-3 rounded-pill d-flex align-items-stretch'>
-                        <PlusCircleFill className='fs-3 mx-2'/>CREAR NOTA
+                    <PrimaryButton onClick={openCreateModal} className='btn btn-primary btn-lg col-lg-2 col-12 fw-bold mt-3 rounded-pill d-flex justify-content-center align-items-center'>
+                        <PlusCircleFill className='fs-3 me-2'/>CREAR NOTA
                     </PrimaryButton>
                 </div>
 
