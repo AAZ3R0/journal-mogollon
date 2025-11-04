@@ -8,7 +8,7 @@ export default function DashboardOptions(){
 
     return(
 
-        <aside className='bg-light bg-opacity-50 rounded p-3 col-3'>
+        <aside className='bg-light bg-opacity-50 rounded p-3 col-3 d-none d-lg-block'>
             <h2 className='mb-4 fw-bold'>Panel de control</h2>
             <Link href={route('admin.panel')} className='btn btn-warning btn-lg w-100 text-start mb-4'><ClipboardData className='fs-2 me-2 text-dark'></ClipboardData> Panel Principal</Link>
             <Link href={route('notes.index')} className='btn btn-warning btn-lg w-100 text-start mb-4'><JournalText className='fs-2 me-2 text-dark'></JournalText> Administrar notas</Link>

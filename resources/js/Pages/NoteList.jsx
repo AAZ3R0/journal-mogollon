@@ -60,7 +60,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
                 <div className='row g-3'> {/* g-3 añade espacio entre las columnas */}
                     
                     {/* --- Columna de Sección (ocupa 4 de 12 columnas en pantallas medianas) --- */}
-                    <div className='col col-lg-4 col-md-2'>
+                    <div className='col col-lg col-md'>
                         <h4>Sección</h4>
                         <select className='form-select' name="section_id" value={currentFilters.section_id} onChange={handleFilterChange}>
                             <option value="">Todas las secciones</option>
@@ -76,18 +76,18 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
                     <div className='col-md-8'>
                         <h4>Fecha</h4>
                         {/* Usamos 'd-flex' aquí para alinear los 3 selectores de fecha */}
-                        <div className='d-flex'>
-                            <select className='form-select me-2' name="day" value={currentFilters.day} onChange={handleFilterChange}>
+                        <div className='row g-0'>
+                            <select className='col-lg col-md-12 mb-2 me-lg-2 mb-lg-0 form-select' name="day" value={currentFilters.day} onChange={handleFilterChange}>
                                 <option value="">Cualquier día</option>
                                 {days.map(day => <option key={day} value={day}>{day}</option>)}
                             </select>
                             
-                            <select className='form-select me-2' name="month" value={currentFilters.month} onChange={handleFilterChange}>
+                            <select className='col-lg col-md-12 mb-2 me-lg-2 mb-lg-0 form-select' name="month" value={currentFilters.month} onChange={handleFilterChange}>
                                 <option value="">Cualquier mes</option>
                                 {months.map(month => <option key={month.value} value={month.value}>{month.name}</option>)}
                             </select>
                             
-                            <select className='form-select' name="year" value={currentFilters.year} onChange={handleFilterChange}>
+                            <select className='col-lg col-md-12 mb-2 mb-lg-0 form-select' name="year" value={currentFilters.year} onChange={handleFilterChange}>
                                 <option value="">Cualquier año</option>
                                 {years.map(year => <option key={year} value={year}>{year}</option>)}
                             </select>

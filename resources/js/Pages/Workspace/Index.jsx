@@ -171,7 +171,9 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
                     </div>
                 </div>
 
-                <div className="table-responsive">
+                {/* Tabla (vista en dektop) */}
+
+                <div className="table-responsive d-none d-lg-block">
                     <table className="table table-bordered border-dark">
                         <thead className='text-center'>
                             <tr>
@@ -236,7 +238,80 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
                     )}
                 </div>
 
-                <BootstrapPagination links={notes.links} />
+                {/* Vista móvil como tarjetas */}
+                <div className='d-lg-none'>
+                    {notes.data.map((note) =>{
+                        let canUpdateOrDelete = false;
+                            if (user.role.name === 'Editor') {
+                                if (note.user.rol_id === user.rol_id || note.user.role.name === 'Reportero') {
+                                    canUpdateOrDelete = true;
+                                }
+                            } else if (user.role.name === 'Reportero') {
+                                canUpdateOrDelete = (user.user_id === note.user_id);
+                            }
+                        return (
+                            <div className="card bg-light bg-opacity-50 shadow-sm mb-3" key={note.note_id}>
+                                <div className="row g-0">
+                                    <div className="col-4">
+                                        {/* Imagen (equivalente a tu 1ra <td>) */}
+                                        <img 
+                                            src={`/storage/${note.portrait_url}`} 
+                                            className='img-fluid rounded-start h-100' 
+                                            alt={note.headline}
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                    </div>
+                                    <div className="col-8">
+                                        <div className="card-body d-flex flex-column h-100 p-2">
+                                            {/* Título (2da <td>) */}
+                                            <h5 className="card-title fw-bold small mb-1">{note.headline}</h5>
+                                            
+                                            {/* Autor y Fecha (4ta y 5ta <td>) */}
+                                            <p className="card-text text-muted mb-0" style={{ fontSize: '0.8rem' }}>
+                                                {note.user ? note.user.name : 'N/A'}
+                                            </p>
+                                            <p className="card-text text-muted" style={{ fontSize: '0.8rem' }}>
+                                                {new Date(note.publish_date).toLocaleDateString()}
+                                            </p>
+
+                                            {/* Secciones (3ra <td>) - (Opcional si quieres ahorrar espacio) */}
+                                            <div className="mb-2">
+                                                {Array.isArray(note.sections) && note.sections.map((section) => (
+                                                    <span key={section.section_id} className="badge bg-primary me-1 mb-1 small">
+                                                        {section.name}
+                                                    </span>
+                                                ))}
+                                            </div>
+
+                                            {/* Operaciones (6ta <td>) - Empujadas al fondo */}
+                                            <div className="mt-auto d-flex justify-content-between">
+                                                <button onClick={() => openViewModal(note)} className='text-dark btn btn-sm btn-transparent p-1 me-1'><Newspaper className='fs-1'/></button> 
+                                                {canUpdateOrDelete && (
+                                                <button onClick={() => openEditModal(note)} className=' text-dark btn btn-sm btn-transparent p-1 me-1'><PencilSquare className='fs-1'/></button> 
+                                                )}
+                                                {canUpdateOrDelete && (
+                                                <button onClick={() => openDeleteModal(note)} className=' text-dark btn btn-sm btn-transparent p-1 me-1'><TrashFill className='fs-1'/></button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {/* Mensaje si no hay resultados */}
+                    {notes.data.length === 0 && (
+                        <div className="alert bg-warning bg-opacity-50 text-center mt-3" role="alert">
+                            No se encontraron notas que coincidan con tus filtros.
+                        </div>
+                    )}
+                </div>
+
+                <div className='bg-light bg-opacity-50 p-3 rounded'>
+                    <BootstrapPagination links={notes.links} />
+                </div>
+
+                
             </div>
 
             {/* --- Modales --- */}
