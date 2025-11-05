@@ -53,9 +53,9 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
     return (
         // ✅ El <section> se elimina. El Modal se convierte en el contenedor raíz.
 
-        <Modal show={show} onClose={closeModal} size="xl">
+        <Modal show={show} onClose={closeModal} size="lg">
 
-            <form onSubmit={deleteUser} className="p-3">
+            <form onSubmit={deleteUser} className="p-lg-3">
                 <div className='d-flex justify-content-end'>
                     <button
                         type="button"
@@ -71,9 +71,9 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
 
 
                 </div>
-                <div className='bg-warning bg-opacity-25 p-5 container rounded'>
-                    <div className="row mb-5 align-items-center ">
-                        <label htmlFor="modal_name" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Nombre:</label>
+                <div className='bg-warning bg-opacity-25 p-lg-5 p-3 rounded'>
+                    <div className="row g-0 mb-lg-5 mb-2 d-flex align-items-center">
+                        <label htmlFor="modal_name" className="col-md-3 txt-dark col-form-label"><h4 className='fw-bold m-0'>Nombre:</h4></label>
                         <div className="col-md-9">
                             <input
                                 id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
@@ -86,8 +86,8 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                     </div>
 
                     {/* Campo Usuario */}
-                    <div className="row mb-5 align-items-center">
-                        <label htmlFor="modal_username" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Usuario:</label>
+                    <div className="row g-0 mb-lg-5 mb-2 align-items-center ">
+                        <label htmlFor="modal_username" className="col-md-3 txt-dark col-form-label"><h4 className='fw-bold m-0'>Usuario:</h4></label>
                         <div className="col-md-9 ">
                             <input
                                 id="modal_username" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
@@ -100,8 +100,8 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                     </div>
 
                     {/* Campo Email */}
-                    <div className="row mb-5 align-items-center">
-                        <label htmlFor="modal_email" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Correo electrónico:</label>
+                    <div className="row g-0 mb-lg-5 mb-2 align-items-center ">
+                        <label htmlFor="modal_email" className="col-md-3 txt-dark col-form-label"><h4 className='fw-bold m-0'>Correo electrónico:</h4></label>
                         <div className="col-md-9">
                             <input
                                 id="modal_email" type="email" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
@@ -114,8 +114,8 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                     </div>
 
                     {/* Campo Rol */}
-                    <div className="row mb-5 align-items-center ">
-                        <label htmlFor="modal_name" className="col-md-3 fs-4 txt-dark col-form-label fw-bold">Rol:</label>
+                    <div className="row g-0 mb-lg-5 mb-2 align-items-center">
+                        <label htmlFor="modal_name" className="col-md-3 txt-dark col-form-label"><h4 className='fw-bold m-0'>Rol:</h4></label>
                         <div className="col-md-9">
                             <input
                                 id="modal_name" type="text" className="form-control form-control-lg rounded-pill border-0 bg-secondary bg-opacity-50"
@@ -126,20 +126,38 @@ export default function DeleteUserForm({ className = '', user, show, onClose }) 
                             <InputError className="mt-2" message={errors.name} />
                         </div>
                     </div>
+                    <div className="mt-4">
+                        <label htmlFor="delete_password" className="form-label fw-bold"><h5 className='fw-bold'>Introduce tu Contraseña para eliminar la cuenta:</h5></label>
+                        <TextInput
+                            id="delete_password"
+                            type="password"
+                            name="password"
+                            ref={passwordInput}
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            className="form-control form-control-lg rounded-pill"
+                            isFocused
+                            placeholder="Contraseña"
+                        />
+                        <InputError message={errors.password} className="mt-2" />
+                    </div>
+                    <div className="mt-4 d-flex justify-content-end"></div>
                 </div>
-                <div className="mt-4 d-flex justify-content-end">
+
+                <div className="mt-4 d-flex justify-content-end align-items-center">
 
 
                     {/* Usamos un botón de Bootstrap en lugar del DangerButton de Breeze/Tailwind */}
 
                     <button
                         type="submit"
-                        className="btn btn-lg btn-danger rounded-pill px-4"
+                        className="col-12 col-lg-4 btn btn-lg btn-danger rounded-pill fw-bold  px-4 d-flex fs-3 justify-content-center align-items-center"
                         disabled={processing}
                     >
-                        <TrashFill className='fs-5 me-2'></TrashFill>
 
-                        {processing ? 'Eliminando...' : 'Eliminar Cuenta'}
+                            <TrashFill className='fs-2 me-2'></TrashFill>
+                                {processing ? 'Eliminando...' : 'Eliminar'}
+
                     </button>
                 </div>
             </form>
