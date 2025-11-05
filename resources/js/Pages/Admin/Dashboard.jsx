@@ -24,9 +24,9 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
         <Layout>
             <Head title="Panel de control" /> {/* Título cambiado */}
             <div className='row'>
-                <DashboardOptions />
+                <DashboardOptions/>
 
-                <div className='bg-light bg-opacity-50 rounded p-3 col'>
+                <div className='bg-light bg-opacity-50 rounded p-3 col ms-3'>
 
 
                     <div className='row g-0 d-flex justify-content-between mb-3 text-center'>
@@ -45,9 +45,9 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                         </div>
                     </div>
 
-                    <div className='d-flex'>
-                        <div className='rounded overflow-hidden w-75 me-3'>
-                            <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block'>
+                    <div className='row g-0'>
+                        <div className='rounded overflow-hidden me-3'>
+                            <table className='table col align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block mb-3'>
                                 <thead>
                                     {/* Fila 1: Título */}
                                     {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
@@ -84,12 +84,10 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                                 </tbody>
                             </table>
                         </div>
-                        {/* --- TABLA 2: USUARIOS NUEVOS (CORREGIDA) --- */}
-                        {/* 1. Esta también es UNA sola tabla */}
 
-                        <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-25 d-flex flex-column'> {/* Mantenemos flexbox aquí */}
-                            <table className='table align-middle mb-0 h-100 border border-dark border-opacity-25 border-2 d-none d-lg-block'> {/* Mantenemos h-100 aquí */}
-                                <thead className='align-middle'>
+                        <div className='rounded overflow-hidden me-3 row g-0 d-none d-lg-block'>
+                            <table className='table  border border-dark border-opacity-25 border-2 mb-3'>
+                                <thead>
                                     {/* Fila 1: Título */}
                                     {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
                                     <tr>
@@ -97,18 +95,19 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                                     </tr>
                                     {/* Fila 2: Cabeceras */}
                                     {/* 4. Quitamos 'border', aumentamos padding a 'p-3' y añadimos 'fw-bold' */}
-                                    <tr className='text-center border-top'>
-                                        <th className='p-3 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
-                                        <th className='p-3 px-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Rol</th>
+                                    <tr className='text-center border-top border-dark border-opacity-25'>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Usuario</th>
+                                        <th className='p-3 text-start bg-secondary bg-opacity-50 fw-bold text-dark'>Rol</th>
                                     </tr>
                                 </thead>
-
-                                {/* --- CAMBIO 1: Quitamos clases flex del tbody --- */}
+                                {/* El <tbody> ahora es hijo directo de la tabla principal */}
                                 <tbody className='fs-5'>
                                     {recentUsers.map((user) => (
-                                        < tr key={user.user_id} className='text-center  ' >
-                                            <td className='py-4 px-3 text-start align-middle bg-accent1 bg-opacity-50'> {user.name}</td>
-                                            <td className='py-4 px-3 text-start align-middle bg-accent1 bg-opacity-50'>{user.role?.name || 'N/A'}</td>
+                                        <tr key={user.user_id} className='text-center'>
+                                            {/* 8. Padding 'p-3' para más espacio. Quitamos 'fs-5' (ya está en tbody) y 'border' */}
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>{user.username}</td>
+                                            <td className='p-3 text-start bg-accent1 bg-opacity-50'>{user.role?.name || 'N/A'}</td>
+                                            
                                         </tr>
                                     ))}
                                 </tbody>
@@ -118,14 +117,14 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
 
                     {/* --- TABLA 3: COMENTARIOS RECIENTES (CORREGIDA) --- */}
                     {/* 1. Aplicamos la misma corrección estructural aquí */}
-                    <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-100 mt-3 '>
+                    <div className='rounded shadow-sm overflow-hidden bg-opacity-75 mt-3 d-none d-lg-block'>
                         {/* 2. Tabla 'table-hover' y 'align-middle' */}
-                        <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block'>
+                        <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2'>
                             <thead className=''>
                                 {/* Fila 1: Título */}
                                 {/* 3. Padding 'p-4' y 'mb-0' */}
                                 <tr>
-                                    <th className='bg-warning p-3 px-3 h3 mb-0 fw-bold text-dark' colSpan="3">Comentarios recientes</th>
+                                    <th className='bg-warning p-3 px-3 h3 mb-0 fw-bold text-dark' colSpan="5">Comentarios recientes</th>
                                 </tr>
                                 {/* Fila 2: Cabeceras */}
                                 {/* 4. Padding 'p-3' y 'fw-bold' */}
@@ -138,7 +137,7 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                             {/* 5. 'fs-5' en el tbody */}
                             <tbody className='fs-5 '>
                                 {recentComments.map((comment) => (
-                                    <tr key={comment.comment_id} className='text-center  border-top border-dark border-opacity-25'>
+                                    <tr key={comment.comment_id} className='text-center border-top border-dark border-opacity-25'>
                                         <td className='p-3 text-start bg-accent1 bg-opacity-50'>{comment.message.substring(0, 100)}...</td>
                                         <td className='p-3 text-start bg-accent1 bg-opacity-50'>{comment.user?.username || 'N/A'}</td>
                                         <td className='p-3 text-start bg-accent1 bg-opacity-50'>{formatDate(comment.publish_date)}</td>
