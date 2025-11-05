@@ -150,7 +150,9 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                         ))}
 
                         {/* Body */}
-                        <p>{note.body}</p>
+                        <p className="text-break" style={{ whiteSpace: 'pre-wrap' }}>
+                            {note.body}
+                        </p>
                         {mediaForSlot1 && <div className="my-3" style={{width:'75%'}}><MediaRenderer file={mediaForSlot1} index={0} /></div>}
                         {bodyExtensions.map(ext => (
                             <div key={ext.note_extension_id} className="ms-md-4 my-3 border-start border-2 ps-3">

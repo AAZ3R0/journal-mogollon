@@ -6,7 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import PrimaryButton from '@/Components/PrimaryButton';
 import InputError from '@/Components/InputError';
-import { PencilSquare, TrashFill } from 'react-bootstrap-icons';
+import { PencilSquare, Send, TrashFill } from 'react-bootstrap-icons';
 import Modal from '@/Components/Modal';
 
 // ✅ Recibe la nueva prop 'authUserId'
@@ -48,61 +48,70 @@ export default function CommentItem({ comment, authUserId }) {
 
     return (
         <>
-        <div className="d-flex mb-3 pb-3 border-bottom">
-            <div className="flex-grow-1">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold">{comment.user ? comment.user.name : 'Usuario Anónimo'}</span>
-                    <span className="text-muted small">
-                        {comment.publish_date 
-                            ? formatDistanceToNow(new Date(comment.publish_date), { addSuffix: true, locale: es })
-                            : ''}
-                    </span>
-                </div>
+        <div className="d-flex mb-3 ">
+            <div className="flex-grow-1 ">
+                <div className="row d-flex align-items-baseline mb-1">
+                    
+                    
                 
                 {/* --- RENDERIZADO CONDICIONAL --- */}
-                {isEditing ? (
-                    // --- MODO EDICIÓN ---
-                    <form onSubmit={submitUpdate}>
-                        <textarea
-                            className={`form-control mt-2 ${errors.message ? 'is-invalid' : ''}`}
-                            rows="3"
-                            value={data.message}
-                            onChange={(e) => setData('message', e.target.value)}
-                        ></textarea>
-                        <InputError message={errors.message} className="mt-1" />
-                        <div className="mt-2 d-flex justify-content-end">
-                            <PrimaryButton type="button" className="btn btn-outline-secondary btn-lg rounded-pill me-2" onClick={cancelEdit} disabled={processing}>
-                                Cancelar
-                            </PrimaryButton>
-                            <PrimaryButton className="btn btn-primary btn-lg rounded-pill" disabled={processing}>
-                                {processing ? 'Guardando...' : 'Guardar'}
-                            </PrimaryButton>
-                        </div>
-                    </form>
-                ) : (
-                    // --- MODO VISUALIZACIÓN ---
-                    <>
-                        <p className="mb-0">{comment.message}</p>
-                        {/* El botón de editar solo se muestra si el usuario puede editar */}
-                        {canEdit && (
-                            <div className="text-end mt-1">
-                                <button 
-                                    className="btn btn-sm btn-link text-muted"
-                                    onClick={() => setIsEditing(true)}
-                                >
-                                    <PencilSquare className='fs-3'></PencilSquare>
-                                </button>
-
-                                <button 
-                                        className="btn btn-sm btn-link text-danger"
-                                        onClick={() => setConfirmingDelete(true)}
-                                    >
-                                        <TrashFill className='fs-3'></TrashFill>
-                                    </button>
+                    {isEditing ? (
+                        
+                        // --- MODO EDICIÓN ---
+                        <form onSubmit={submitUpdate}>
+                            <p className="fw-bold">{comment.user ? comment.user.username : 'Usuario Anónimo'}</p>
+                            <textarea
+                                className={`form-control mt-2 ${errors.message ? 'is-invalid' : ''}`}
+                                rows="3"
+                                value={data.message}
+                                onChange={(e) => setData('message', e.target.value)}
+                            ></textarea>
+                            <InputError message={errors.message} className="mt-1" />
+                            <div className="row g-0 mt-2 d-flex justify-content-end">
+                                <PrimaryButton type="button" className="col-12 col-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2" onClick={cancelEdit} disabled={processing}>
+                                    Cancelar
+                                </PrimaryButton>
+                                <PrimaryButton className="col-12 col-lg-2 btn btn-primary btn-lg rounded-pill" disabled={processing}>
+                                   <Send className='fs-3'></Send> {processing ? 'Guardando...' : 'Guardar'}
+                                </PrimaryButton>
                             </div>
-                        )}
-                    </>
-                )}
+                        </form>
+                    ) : (
+                        // --- MODO VISUALIZACIÓN ---
+                        <>
+                            <p className="fw-bold col-7">{comment.user ? comment.user.username : 'Usuario Anónimo'}</p>
+                            
+                            
+
+                            
+                            {/* El botón de editar solo se muestra si el usuario puede editar */}
+                            {canEdit && (
+                                <div className="text-end mt-1 col">
+                                    <button 
+                                        className="btn btn-sm btn-link text-muted"
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        <PencilSquare className='fs-3'></PencilSquare>
+                                    </button>
+
+                                    <button 
+                                            className="btn btn-sm btn-link text-danger"
+                                            onClick={() => setConfirmingDelete(true)}
+                                        >
+                                            <TrashFill className='fs-3'></TrashFill>
+                                        </button>
+                                </div>
+                            )}
+                            <p className="text-muted small d-none d-lg-block col text-end">
+                                {comment.publish_date 
+                                    ? formatDistanceToNow(new Date(comment.publish_date), { addSuffix: true, locale: es })
+                                    : ''}
+                            </p>
+                            <div className='border-bottom border-dark mb-3'></div>
+                            <p className="mb-0" style={{textAlign:'justify', textAlignLast:'left'}}>{comment.message}</p>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
             {/* ✅ MODAL DE CONFIRMACIÓN DE BORRADO */}

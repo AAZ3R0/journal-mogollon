@@ -117,7 +117,7 @@ export default function ViewNoteDetails({ note, onClose }) {
                     </div>
                 ))}
                 {/* SECCIÓN DE CUERPO (BODY) */}
-                <p style={{textAlign: 'justify'}}>{note.body}</p>
+                <p className="text-break" style={{ whiteSpace: 'pre-wrap', textAlign: 'justify', textAlignLast:'left' }}>{note.body}</p>
                 {mediaForSlot1 && <MediaRenderer file={mediaForSlot1} index={0} />}
                 {bodyExtensions.map(ext => (
                     <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">

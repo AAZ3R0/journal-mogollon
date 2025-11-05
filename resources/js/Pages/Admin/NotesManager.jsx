@@ -136,8 +136,8 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
                 <DashboardOptions />
                 <div className="col">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
-                        <h1 className="h2"><b>ADMINISTRAR NOTAS</b></h1>
-                        <PrimaryButton onClick={openCreateModal} className='btn btn-primary btn-lg fw-bold mt-3 rounded-pill d-flex align-items-center'>
+                        <h1 className="h2 text-center text-md-start"><b>ADMINISTRAR NOTAS</b></h1>
+                        <PrimaryButton onClick={openCreateModal} className='col-12 col-lg-3 btn btn-primary btn-lg fw-bold mt-3 rounded-pill d-flex justify-content-center align-items-center'>
                             <PlusCircleFill className='fs-3 me-2' />CREAR NOTA
                         </PrimaryButton>
                     </div>
@@ -313,7 +313,7 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
             <Modal show={isEditModalOpen} onClose={closeEditModal} size="lg">
                 {editingNote && <EditNoteForm note={editingNote} sections={sections} onClose={closeEditModal} />}
             </Modal>
-            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size="lg">
+            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal}>
                 {deletingNote && <DeleteNoteConfirmation note={deletingNote} onClose={closeDeleteModal} />}
             </Modal>
         </AuthenticatedLayout>

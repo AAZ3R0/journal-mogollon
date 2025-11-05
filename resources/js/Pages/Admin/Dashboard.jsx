@@ -23,10 +23,10 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
     return (
         <Layout>
             <Head title="Panel de control" /> {/* Título cambiado */}
-            <div className='row'>
+            <div className='row m-auto'>
                 <DashboardOptions/>
 
-                <div className='bg-light bg-opacity-50 rounded p-3 col ms-3'>
+                <div className='bg-light bg-opacity-50 rounded p-3 col ms-lg-3'>
 
 
                     <div className='row g-0 d-flex justify-content-between mb-3 text-center'>

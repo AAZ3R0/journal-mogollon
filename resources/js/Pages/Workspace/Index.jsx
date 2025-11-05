@@ -126,9 +126,9 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
         <AuthenticatedLayout>
             <Head title="Mi Espacio de Trabajo" />
             
-            <div className="container py-5">
+            <div className="container">
                 <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
-                    <h1 className="h2"><b>MI ESPACIO DE TRABAJO</b></h1>
+                    <h1 className="h2 text-center text-md-start"><b>MI ESPACIO DE TRABAJO</b></h1>
                     <PrimaryButton onClick={openCreateModal} className='btn btn-primary btn-lg col-lg-2 col-12 fw-bold mt-3 rounded-pill d-flex justify-content-center align-items-center'>
                         <PlusCircleFill className='fs-3 me-2'/>CREAR NOTA
                     </PrimaryButton>
@@ -336,7 +336,7 @@ export default function Workspace({ auth, notes, sections, success, filters = {}
             <Modal show={isEditModalOpen} onClose={closeEditModal} size={"lg"}>
                 {editingNote && <EditNoteForm note={editingNote} sections={sections} onClose={closeEditModal} />}
             </Modal>
-            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size={"lg"}>
+            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal}>
                 {deletingNote && <DeleteNoteConfirmation note={deletingNote} onClose={closeDeleteModal} />}
             </Modal>
         </AuthenticatedLayout>

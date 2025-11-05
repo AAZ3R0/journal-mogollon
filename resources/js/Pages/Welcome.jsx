@@ -107,8 +107,8 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                             <div className="row align-items-center justify-content-center "> {/* justify-content-center ayuda */}
 
                                 {/* Botón Anterior */}
-                                <div className="col-auto bg-danger rounded-start align-self-stretch d-flex align-items-center"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
-                                    <button className='bg-danger text-white border-0 h-100' onClick={prevSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>‹</h1></button>
+                                <div className="col-auto bg-danger rounded-start p-0 align-self-stretch d-flex align-items-center"> {/* Usamos col-auto para que ocupe solo el espacio necesario */}
+                                    <button className='btn btn-danger p-lg-4 text-white border-0 h-100' onClick={prevSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1 className='m-0'>‹</h1></button>
                                 </div>
 
                                 <Link href={route('notes.public.show', newsItems[currentSlide].note_id)} className="text-decoration-none text-reset col">
@@ -118,7 +118,10 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                                     */}
                                     <div className="row g-0 shadow-sm bg-warning bg-opacity-25 rounded" >
                                         <div className="col-md-4">
-                                            <img src={`/storage/${newsItems[currentSlide].portrait_url}`} alt={newsItems[currentSlide].headline} className='rounded-start img-fluid h-100' style={{ width: '26rem', objectFit: 'cover' }} />
+                                            <img src={`/storage/${newsItems[currentSlide].portrait_url}`} 
+                                                alt={newsItems[currentSlide].headline} 
+                                                className='rounded-start img-fluid' 
+                                                style={{ width: '26rem', height:'15rem', objectFit: 'cover' }} />
                                         </div>
                                         
                                         {/* ✅ PASO 2: Añadimos 'd-flex flex-column' para controlar el contenido verticalmente.
@@ -158,8 +161,8 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
                                     </div>   
                                 </Link>
                                 {/* Botón Siguiente */}
-                                <div className="col-auto rounded-end bg-danger align-self-stretch d-flex align-items-center"> {/* Usamos col-auto */}
-                                    <button className='bg-danger text-white border-0 h-100 ' onClick={nextSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
+                                <div className="col-auto rounded-end bg-danger p-0 align-self-stretch d-flex align-items-center"> {/* Usamos col-auto */}
+                                    <button className='btn btn-danger p-lg-4 text-white border-0 h-100' onClick={nextSlide} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>›</h1></button>
                                 </div>
                             </div>
                         </div>
