@@ -29,25 +29,25 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                 <div className='bg-light bg-opacity-50 rounded p-3 col'>
 
 
-                    <div className='d-flex justify-content-between mb-3 text-center'>
-                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
+                    <div className='row g-0 d-flex justify-content-between mb-3 text-center'>
+                        <div className='col-md-12 col-lg bg-accent1 bg-opacity-50 rounded-4 p-3 px-5 me-3 mb-3 mb-lg-0 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.notes}</h1>
-                            <p className='fs-5'>Notas publicadas</p>
+                            <p className=''>Notas publicadas</p>
                         </div>
-                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
+                        <div className='col-md-12 col-lg bg-accent1 bg-opacity-50 rounded-4 p-3 px-5 me-3 mb-3 mb-lg-0 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.users}</h1>
-                            <p className='fs-5'>Usuarios registrados</p>
+                            <p className=''>Usuarios registrados</p>
                         </div>
-                        <div className='bg-accent1 w-25 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
+                        <div className='col-md-12 col-lg bg-accent1 bg-opacity-50 rounded-4 p-3 px-5 border border-dark border-opacity-75 border-2'>
                             <h1 className='fw-bold'>{stats.comments}</h1>
-                            <p className='fs-5'>Comentarios publicados</p>
+                            <p className=''>Comentarios publicados</p>
 
                         </div>
                     </div>
 
                     <div className='d-flex'>
                         <div className='rounded overflow-hidden w-75 me-3'>
-                            <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2'>
+                            <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block'>
                                 <thead>
                                     {/* Fila 1: Título */}
                                     {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
@@ -88,7 +88,7 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                         {/* 1. Esta también es UNA sola tabla */}
 
                         <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-25 d-flex flex-column'> {/* Mantenemos flexbox aquí */}
-                            <table className='table align-middle mb-0 h-100 border border-dark border-opacity-25 border-2'> {/* Mantenemos h-100 aquí */}
+                            <table className='table align-middle mb-0 h-100 border border-dark border-opacity-25 border-2 d-none d-lg-block'> {/* Mantenemos h-100 aquí */}
                                 <thead className='align-middle'>
                                     {/* Fila 1: Título */}
                                     {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
@@ -120,7 +120,7 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                     {/* 1. Aplicamos la misma corrección estructural aquí */}
                     <div className='rounded shadow-sm overflow-hidden bg-opacity-75 w-100 mt-3 '>
                         {/* 2. Tabla 'table-hover' y 'align-middle' */}
-                        <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2'>
+                        <table className='table align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block'>
                             <thead className=''>
                                 {/* Fila 1: Título */}
                                 {/* 3. Padding 'p-4' y 'mb-0' */}
@@ -146,6 +146,126 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+
+
+
+
+
+                    {/*Vista mobile*/}
+                    <div className='d-lg-none '>
+                        <div className='bg-warning text-center p-3 border border-dark'>
+                            <h2 className='fw-bold text-dark'>Notas Recientes</h2>
+                        </div>
+                        <div className='bg-accent1 bg-opacity-50 p-2 border border-dark'>
+                            {recentNotes.map((note) => {
+                                return (
+                                    <div className='card bg-dark bg-opacity-25 shadow-sm mb-3' key={note.note_id}>
+                                        <div className='row g-0 '>
+                                            <div className='col-4'>
+                                                <img
+                                                    src={`/storage/${note.portrait_url}`}
+                                                    className='img-fluid rounded-start h-100 '
+                                                    alt={note.headline}
+                                                    style={{ objectFit: 'cover' }}
+                                                />
+                                            </div>
+                                            <div className='col-8'>
+                                                <div className='card-body d-flex flex-column h-100 p-2'>
+                                                    <h5 className='card-title fw-bold small mb-1'>{note.headline}</h5>
+                                                    <p className='card-text text-muted mb-0' style={{ fontSize: '0.8rem' }}>
+                                                        {note.user ? note.user.name : 'N/A'}
+                                                    </p>
+                                                    <p className='card-text text-muted' style={{ fontSize: '0.8rem' }}>
+                                                        {new Date(note.publish_date).toLocaleDateString()}
+                                                    </p>
+                                                    <p className='card-text text-muted'>
+                                                        {Array.isArray(note.sections) && note.sections.map((section) => (
+                                                            <span key={section.section_id} className='badge bg-primary me-1 mb-1 small'>
+                                                                {section.name}
+                                                            </span>
+                                                        ))}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+
+                        {/*Usuarios nuevos*/}
+
+                        <div className='bg-warning text-center p-3 border border-dark mt-5'>
+                            <h2 className='fw-bold text-dark'>Usuarios Recientes</h2>
+                        </div>
+                        <div className='bg-accent1 bg-opacity-50 p-2 border border-dark'>
+                            {recentUsers.map((user) => {
+                                return (
+                                    <div className='card bg-dark bg-opacity-25 shadow-sm mb-3' key={user.user_id}>
+                                        <div className='row g-0 '>
+                                            <div className='col'>
+                                                <div className='card-body d-flex flex-column h-100 p-2'>
+                                                    <div className='row g-0 mb-2'>
+                                                        <h5 className='col card-title fw-bold small mb-1'>Nombre:</h5>
+                                                        <p className='col card-text text-muted mb-0 d-flex justify-content-end' style={{ fontSize: '0.8rem' }}>
+                                                            {user.name}
+                                                        </p>
+                                                    </div>
+                                                    <div className='row g-0 '>
+                                                        <h5 className='col card-title fw-bold small mb-1'>Rol:</h5>
+                                                        <p className='col card-text text-muted d-flex justify-content-end' style={{ fontSize: '0.8rem' }}>
+                                                            {user.role?.name || 'N/A'}
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+
+                        {/*Comentarios nuevos*/}
+
+                        <div className='bg-warning text-center p-3 border border-dark mt-5'>
+                            <h2 className='fw-bold text-dark'>Comentarios Recientes</h2>
+                        </div>
+                        <div className='bg-accent1 bg-opacity-50 p-2 border border-dark'>
+                            {recentComments.map((comment) => {
+                                return (
+                                    <div className='card bg-dark bg-opacity-25 shadow-sm mb-3' key={comment.comment_id}>
+                                        <div className='row g-0 '>
+                                            <div className='col'>
+                                                <div className='card-body d-flex flex-column h-100 p-2'>
+                                                    <div className='row g-0 mb-4'>
+                                                        <p className='col card-text text-dark mb-0 d-flex justify-content-center' style={{textAlign:'justify', textAlignLast:'left', hyphens:'auto'}}>
+                                                            {comment.message}
+                                                        </p>
+                                                    </div>
+                                                    <div className='row g-0 mb-2'>
+                                                        <h5 className='col card-title fw-bold small mb-1'>Usuario:</h5>
+                                                        <p className='col card-text text-muted d-flex justify-content-end' style={{ fontSize: '0.8rem' }}>
+                                                            {comment.user?.name || 'N/A'}
+                                                        </p>
+                                                    </div>
+                                                    <div className='row g-0 '>
+                                                        <h5 className='col card-title fw-bold small mb-1'>Fecha:</h5>
+                                                        <p className='col card-text text-muted d-flex justify-content-end' style={{ fontSize: '0.8rem' }}>
+                                                            {formatDate(comment.publish_date)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
                 </div>
