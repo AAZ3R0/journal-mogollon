@@ -122,11 +122,11 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50 '>{formatDate(comment.publish_date)}</td>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
                                             <button 
-                                                className='btn btn-sm btn-outline-danger fs-5' 
+                                                className='btn fs-5' 
                                                 title="Eliminar comentario"
                                                 onClick={() => openDeleteModal(comment)}
                                             >
-                                                <TrashFill />
+                                                <TrashFill className='fs-2 text-dark' />
                                             </button>
                                         </td>
                                     </tr>
@@ -140,8 +140,12 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
                             </div>
                         )}
                     </div>
-                    {/* ✅ Añadimos la Paginación */}
-                    <BootstrapPagination links={comments.links} />
+
+                    <div className='bg-light p-3 bg-opacity-50 mt-3'>
+                        {/* ✅ Añadimos la Paginación */}
+                        <BootstrapPagination links={comments.links} />
+                    </div>
+                    
                 </div>
             </div>
 

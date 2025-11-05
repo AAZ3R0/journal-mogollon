@@ -19,9 +19,9 @@ const formatDate = (dateString) => {
 // (Función getRoleBadge)
 const getRoleBadge = (roleName) => {
     switch (roleName) {
-        case 'Administrador': return 'bg-danger';
-        case 'Editor': return 'bg-warning text-dark';
-        case 'Reportero': return 'bg-info text-dark';
+        case 'Administrador': return 'bg-primary';
+        case 'Editor': return 'bg-dark';
+        case 'Reportero': return 'bg-dark';
         case 'Lector': return 'bg-secondary';
         default: return 'bg-light text-dark';
     }
@@ -138,14 +138,14 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
                         </div>
                     </div>
 
-                    <div className="table-responsiv rounded shadow-sm">
+                    <div className="table-responsive rounded shadow-sm">
                         <table className="table table-hover align-middle mb-0 table-bordered border-dark">
                             <thead className='bg-light'>
                                 <tr className='text-center'>
                                     <th className='bg-warning py-4 text-dark h4 '>Nombre</th>
                                     <th className='bg-warning py-4 text-dark h4'>Correo Electrónico</th>
                                     <th className='bg-warning py-4 text-dark h4 '>Rol</th>
-                                    <th className='bg-warning py-4 text-dark h4'>Registrado el</th>
+                                    <th className='bg-warning py-4 text-dark h4'>Registro</th>
                                     <th className='bg-warning py-4 text-dark h4 '>Acciones</th>
                                 </tr>
                             </thead>
@@ -163,24 +163,28 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
                                             </span>
                                         </td>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>{formatDate(user.created_at)}</td>
-                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
-                                            {/* ✅ Botones conectados */}
-                                            <button 
-                                                className='btn btn-sm fs-5 btn-outline-primary me-2' 
-                                                title="Ver detalles"
-                                                onClick={() => openViewModal(user)}
-                                            >
-                                                <EyeFill />
-                                            </button>
-                                            <button 
-                                                className='btn btn-sm fs-5 btn-outline-danger' 
-                                                title="Eliminar usuario"
-                                                onClick={() => openDeleteModal(user)}
-                                                // Impide que te borres a ti mismo
-                                                disabled={user.user_id === auth.user.user_id} 
-                                            >
-                                                <TrashFill />
-                                            </button>
+                                        <td className='p-3 bg-accent2 fs-5 bg-opacity-50 align-middle'>
+
+                                            <div className='d-flex justify-content-center align-items-center'>
+                                                {/* ✅ Botones conectados */}
+                                                <button 
+                                                    className='btn me-2' 
+                                                    title="Ver detalles"
+                                                    onClick={() => openViewModal(user)}
+                                                >
+                                                    <EyeFill className='fs-2 text-dark' />
+                                                </button>
+                                                <button 
+                                                    className='btn' 
+                                                    title="Eliminar usuario"
+                                                    onClick={() => openDeleteModal(user)}
+                                                    // Impide que te borres a ti mismo
+                                                    disabled={user.user_id === auth.user.user_id} 
+                                                >
+                                                    <TrashFill className='fs-2 text-dark' />
+                                                </button>
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 ))}
@@ -192,7 +196,10 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
                             </div>
                         )}
                     </div>
-                    <BootstrapPagination links={users.links} />
+                    <div className='bg-light p-3 bg-opacity-50 mt-3'>
+                        <BootstrapPagination links={users.links} />
+                    </div>
+                    
                 </div>
             </div>
 

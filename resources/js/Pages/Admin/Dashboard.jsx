@@ -46,8 +46,8 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
                     </div>
 
                     <div className='row g-0'>
-                        <div className='rounded overflow-hidden me-3'>
-                            <table className='table col align-middle mb-0 border border-dark border-opacity-25 border-2 d-none d-lg-block mb-3'>
+                        <div className='rounded overflow-hidden me-3 d-none d-lg-block'>
+                            <table className='table col align-middle mb-0 border border-dark border-opacity-25 border-2 mb-3'>
                                 <thead>
                                     {/* Fila 1: Título */}
                                     {/* 3. Quitamos el 'border', aumentamos padding a 'p-4', y añadimos 'mb-0' al h3 */}
