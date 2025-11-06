@@ -4,6 +4,7 @@ import ApplicationLogo from '@/Components/ApplicationLogoFigure';
 import NavLink from '@/Components/NavLink';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Search } from 'react-bootstrap-icons';
+import PrimaryButton from './PrimaryButton';
 
 export default function Navbar() {
 
@@ -18,12 +19,27 @@ export default function Navbar() {
 
     // ✅ PASO 2: Crea la función de envío
     const submitSearch = (e) => {
+        handleMobileLinkClick();
         e.preventDefault();
         // Hacemos una petición GET a la ruta 'index.notes'
         // Esto recargará la página de 'Notes' con los datos filtrados
+        
         get(route('search'), {
             preserveState: true, // Mantiene el estado (ej. scroll)
+            preserveScroll: true,
+            handleMobileLinkClick,
         });
+    };
+
+
+    const handleMobileLinkClick = () => {
+        
+        const closeButton = document.querySelector('#mainOffcanvasMenu [data-bs-dismiss="offcanvas"]');
+        
+        if (closeButton) {
+            // Si lo encuentra, hazle clic.
+            closeButton.click();
+        }
     };
 
 
@@ -31,65 +47,60 @@ export default function Navbar() {
     return (
         // ✅ 1. Añade 'navbar-expand-lg' y 'fixed-top'
         <nav className="navbar navbar-expand-lg navbar-light bg-accent1 bg-opacity-75 shadow-sm">
-            <div className="container-fluid mx-lg-5"> {/* 'mx-5' solo en pantallas grandes */}
+            <div className="container-fluid mx-lg-5">
 
-                {/* ✅ 2. Botón Hamburguesa (alineado a la izquierda) */}
+                {/* ✅ 1. Botón Hamburguesa (Ahora apunta a un Offcanvas) */}
                 <button 
                     className="navbar-toggler border-0" 
                     type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#mainNavbarContent" 
-                    aria-controls="mainNavbarContent" 
+                    data-bs-toggle="offcanvas" // <--- CAMBIO
+                    data-bs-target="#mainOffcanvasMenu" // <--- CAMBIO
+                    aria-controls="mainOffcanvasMenu" // <--- CAMBIO
                     aria-expanded="false" 
                     aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon fs-1"></span>
                 </button>
 
-                {/* ✅ 3. Logo (centrado en móvil, a la izquierda en escritorio) */}
+                {/* Logo (sin cambios) */}
                 <Link className="navbar-brand mx-auto mx-lg-0 me-lg-4" href="/">
                     <ApplicationLogo style={{ height: '100px', width: 'auto' }} />
                 </Link>
                 
-                {/* Div vacío para ayudar a centrar el logo en móvil (Bootstrap 5) */}
+                {/* Div espaciador para centrar logo (sin cambios) */}
                 <div className="d-lg-none" style={{ width: '56px' }}></div> 
 
-                {/* ✅ 4. Contenedor Colapsable */}
-                <div className="collapse navbar-collapse" id="mainNavbarContent">
+                {/* ✅ 2. Contenedor Offcanvas */}
+                {/* - Reemplaza 'collapse navbar-collapse'
+                  - 'offcanvas-end' hace que aparezca desde la DERECHA
+                  - 'navbar-expand-lg' lo convierte en navbar normal en desktop
+                */}
+                <div 
+                    className="offcanvas offcanvas-start w-75 bg-accent1" // <--- CAMBIO
+                    tabIndex="-1" 
+                    id="mainOffcanvasMenu" // <--- CAMBIO (debe coincidir con el data-bs-target)
+                    aria-labelledby="mainOffcanvasMenuLabel"
+                >
+                    
+                    {/* ✅ 3. Header del Offcanvas (SOLO VISIBLE EN MÓVIL) */}
+                    <div className="offcanvas-header d-lg-none justify-content-between"> {/* d-lg-none lo oculta en desktop */}
+                        <h5 className="offcanvas-title" id="mainOffcanvasMenuLabel">
+                            <Link className="navbar-brand mx-auto mx-lg-0 me-lg-4" href="/" onClick={handleMobileLinkClick}>
+                                <ApplicationLogo style={{ height: '70px', width: 'auto' }} />
+                            </Link>
+                        </h5>
+                        {/* ✅ CORRECCIÓN: Se usa el botón con el ícono 'X' importado */}
+                        <button 
+                            type="button" 
+                            className="btn btn-close text-reset fs-3 lh-1" // Clases de botón simple
+                            data-bs-dismiss="offcanvas" 
+                            aria-label="Close"
+                        >
+                        </button>
+                    </div>
 
-                    {/* 'me-auto' empuja los enlaces a la izquierda */}
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item me-2">
-                            <NavLink
-                                href={route('index.notes')}
-                                className="nav-link"
-                                active={route().current('index.notes')}
-                            >
-                                Notas
-                            </NavLink>
-                        </li>
-                        <li className="nav-item me-2">
-                            <NavLink
-                                href={route('login')}
-                                className="nav-link"
-                                active={route().current('login')}
-                            >
-                                Iniciar Sesión
-                            </NavLink>
-                        </li>
-                        <li className="nav-item me-2">
-                            <NavLink
-                                href={route('index.aboutus')}
-                                className="nav-link "
-                                active={route().current('index.aboutus')}
-                            >
-                                Sobre Nosotros
-                            </NavLink>
-                        </li>
-                    </ul>
-
-                    {/* --- Barra de Búsqueda (ahora dentro del colapso) --- */}
-                    <form className="d-flex w-25 mt-3 mt-lg-0" onSubmit={submitSearch}> {/* w-auto y márgenes responsivos */}
+                    {/* Barra de Búsqueda (sin cambios, solo movida aquí dentro) */}
+                    <form className="col-12 p-1 d-flex d-block d-lg-none mt-3 mt-lg-0" onSubmit={submitSearch}>
                         <div className="input-group">
                             <button className="btn btn-accent2" type="submit" id="button-addon1" disabled={processing}>
                                 <Search className='fs-4'></Search>
@@ -105,10 +116,113 @@ export default function Navbar() {
                             />
                         </div>
                     </form>
-                    {/* Opcional: Mostrar error de validación */}
-                    {errors.query && <div className='text-danger small mt-1 d-lg-none'>{errors.query}</div>}
 
-                </div> {/* Fin del div colapsable */}
+                    {/* ✅ 4. Cuerpo del Offcanvas (Aquí van tus enlaces y form) */}
+                    {/* - 'navbar-expand-lg' hace que este body se comporte
+                        como el contenedor de links en desktop.
+                    */}
+                    <div className="offcanvas-body align-items-center">
+
+                        {/* Lista de celular */}
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-block d-lg-none">
+                            <li className="nav-item mb-2">
+                                <NavLink
+                                    href={route('index.notes')}
+                                    // ✅ Clases de Botón para móvil
+                                    className={`${route().current('index.notes') ? 'active' : ''}`}
+                                    active={route().current('index.notes')} // Sigue controlando el estado 'active'
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    <PrimaryButton className='btn btn-warning col-12 fw-bold fs-5'>
+                                        Notas
+                                    </PrimaryButton>
+                                    
+                                </NavLink>
+                            </li>
+                            <li className="nav-item mb-2">
+                                <NavLink
+                                    href={route('login')}
+                                    className="bg-warning"
+                                    active={route().current('login')}
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    <PrimaryButton className='btn btn-warning w-100 fw-bold fs-5'>
+                                        Iniciar Sesión
+                                    </PrimaryButton>
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink
+                                    href={route('index.aboutus')}
+                                    className=""
+                                    active={route().current('index.aboutus')}
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    <PrimaryButton className='btn btn-warning w-100 fw-bold fs-5'>
+                                        Sobre Nosotros
+                                    </PrimaryButton>
+                                </NavLink>
+                            </li>
+                        </ul>
+                        
+                        {/* Enlaces (sin cambios, solo movidos aquí dentro) */}
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-none d-lg-flex">
+                            <li className="nav-item me-2">
+                                <NavLink
+                                    href={route('index.notes')}
+                                    className="nav-link"
+                                    active={route().current('index.notes')}
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    Notas
+                                </NavLink>
+                            </li>
+                            <li className="nav-item me-2">
+                                <NavLink
+                                    href={route('login')}
+                                    className="nav-link"
+                                    active={route().current('login')}
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    Iniciar Sesión
+                                </NavLink>
+                            </li>
+                            <li className="nav-item me-2">
+                                <NavLink
+                                    href={route('index.aboutus')}
+                                    className="nav-link "
+                                    active={route().current('index.aboutus')}
+                                    onClick={handleMobileLinkClick}
+                                >
+                                    Sobre Nosotros
+                                </NavLink>
+                            </li>
+                        </ul>
+
+                        {/* Barra de Búsqueda (sin cambios, solo movida aquí dentro) */}
+                        <form className="d-flex col-lg-4 d-none d-lg-block mt-3 mt-lg-0" onSubmit={submitSearch}>
+                            <div className="input-group">
+                                <button className="btn btn-accent2" type="submit" id="button-addon1" disabled={processing}>
+                                    <Search className='fs-4'></Search>
+                                </button>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Buscar por título..."
+                                    aria-label="Buscar"
+                                    aria-describedby="basic-addon1"
+                                    value={data.query}
+                                    onChange={(e) => setData('query', e.target.value)}
+                                />
+                            </div>
+                        </form>
+                        
+                        {/* Error (sin cambios) */}
+                        {errors.query && <div className='text-danger small mt-1 d-lg-none'>{errors.query}</div>}
+
+                    </div> {/* Fin del offcanvas-body */}
+
+                </div> {/* Fin del div offcanvas */}
 
             </div>
         </nav>
