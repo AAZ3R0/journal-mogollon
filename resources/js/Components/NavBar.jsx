@@ -5,7 +5,6 @@ import NavLink from '@/Components/NavLink';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { ArrowBarRight, CardList, Newspaper, Search } from 'react-bootstrap-icons';
 import PrimaryButton from './PrimaryButton';
-import { CardText } from 'react-bootstrap';
 
 export default function Navbar() {
 
@@ -54,9 +53,9 @@ export default function Navbar() {
                 <button 
                     className="navbar-toggler border-0" 
                     type="button" 
-                    data-bs-toggle="offcanvas" // <--- CAMBIO
-                    data-bs-target="#mainOffcanvasMenu" // <--- CAMBIO
-                    aria-controls="mainOffcanvasMenu" // <--- CAMBIO
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#mainOffcanvasMenu"
+                    aria-controls="mainOffcanvasMenu"
                     aria-expanded="false" 
                     aria-label="Toggle navigation"
                 >
@@ -171,7 +170,7 @@ export default function Navbar() {
                             <li className="nav-item me-2">
                                 <NavLink
                                     href={route('index.notes')}
-                                    className="nav-link"
+                                    className="nav-link me-2"
                                     active={route().current('index.notes')}
                                     onClick={handleMobileLinkClick}
                                 >
@@ -181,7 +180,7 @@ export default function Navbar() {
                             <li className="nav-item me-2">
                                 <NavLink
                                     href={route('login')}
-                                    className="nav-link"
+                                    className="nav-link me-2"
                                     active={route().current('login')}
                                     onClick={handleMobileLinkClick}
                                 >
@@ -191,7 +190,7 @@ export default function Navbar() {
                             <li className="nav-item me-2">
                                 <NavLink
                                     href={route('index.aboutus')}
-                                    className="nav-link "
+                                    className="nav-link me-2"
                                     active={route().current('index.aboutus')}
                                     onClick={handleMobileLinkClick}
                                 >
