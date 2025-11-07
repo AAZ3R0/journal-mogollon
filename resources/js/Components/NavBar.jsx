@@ -3,8 +3,9 @@ import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogoFigure';
 import NavLink from '@/Components/NavLink';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { Search } from 'react-bootstrap-icons';
+import { ArrowBarRight, CardList, Newspaper, Search } from 'react-bootstrap-icons';
 import PrimaryButton from './PrimaryButton';
+import { CardText } from 'react-bootstrap';
 
 export default function Navbar() {
 
@@ -76,7 +77,7 @@ export default function Navbar() {
                   - 'navbar-expand-lg' lo convierte en navbar normal en desktop
                 */}
                 <div 
-                    className="offcanvas offcanvas-start w-75 bg-accent1" // <--- CAMBIO
+                    className="offcanvas offcanvas-start w-75" // <--- CAMBIO
                     tabIndex="-1" 
                     id="mainOffcanvasMenu" // <--- CAMBIO (debe coincidir con el data-bs-target)
                     aria-labelledby="mainOffcanvasMenuLabel"
@@ -86,7 +87,7 @@ export default function Navbar() {
                     <div className="offcanvas-header d-lg-none justify-content-between"> {/* d-lg-none lo oculta en desktop */}
                         <h5 className="offcanvas-title" id="mainOffcanvasMenuLabel">
                             <Link className="navbar-brand mx-auto mx-lg-0 me-lg-4" href="/" onClick={handleMobileLinkClick}>
-                                <ApplicationLogo style={{ height: '70px', width: 'auto' }} />
+                                <ApplicationLogo style={{ height: '80px', width: 'auto' }} />
                             </Link>
                         </h5>
                         {/* ✅ CORRECCIÓN: Se usa el botón con el ícono 'X' importado */}
@@ -121,47 +122,47 @@ export default function Navbar() {
                     {/* - 'navbar-expand-lg' hace que este body se comporte
                         como el contenedor de links en desktop.
                     */}
-                    <div className="offcanvas-body align-items-center">
+                    <div className="offcanvas-body align-items-center p-0">
 
                         {/* Lista de celular */}
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-block d-lg-none">
-                            <li className="nav-item mb-2">
-                                <NavLink
+                        <ul className="navbar-nav mt-2 mb-lg-0 d-block d-lg-none menu-transparent-bg">
+                            <li className="nav-item">
+                                <a
                                     href={route('index.notes')}
                                     // ✅ Clases de Botón para móvil
-                                    className={`${route().current('index.notes') ? 'active' : ''}`}
+                                    className={`text-decoration-none ${route().current('index.notes') ? 'active' : ''}`}
                                     active={route().current('index.notes')} // Sigue controlando el estado 'active'
                                     onClick={handleMobileLinkClick}
                                 >
-                                    <PrimaryButton className='btn btn-warning col-12 fw-bold fs-5'>
-                                        Notas
+                                    <PrimaryButton className='bg-warning bg-opacity-75 d-flex align-items-center text-dark text-start mb-0 p-4 col-12 fw-bold fs-5 rounded-0 border border-bottom-0 border-dark'>
+                                       <Newspaper className='fs-2 me-2'></Newspaper> Notas
                                     </PrimaryButton>
                                     
-                                </NavLink>
+                                </a>
                             </li>
-                            <li className="nav-item mb-2">
-                                <NavLink
+                            <li className="nav-item">
+                                <a
                                     href={route('login')}
-                                    className="bg-warning"
+                                    className="text-decoration-none"
                                     active={route().current('login')}
                                     onClick={handleMobileLinkClick}
                                 >
-                                    <PrimaryButton className='btn btn-warning w-100 fw-bold fs-5'>
-                                        Iniciar Sesión
+                                    <PrimaryButton className='bg-warning bg-opacity-75 d-flex align-items-center text-dark text-start mb-0 p-4 w-100 fw-bold fs-5 border-bottom-0 rounded-0 border border-dark'>
+                                      <ArrowBarRight className='fs-2 me-2'></ArrowBarRight> Iniciar Sesión
                                     </PrimaryButton>
-                                </NavLink>
+                                </a>
                             </li>
                             <li className="nav-item">
-                                <NavLink
+                                <a
                                     href={route('index.aboutus')}
-                                    className=""
+                                    className="text-decoration-none"
                                     active={route().current('index.aboutus')}
                                     onClick={handleMobileLinkClick}
                                 >
-                                    <PrimaryButton className='btn btn-warning w-100 fw-bold fs-5'>
-                                        Sobre Nosotros
+                                    <PrimaryButton className='bg-warning bg-opacity-75 d-flex align-items-center text-dark text-start mb-0 p-4 w-100 fw-bold fs-5 rounded-0 border border-dark'>
+                                        <CardList className='fs-2 me-2'></CardList> Sobre Nosotros
                                     </PrimaryButton>
-                                </NavLink>
+                                </a>
                             </li>
                         </ul>
                         
