@@ -81,10 +81,10 @@ export default function CommentItem({ comment, authUserId }) {
                                 <PrimaryButton type="button" className="col-12 col-lg-2 me-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2 d-none d-lg-block" onClick={cancelEdit} disabled={processing}>
                                     Cancelar
                                 </PrimaryButton>
-                                <PrimaryButton className="col-12 col-lg-2 btn btn-primary btn-lg rounded-pill" disabled={processing}>
+                                <PrimaryButton className="col-12 col-lg-3 btn btn-primary btn-lg rounded-pill" disabled={processing}>
                                    <Send className='fs-3'></Send> {processing ? 'Guardando...' : 'Guardar'}
                                 </PrimaryButton>
-                                <PrimaryButton type="button" className="col-12 col-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2 d-block d-lg-none" onClick={cancelEdit} disabled={processing}>
+                                <PrimaryButton type="button" className="col-12 col-lg-3 btn btn-secondary btn-lg rounded-pill me-lg-2 d-block d-lg-none" onClick={cancelEdit} disabled={processing}>
                                     Cancelar
                                 </PrimaryButton>
                                 
@@ -132,20 +132,32 @@ export default function CommentItem({ comment, authUserId }) {
         </div>
             {/* ✅ MODAL DE CONFIRMACIÓN DE BORRADO */}
             <Modal show={confirmingDelete} onClose={() => setConfirmingDelete(false)}>
-                <form onSubmit={deleteComment} className="p-4 text-center">
-                    <h5 className="fw-bold fs-4 text-dark mb-3">¿Eliminar Comentario?</h5>
-                    <p className="text-muted">
+
+                <div className='modal-header'>
+                    <h2 className="fw-bold fs-4 text-dark m-0">¿Eliminar Comentario?</h2>
+                    <button className='btn btn-lg btn-close' onClick={() => setConfirmingDelete(false)}></button>
+                </div>
+                
+                <div className='modal-body bg-light bg-opacity-50 rounded'>
+                    <h6 className="text-muted">
                         ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
-                    </p>
-                    <div className="mt-4 d-flex justify-content-center">
-                        <PrimaryButton type="button" className="btn btn-secondary rounded-pill me-3 px-4" onClick={() => setConfirmingDelete(false)} disabled={processing}>
-                            Cancelar
-                        </PrimaryButton>
-                        <PrimaryButton className="btn btn-danger rounded-pill px-4" disabled={processing}>
-                            {processing ? 'Eliminando...' : 'Sí, eliminar'}
-                        </PrimaryButton>
-                    </div>
-                </form>
+                    </h6>
+                </div>
+                
+                
+                <div className="mt-4 row g-0 d-flex justify-content-end">
+                    <PrimaryButton type="button" className="col-12 col-lg-4 btn btn-secondary rounded-pill me-lg-3 px-4 d-none d-lg-block" onClick={() => setConfirmingDelete(false)} disabled={processing}>
+                        Cancelar
+                    </PrimaryButton>
+                    <PrimaryButton className="col-12 col-lg-4 btn btn-lg btn-danger rounded-pill px-4 d-flex justify-content-center align-items-center" onClick={deleteComment} disabled={processing}>
+                        <TrashFill className='fs-3'></TrashFill>
+                        {processing ? 'Eliminando...' : 'Eliminar'}
+                    </PrimaryButton>
+                    <PrimaryButton type="button" className="btn btn-lg btn-secondary rounded-pill me-lg-3 px-4 d-lg-none" onClick={() => setConfirmingDelete(false)} disabled={processing}>
+                        Cancelar
+                    </PrimaryButton>
+                </div>
+                
             </Modal>
         </>
     );

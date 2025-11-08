@@ -279,7 +279,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                         </div>
                                         <InputError message={errors.message} className="mt-2" />
                                         <div className='d-flex justify-content-end mt-2'>
-                                            <PrimaryButton className='btn btn-primary btn-lg rounded-pill col-12 col-lg-2 ' disabled={processing}>
+                                            <PrimaryButton className='btn btn-primary btn-lg rounded-pill col-12 col-lg-3 ' disabled={processing}>
                                                 <Send className='me-2 fs-3'></Send>
                                                 {processing ? 'Enviando...' : 'Comentar'}
                                             </PrimaryButton>
