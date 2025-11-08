@@ -41,7 +41,7 @@ export default function Welcome({ auth, featuredNote, todayNotes, laravelVersion
     return (
         <Layout>
             <Head title="Inicio" /> {/* Título cambiado */}
-            <div className="container rounded p-3 p-md-5 mx-md-2 mx-xlg-5 bg-white bg-opacity-50">
+            <div className=" rounded p-3 p-md-5 mx-md-2 mx-xlg-5 bg-white bg-opacity-50">
                 
                 {/* --- Sección Principal (Nota Destacada) --- */}
                 {/* Renderiza condicionalmente solo si existe featuredNote */}

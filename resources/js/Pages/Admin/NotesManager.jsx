@@ -128,13 +128,13 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
     const user = auth.user;
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout containerType="container-fluid">
             <Head title="Administrador de Notas" />
 
-            <div className='row'>
+            <div className='row m-auto g-0'>
 
                 <DashboardOptions />
-                <div className="col">
+                <div className="col-12 col-xl ms-lg-3">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2 text-center text-md-start"><b>ADMINISTRAR NOTAS</b></h1>
                         <PrimaryButton onClick={openCreateModal} className='col-12 col-lg-3 btn btn-primary btn-lg fw-bold mt-3 rounded-pill d-flex justify-content-center align-items-center'>
@@ -294,7 +294,7 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
             {/* --- Modales --- */}
 
             {/* ✅ Modal de Creación AHORA RECIBE PROPS */}
-            <Modal show={isCreateModalOpen} onClose={closeCreateModal} size="lg">
+            <Modal show={isCreateModalOpen} onClose={closeCreateModal} className="p-0" size="lg">
                 <CreateNoteForm
                     // Pasamos los datos y funciones al componente hijo
                     data={createFormData}

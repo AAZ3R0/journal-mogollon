@@ -14,19 +14,20 @@ const formatDate = (dateString) => {
 };
 
 // Asegúrate de recibir las nuevas props 'featuredNote' y 'todayNotes'
-export default function Dashboard({ auth, stats, recentNotes, recentUsers, recentComments }) {
+export default function Dashboard({ auth, stats, recentNotes, recentUsers, recentComments, containerType }) {
 
 
 
     const Layout = auth.user ? AuthenticatedLayout : GuestLayout;
 
     return (
-        <Layout>
+        <AuthenticatedLayout containerType="container-fluid">
+            
             <Head title="Panel de control" /> {/* Título cambiado */}
-            <div className='row m-auto'>
+            <div className='row m-auto g-0'>
                 <DashboardOptions/>
 
-                <div className='bg-light bg-opacity-50 rounded p-3 col ms-lg-3'>
+                <div className='bg-light bg-opacity-50 rounded p-3 col-12 col-xl ms-lg-3'>
 
 
                     <div className='row g-0 d-flex justify-content-between mb-3 text-center'>
@@ -271,6 +272,6 @@ export default function Dashboard({ auth, stats, recentNotes, recentUsers, recen
 
             </div >
 
-        </Layout >
+        </AuthenticatedLayout>
     );
 }

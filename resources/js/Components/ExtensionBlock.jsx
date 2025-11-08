@@ -18,7 +18,7 @@ export default function ExtensionBlock({
     isEditing = false // Prop para el modo de edición
 }) {
     return (
-        <div className={`mt-2 ms-4 border-start border-3 ${borderColorClass} ps-3`}>
+        <div className={`mt-2 ms-1 border-start border-3 ${borderColorClass} ps-3`}>
             {extensions.map((ext, index) => {
                 // Calcula si este párrafo excede el límite
                 const isOverLimit = charLimit && (ext.content.length > charLimit);
@@ -32,10 +32,10 @@ export default function ExtensionBlock({
                             <button 
                                 type="button" 
                                 onClick={() => onRemove(type, index)} 
-                                className="btn btn-sm btn-outline-danger"
+                                className="bg-transparent border-0 text-dark"
                                 title={`Quitar párrafo #${index + 1}`}
                             >
-                                <TrashFill />
+                                <TrashFill className='fs-2' />
                             </button>
                         </div>
                         
@@ -78,7 +78,7 @@ export default function ExtensionBlock({
                 );
             })}
             {extensions.length < 3 && (
-                <button type="button" onClick={() => onAdd(type)} className={`btn btn-sm btn-outline-${borderColorClass.split('-')[1]} mt-3`}>
+                <button type="button" onClick={() => onAdd(type)} className={`btn btn-sm btn-${borderColorClass.split('-')[1]} mt-3`}>
                     + Añadir párrafo extra a {label.toLowerCase()}
                 </button>
             )}

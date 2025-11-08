@@ -86,7 +86,7 @@ export default function Navbar() {
                     <div className="offcanvas-header d-lg-none justify-content-between"> {/* d-lg-none lo oculta en desktop */}
                         <h5 className="offcanvas-title" id="mainOffcanvasMenuLabel">
                             <Link className="navbar-brand mx-auto mx-lg-0 me-lg-4" href="/" onClick={handleMobileLinkClick}>
-                                <ApplicationLogo style={{ height: '80px', width: 'auto' }} />
+                                <ApplicationLogo style={{ height: '100px', width: 'auto' }} />
                             </Link>
                         </h5>
                         {/* ✅ CORRECCIÓN: Se usa el botón con el ícono 'X' importado */}

@@ -8,7 +8,7 @@ export default function InputLabel({
         <label
             {...props}
             className={
-                `h5 ` +
+                `h5 mb-0` +
                 className
             }
         >

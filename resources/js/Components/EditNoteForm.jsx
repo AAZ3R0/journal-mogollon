@@ -149,7 +149,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
             </div>
 
             <form onSubmit={submit}>
-                <div className="modal-body">
+                <div className="modal-body p-0">
                     <div className='bg-warning bg-opacity-50 p-3 rounded'>
                         <InputLabel htmlFor="headline" value="Título" />
                         <TextInput id="headline" value={data.headline} className="form-control mt-1" onChange={(e) => setData('headline', e.target.value)} />
@@ -170,10 +170,10 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     </div>
 
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
-                        <label className="form-label fw-bold">Secciones</label>
-                        <div className="d-flex flex-wrap">
+                        <InputLabel htmlFor="sections" value="Secciones" />
+                        <div className="row g-0 d-flex flex-wrap justify-content-between">
                             {sections.map((section) => (
-                                <div className="form-check me-3" key={section.section_id}>
+                                <div className="form-check me-3 fs-5 col-4 col-lg-2 mt-3 mt-lg-0" key={section.section_id}>
                                     <input className="form-check-input" type="checkbox" value={section.section_id} id={`edit-section-${section.section_id}`} onChange={handleSectionChange} checked={data.sections.includes(section.section_id)} />
                                     <label className="form-check-label" htmlFor={`edit-section-${section.section_id}`}>{section.name}</label>
                                 </div>
@@ -195,7 +195,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 type="lead" label="Entrada" extensions={data.extensions.lead}
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="border-secondary" isEditing={true}
+                                borderColorClass="btn-primary" isEditing={true}
                                 charLimit={charLimits.leadExtension}
                             />
                         )}
@@ -230,7 +230,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 type="body" label="Cuerpo" extensions={data.extensions.body}
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="border-info" isEditing={true}
+                                borderColorClass="btn-primary" isEditing={true}
                                 charLimit={charLimits.bodyExtension}
                             />
                         )}
@@ -268,7 +268,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 type="closing" label="Remate" extensions={data.extensions.closing}
                                 onAdd={addExtension} onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="border-secondary" isEditing={true}
+                                borderColorClass="btn-primary" isEditing={true}
                                 charLimit={charLimits.closingExtension}
                             />
                         )}
@@ -277,7 +277,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className="btn btn-lg btn-warning rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormInvalid}>
+                    <PrimaryButton type="submit" className="btn btn-lg btn-warning col-12 col-lg-3 rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormInvalid}>
                         <PencilSquare className='me-2 fs-3' ></PencilSquare>
                         {processing ? 'Actualizando...' : 'Actualizar'}
                     </PrimaryButton>

@@ -6,9 +6,11 @@ import { ArrowBarRight, CardList, Newspaper, Speedometer2, JournalText, Search, 
 import PrimaryButton from '@/Components/PrimaryButton';
 
 
-export default function AuthenticatedLayout({ header, children }) {
+export default function AuthenticatedLayout({ header, children, containerType = 'container' }) {
     const { auth } = usePage().props;
     const userRole = auth.user?.role?.name;
+
+    const mainContainerClass = `${containerType} flex-grow-1 py-4`;
 
     // --- Lógica de Búsqueda (sin cambios) ---
     const { data, setData, get, processing } = useForm({
@@ -279,7 +281,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {/* El 'main' ahora necesita un padding-top (pt-5) mayor para compensar la altura de la navbar */}
-            <main className="container flex-grow-1 py-4">
+            <main className={mainContainerClass}>
                 {header && (
                     <header className="bg-white shadow-sm mb-4">
                         <div className="py-4 px-4">

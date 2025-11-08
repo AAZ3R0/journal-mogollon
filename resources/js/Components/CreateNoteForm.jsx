@@ -159,7 +159,7 @@ export default function CreateNoteForm({
             
             {/* ✅ El formulario ahora llama a 'onSubmit' de las props */}
             <form onSubmit={onSubmit}>
-                <div className='modal-body'>
+                <div className='modal-body p-0'>
                     
                     {/* Botón de Previsualizar */}
                     <button 
@@ -196,9 +196,9 @@ export default function CreateNoteForm({
                     {/* Campo: Secciones */}
                     <div className="mt-4 p-3 rounded bg-warning bg-opacity-50">
                         <InputLabel htmlFor="sections" value="Secciones" />
-                        <div className="d-flex flex-wrap">
+                        <div className="row g-0 d-flex flex-wrap justify-content-between">
                             {sections.map((section) => (
-                                <div className="form-check me-3" key={section.section_id}>
+                                <div className="form-check me-3 fs-5 col-4 col-lg-2 mt-3 mt-lg-0" key={section.section_id}>
                                     <input
                                         className="form-check-input" type="checkbox" value={section.section_id}
                                         id={`section-${section.section_id}`} onChange={handleSectionChange}
@@ -231,7 +231,7 @@ export default function CreateNoteForm({
                                 onAdd={addExtension} onRemove={removeExtension}
                                 onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange}
-                                borderColorClass="border-secondary"
+                                borderColorClass="btn-primary"
                                 charLimit={charLimits.leadExtension}
                                 errors={errors}
                             />
@@ -265,7 +265,7 @@ export default function CreateNoteForm({
                                 onAdd={addExtension} onRemove={removeExtension}
                                 onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange}
-                                borderColorClass="border-info"
+                                borderColorClass="btn-primary"
                                 charLimit={charLimits.bodyExtension}
                                 errors={errors}
                             />
@@ -299,7 +299,7 @@ export default function CreateNoteForm({
                                 onAdd={addExtension} onRemove={removeExtension}
                                 onContentChange={handleExtensionContentChange}
                                 onFileChange={handleExtensionFileChange}
-                                borderColorClass="border-secondary"
+                                borderColorClass="btn-primary"
                                 charLimit={charLimits.closingExtension}
                                 errors={errors}
                             />
@@ -308,7 +308,7 @@ export default function CreateNoteForm({
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className='btn btn-primary btn-lg rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormInvalid}>
+                    <PrimaryButton type="submit" className='btn btn-primary btn-lg col-12 col-lg-3 rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormInvalid}>
                         <PlusCircleFill className='me-2 fs-3'/>
                         {processing ? 'Guardando...' : 'Crear nota'}
                     </PrimaryButton>

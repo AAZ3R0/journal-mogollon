@@ -60,12 +60,12 @@ export default function Register() {
                         )}
 
                         {/* --- Campo de Nombre Completo --- */}
-                        <div className="mb-3">
+                        <div className="mb-3 row">
                             <TextInput
                                 id="name"
                                 name="nombre"
                                 value={data.name}
-                                className="bg- form-control form-control-lg"
+                                className="bg- form-control form-control-lg col-12"
                                 autoComplete="name"
                                 isFocused={true}
                                 onChange={(e) => setData('name', e.target.value)}
@@ -76,12 +76,12 @@ export default function Register() {
                         </div>
 
                         {/* --- Campo de Nombre de Usuario --- */}
-                        <div className="mb-3">
+                        <div className="mb-3 row">
                             <TextInput
                                 id="username"
                                 name="nombre de usuario"
                                 value={data.username}
-                                className="form-control form-control-lg"
+                                className="form-control form-control-lg col-12"
                                 autoComplete="username"
                                 onChange={(e) => setData('username', e.target.value)}
                                 required
@@ -91,13 +91,13 @@ export default function Register() {
                         </div>
 
                         {/* --- Campo de Correo Electrónico --- */}
-                        <div className="mb-3">
+                        <div className="mb-3 row">
                             <TextInput
                                 id="email"
                                 type="email"
                                 name="correo electrónico"
                                 value={data.email}
-                                className="form-control form-control-lg"
+                                className="form-control form-control-lg col-12"
                                 autoComplete="email"
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -107,13 +107,13 @@ export default function Register() {
                         </div>
 
                         {/* --- Campo de Contraseña --- */}
-                        <div className="mb-3">
+                        <div className="mb-3 row">
                             <TextInput
                                 id="password"
                                 type="password"
                                 name="contraseña"
                                 value={data.password}
-                                className="form-control form-control-lg"
+                                className="form-control form-control-lg col-12"
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password', e.target.value)}
                                 required
@@ -123,13 +123,13 @@ export default function Register() {
                         </div>
 
                         {/* --- Campo de Confirmar Contraseña --- */}
-                        <div className="mb-4">
+                        <div className="mb-4 row">
                             <TextInput
                                 id="password_confirmation"
                                 type="password"
                                 name="confirmación de contraseña"
                                 value={data.password_confirmation}
-                                className="form-control form-control-lg"
+                                className="form-control form-control-lg col-12"
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 required
@@ -138,18 +138,34 @@ export default function Register() {
                         </div>
 
                         {/* --- Botón de Registrarse (Centrado) --- */}
-                        <div className="d-flex justify-content-center mt-4">
-                            <PrimaryButton className="btn btn-primary btn-lg rounded-pill px-5" disabled={processing}>
+                        <div className="d-flex justify-content-center mt-4 row">
+                            <PrimaryButton className="btn btn-primary btn-lg col-12 rounded-pill px-5" disabled={processing}>
                                 Registrarse
                             </PrimaryButton>
                         </div>
 
                         {/* --- Enlace para Iniciar Sesión --- */}
-                        <div className="mt-4 text-center text-dark">
+                        <div className="mt-lg-4 mt-2 text-center text-dark row g-0 d-none d-lg-block">
+                            
                             ¿Ya tienes una cuenta?{' '}
+                            
+                            
                             <Link
                                 href={route('login')}
                                 className="text-info fw-bold"
+                            >
+                                Iniciar sesión
+                            </Link>
+                        </div>
+
+                        <div className="mt-2 text-center text-dark row g-0 d-flex d-block d-lg-none">
+                            <p className='col-12 col-lg'>
+                                ¿Ya tienes una cuenta?{' '}
+                            </p>
+                            
+                            <Link
+                                href={route('login')}
+                                className="text-info fw-bold col-12 col-lg"
                             >
                                 Iniciar sesión
                             </Link>

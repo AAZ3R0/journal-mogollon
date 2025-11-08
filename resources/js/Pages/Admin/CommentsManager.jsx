@@ -48,11 +48,11 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout containerType="container-fluid">
             <Head title="Administrar Comentarios" />
-            <div className='row'>
+            <div className='row m-auto g-0'>
                 <DashboardOptions/>
-                <div className="col">
+                <div className="col-12 col-xl ms-lg-3">
                     <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
                         <h1 className="h2"><b>ADMINISTRAR COMENTARIOS</b></h1>
                     </div>

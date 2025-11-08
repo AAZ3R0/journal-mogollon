@@ -34,7 +34,7 @@ export default function Footer() {
                      * Esta es la clave para tu solicitud.
                      */}
                     <div className="col-lg-4 text-center my-3">
-                        <ApplicationLogo style={{ height: '200px', width: 'auto' }} />
+                        <ApplicationLogo className="img-fluid" style={{ height: 'auto', width: 'auto' }} />
                     </div>
 
                     {/* --- 3. Bloque Derecho (Contacto) --- */}
