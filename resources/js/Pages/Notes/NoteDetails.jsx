@@ -110,10 +110,10 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
             {/* Set the page title */}
             <Head title={note.headline} />
 
-            <div className="mx-2 mx-lg-5 my-3 my-md-5">
-                <article className="bg-white bg-opacity-50 p-4 p-md-5 rounded shadow-sm"> {/* Added styling */}
+            <div className="mx-0 mx-lg-5 my-3 my-md-5">
+                <article className="bg-white bg-opacity-50 p-2 p-md-5 rounded shadow-sm"> {/* Added styling */}
                     {/* Header Section */}
-                    <header className="mb-4">
+                    <header className="mb-4 p-3">
                         {/* Sections */}
                         <div className="mb-2">
                             {Array.isArray(note.sections) && note.sections.map((section) => (
@@ -137,7 +137,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     </header>
 
                     {/* Content Section */}
-                    <section className="fs-5" style={{ textAlign: 'justify' }}> {/* Increase font size */}
+                    <section className="fs-5 p-3" style={{ textAlign: 'justify', textAlignLast: 'left' }}> {/* Increase font size */}
 
                         {leadExtensions.map(ext => (
                             <div key={ext.note_extension_id} className="ms-md-4 my-3 border-start border-2 ps-3">
@@ -181,7 +181,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     {/* --- SECCIÓN NOTAS RELACIONADAS --- */}
                     <div className='bg-dark bg-opacity-25 rounded pb-5 pt-3 mt-5'>
                         <div className='container-fluid px-0 px-lg-5'>
-                            <h3 className='fw-bold text-decoration-underline text-black p-3'>Notas relacionadas</h3>
+                            <h3 className='fw-bold text-decoration-underline text-black p-2 text-center text-lg-start'>Notas relacionadas</h3>
                             {relatedNotes.length > 0 && (
                                 <div className='mt-3 pt-4 rounded p-3'> 
                                     <div className="position-relative">
@@ -260,7 +260,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
 
                     <div className='bg-dark bg-opacity-25 rounded pb-3 mt-5 pt-3'>
                         <div className='container-fluid px-lg-5'>
-                            <h3 className='fw-bold text-black mb-4 p-3'>Comentarios ({note.comments ? note.comments.length : 0})</h3>
+                            <h3 className='fw-bold text-black mb-4 p-3 text-center text-lg-start'>Comentarios ({note.comments ? note.comments.length : 0})</h3>
 
                             {/* Formulario para añadir comentario (solo si está autenticado) */}
                             {auth.user ? (

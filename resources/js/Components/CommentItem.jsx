@@ -21,6 +21,11 @@ export default function CommentItem({ comment, authUserId }) {
         message: comment.message,
     });
 
+    // Limite de caracteres en los comentarios
+
+    const commentCharLimit = 150;
+    const isCommentOverLimit = data.message.length > commentCharLimit;
+
     // Comprueba si el usuario actual es el autor del comentario
     const canEdit = authUserId === comment.user_id;
 
@@ -48,7 +53,7 @@ export default function CommentItem({ comment, authUserId }) {
 
     return (
         <>
-        <div className="d-flex mb-3 ">
+        <div className="d-flex">
             <div className="flex-grow-1 ">
                 <div className="row d-flex align-items-baseline mb-1">
                     
@@ -60,20 +65,29 @@ export default function CommentItem({ comment, authUserId }) {
                         // --- MODO EDICIÓN ---
                         <form onSubmit={submitUpdate}>
                             <p className="fw-bold">{comment.user ? comment.user.username : 'Usuario Anónimo'}</p>
+                            <div className='border-bottom border-dark'></div>
                             <textarea
                                 className={`form-control mt-2 ${errors.message ? 'is-invalid' : ''}`}
-                                rows="3"
+                                rows="4"
                                 value={data.message}
                                 onChange={(e) => setData('message', e.target.value)}
                             ></textarea>
+                            <div className={`text-end small ${isCommentOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
+                                {data.message.length} / {commentCharLimit}
+                            </div>
+                            <div className='border-bottom border-dark pt-3'></div>
                             <InputError message={errors.message} className="mt-1" />
                             <div className="row g-0 mt-2 d-flex justify-content-end">
-                                <PrimaryButton type="button" className="col-12 col-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2" onClick={cancelEdit} disabled={processing}>
+                                <PrimaryButton type="button" className="col-12 col-lg-2 me-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2 d-none d-lg-block" onClick={cancelEdit} disabled={processing}>
                                     Cancelar
                                 </PrimaryButton>
                                 <PrimaryButton className="col-12 col-lg-2 btn btn-primary btn-lg rounded-pill" disabled={processing}>
                                    <Send className='fs-3'></Send> {processing ? 'Guardando...' : 'Guardar'}
                                 </PrimaryButton>
+                                <PrimaryButton type="button" className="col-12 col-lg-2 btn btn-secondary btn-lg rounded-pill me-lg-2 d-block d-lg-none" onClick={cancelEdit} disabled={processing}>
+                                    Cancelar
+                                </PrimaryButton>
+                                
                             </div>
                         </form>
                     ) : (
@@ -85,30 +99,32 @@ export default function CommentItem({ comment, authUserId }) {
 
                             
                             {/* El botón de editar solo se muestra si el usuario puede editar */}
-                            {canEdit && (
-                                <div className="text-end mt-1 col">
-                                    <button 
-                                        className="btn btn-sm btn-link text-muted"
-                                        onClick={() => setIsEditing(true)}
-                                    >
-                                        <PencilSquare className='fs-3'></PencilSquare>
-                                    </button>
-
-                                    <button 
-                                            className="btn btn-sm btn-link text-danger"
-                                            onClick={() => setConfirmingDelete(true)}
-                                        >
-                                            <TrashFill className='fs-3'></TrashFill>
-                                        </button>
-                                </div>
-                            )}
                             <p className="text-muted small d-none d-lg-block col text-end">
                                 {comment.publish_date 
                                     ? formatDistanceToNow(new Date(comment.publish_date), { addSuffix: true, locale: es })
                                     : ''}
                             </p>
-                            <div className='border-bottom border-dark mb-3'></div>
-                            <p className="mb-0" style={{textAlign:'justify', textAlignLast:'left'}}>{comment.message}</p>
+                            <div className='border-bottom border-dark'></div>
+                            
+                            <p className="mb-0 pt-4" style={{textAlign:'justify', textAlignLast:'left'}}>{comment.message}</p>
+                            <div className='border-bottom border-dark pb-4'></div>
+                            {canEdit && (
+                                <div className="text-end mt-3 col">
+                                    <button 
+                                        className="btn btn-sm btn-link text-muted p-0"
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        <PencilSquare className='fs-2 me-3'></PencilSquare>
+                                    </button>
+
+                                    <button 
+                                            className="btn btn-sm btn-link text-danger p-0"
+                                            onClick={() => setConfirmingDelete(true)}
+                                        >
+                                            <TrashFill className='fs-2'></TrashFill>
+                                        </button>
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
