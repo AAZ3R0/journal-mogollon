@@ -9,12 +9,12 @@ const formatDate = (dateString) => {
 
 export default function ViewUserDetailsModal({ user, onClose }) {
     return (
-        <div className="p-4">
-            <div className="modal-header border-0 pb-3">
-                <h3 className="modal-title">{user.name}</h3>
-                <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+        <div className="p-lg-4">
+            <div className="modal-header border-0  pb-3">
+                <h2 className="modal-title">Detalles del usuario</h2>
+                <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body bg-light bg-opacity-50 rounded">
                 <div className="row">
                     <div className="col-md-6">
                         <strong className="text-muted">Nombre de Usuario:</strong>
@@ -26,6 +26,10 @@ export default function ViewUserDetailsModal({ user, onClose }) {
                     </div>
                 </div>
                 <div className="row mt-3">
+                    <div>
+                        <strong className="text-muted">Nombre:</strong>
+                        <p className='fs-5'>{user.name}</p>
+                    </div>
                     <div className="col-12">
                         <strong className="text-muted">Correo Electrónico:</strong>
                         <p className="fs-5">{user.email}</p>

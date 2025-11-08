@@ -117,7 +117,7 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
                                             <p className='mb-0'>{comment.message}</p>
                                         </td>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
-                                            {comment.user ? comment.user.name : 'Usuario Eliminado'}
+                                            {comment.user ? comment.user.username : 'Usuario Eliminado'}
                                         </td>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50 '>{formatDate(comment.publish_date)}</td>
                                         <td className='p-3 bg-accent2 fs-5 bg-opacity-50'>
@@ -150,23 +150,33 @@ export default function CommentsManager({ auth, comments, filters = {} }) {
             </div>
 
             {/* --- Modal de Confirmación de Borrado --- */}
-            <Modal show={deletingComment !== null} onClose={closeDeleteModal} size="lg">
+            <Modal show={deletingComment !== null} onClose={closeDeleteModal} size="md">
                 {deletingComment && (
-                    <form onSubmit={deleteComment} className="p-4 text-center">
-                        <h5 className="fw-bold fs-3 text-dark mb-3">Eliminar Comentario</h5>
-                        <p className="text-muted">
-                            ¿Estás seguro de que quieres eliminar este comentario?
-                        </p>
-                        <blockquote className="text-dark fst-italic">"{deletingComment.message}"</blockquote>
-                        <div className="mt-4 d-flex justify-content-center">
-                            <button type="button" className="btn btn-secondary rounded-pill me-3 px-4" onClick={closeDeleteModal} disabled={processing}>
-                                Cancelar
-                            </button>
-                            <PrimaryButton className="btn btn-danger rounded-pill px-4" disabled={processing}>
-                                {processing ? 'Eliminando...' : 'Sí, eliminar'}
+
+                    <div>
+                        <div className='modal-header'>
+                            <h2 className="modal-title fw-bold fs-3 text-dark">Eliminar Comentario</h2>
+                            <button className='btn btn-lg btn-close' onClick={closeDeleteModal}></button>
+                        </div>
+
+                        <div className='modal-body'>
+                            <h5 className="text-muted">
+                                ¿Estás seguro de que quieres eliminar este comentario?
+                            </h5>
+                            <div className='bg-light p-3 bg-opacity-50 rounded'>
+                                <h6 className="text-dark fst-italic">"{deletingComment.message}"</h6>
+                                <p> Del usuario: <strong>{deletingComment.user? deletingComment.user.username : 'Usuario Eliminado'}</strong> </p>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <div className="mt-lg-2 d-flex justify-content-end align-items-center">
+                            <PrimaryButton className="btn btn-lg col-12 col-lg-5 fw-bold btn-danger rounded-pill px-4 d-flex justify-content-center align-items-center" disabled={processing}>
+                              <TrashFill className='fs-2 me-2'></TrashFill>  {processing ? 'Eliminando...' : 'Eliminar'}
                             </PrimaryButton>
                         </div>
-                    </form>
+                    </div>
                 )}
             </Modal>
         </AuthenticatedLayout>

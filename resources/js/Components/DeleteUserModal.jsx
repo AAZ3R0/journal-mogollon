@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import PrimaryButton from './PrimaryButton';
+import { TrashFill } from 'react-bootstrap-icons';
 
 export default function DeleteUserModal({ user, onClose }) {
     // Usamos 'delete' de useForm, renombrado a 'destroy'
@@ -15,21 +16,31 @@ export default function DeleteUserModal({ user, onClose }) {
     };
 
     return (
-        <form onSubmit={deleteUser} className="p-4 text-center">
-            <h5 className="fw-bold fs-3 text-dark mb-3">Eliminar Usuario</h5>
-            <p className="text-muted">
-                ¿Estás seguro de que quieres eliminar a <strong>{user.name}</strong> (@{user.username})?
-                Esta acción es irreversible y borrará todos sus datos.
-            </p>
 
-            <div className="mt-4 d-flex justify-content-center">
-                <button typeNext="button" className="btn btn-secondary rounded-pill me-3 px-4" onClick={onClose} disabled={processing}>
-                    Cancelar
-                </button>
-                <PrimaryButton className="btn btn-danger rounded-pill px-4" disabled={processing}>
-                    {processing ? 'Eliminando...' : 'Sí, eliminar'}
+        <div>
+        
+            <div className='modal-header'>
+                
+                <h2 className="modal-title">Eliminar Usuario</h2>
+                <button className='btn btn-lg btn-close' onClick={onClose}></button>
+                
+                
+            </div>
+
+            <div className='modal-body bg-light bg-opacity-50 rounded'>
+                <h5 className="text-muted">
+                    ¿Estás seguro de que quieres eliminar a <strong>{user.name}</strong> (@<strong>{user.username}</strong>)?
+                    Esta acción es irreversible y borrará todos sus datos.
+                </h5>
+            </div>
+            
+            
+
+            <div className="mt-4 d-flex justify-content-end align-items-center">
+                <PrimaryButton className="btn btn-lg btn-danger col-12 col-lg-5 rounded-pill px-4" onClick={deleteUser} disabled={processing}>
+                   <TrashFill className='fs-3 me-2'></TrashFill> {processing ? 'Eliminando...' : 'Eliminar'}
                 </PrimaryButton>
             </div>
-        </form>
+        </div>
     );
 }

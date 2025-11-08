@@ -204,11 +204,11 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
             </div>
 
             {/* --- Modales --- */}
-            <Modal show={isViewModalOpen} onClose={closeViewModal} size="lg">
+            <Modal show={isViewModalOpen} onClose={closeViewModal} size="md">
                 {viewingUser && <ViewUserDetailsModal user={viewingUser} onClose={closeViewModal} />}
             </Modal>
 
-            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size="lg">
+            <Modal show={isDeleteModalOpen} onClose={closeDeleteModal} size="md">
                 {deletingUser && <DeleteUserModal user={deletingUser} onClose={closeDeleteModal} />}
             </Modal>
         </AuthenticatedLayout>
