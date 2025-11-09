@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Comment;
+use App\Models\Note;
 use App\Models\Role;
 use Inertia\Inertia;
 use Illuminate\Http\Request;

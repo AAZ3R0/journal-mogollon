@@ -71,4 +71,26 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Note::class, 'user_id');
 	}
+
+	protected static function boot()
+    {
+        parent::boot();
+
+        // Esto se dispara ANTES de que el usuario sea borrado
+        static::deleting(function($user) {
+            
+            // 1. Borra todos los comentarios del usuario (esto es seguro, no tienen más dependencias)
+            $user->comments()->delete();
+
+            // 2. ✅ CORRECCIÓN: Borrar cada nota UNA POR UNA
+            // Usamos un bucle 'foreach' para cargar cada nota en memoria
+            // y luego llamar a delete() en ella.
+            foreach ($user->notes as $note) {
+                // Al llamar a $note->delete() individualmente,
+                // SÍ se dispara el evento 'deleting' del modelo Note,
+                // que a su vez SÍ ejecuta el '$note->sections()->detach()'.
+                $note->delete();
+            }
+        });
+    }
 }

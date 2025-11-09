@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Note
@@ -89,4 +90,34 @@ class Note extends Model
 		// ej: { "0": { ...archivo1 }, "1": { ...archivo2 } }
 		return $this->media()->orderBy('position', 'asc')->get()->keyBy('position');
 	}
+
+	protected static function boot()
+    {
+        parent::boot();
+
+        // ✅ 2. AÑADE ESTA FUNCIÓN 'DELETING'
+        // Esto se disparará cada vez que llames a $note->delete()
+        static::deleting(function($note) {
+            
+            // 1. Desvincula las secciones (ESTO ARREGLA TU ERROR)
+            $note->sections()->detach();
+
+            // 2. Borra los comentarios
+            $note->comments()->delete();
+
+            // 3. Borra las extensiones
+            $note->extensions()->delete();
+
+            // 4. Borra todos los archivos multimedia asociados
+            foreach ($note->media as $mediafile) {
+                Storage::disk('public')->delete($mediafile->url);
+                $mediafile->delete();
+            }
+
+            // 5. Borra la imagen de portada
+            if ($note->portrait_url) {
+                Storage::disk('public')->delete($note->portrait_url);
+            }
+        });
+    }
 }

@@ -395,6 +395,7 @@ class NotesController extends Controller
         $this->authorize('delete', $note);
 
         $note->extensions()->delete();
+        $note->comments()->delete();
         
         // 1. Eliminar las relaciones en la tabla pivote (note_sections)
         // detach() sin argumentos elimina todas las relaciones para esta nota.
