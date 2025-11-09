@@ -124,7 +124,15 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
         setDeletingNote(null);
     };
 
-
+    // --- ✅ NUEVA FUNCIÓN para formatear fecha de tarjeta móvil (DD/MM/YY) ---
+    const formatMobileDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit'
+        });
+    };
     const user = auth.user;
 
     return (
@@ -208,7 +216,65 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
                         </div>
                     )}
 
-                    <div className="table-responsive">
+
+                    <div className='bg-warning text-center p-3 mb-3 d-block d-lg-none border border-dark'>
+                        <h2 className='fw-bold text-dark'>Notas </h2>
+                    </div>
+                    <div className="d-block d-md-none">
+                        {notes.data.map((note) => (
+                            <div key={note.note_id} className="bg-accent2 bg-opacity-50 rounded shadow-sm p-0 mb-3">
+                                <div className="row g-0">
+                                    <div className="col-4 p-0 pe-2">
+                                        <img
+                                            src={`/storage/${note.portrait_url}`}
+                                            className="img-fluid rounded-start"
+                                            alt="Portada"
+                                            style={{ objectFit: 'cover', height: '100%' }}
+                                        />
+                                    </div>
+
+                                    <div className="col-8 d-flex p-2 flex-column justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold text-dark text-truncate">{note.headline}</h5>
+                                            <div className="d-flex justify-content-between small text-muted mt-2">
+                                                <span className='fw-bold'>{note.sections[0]?.name || 'Sin Sección'}</span>
+                                                <span>{formatMobileDate(note.publish_date)}</span>
+                                            </div>
+                                            <div className="small mt-2">{note.user ? note.user.name : 'N/A'}</div>
+                                        </div>
+
+                                        <div className="d-flex justify-content-between align-items-center mt-4">
+                                            <button onClick={() => openViewModal(note)} className='btn btn-transparent p-0 text-dark'><Newspaper className='fs-1' /></button>
+                                            <button onClick={() => openEditModal(note)} className='btn btn-transparent p-0 text-dark'><PencilSquare className='fs-1' /></button>
+                                            <button onClick={() => openDeleteModal(note)} className='btn btn-transparent p-0 text-dark'><TrashFill className='fs-1' /></button>
+                                        </div>
+
+                                        <div className='d-flex justify-content-between align-items-center mt-4'>
+                                            <p className="fw-bold text-dark mb-0">Poner de portada:</p>
+                                            <input
+                                                className='form-check-input fs-3'
+                                                type="checkbox"
+                                                checked={note.is_featured}
+                                                onChange={() => {
+                                                    router.patch(
+                                                        route('notes.toggleFeatured', note.note_id),
+                                                        {}, // Puedes enviar datos aquí si es necesario
+                                                        {
+                                                            preserveState: true, // No resetea el estado local de React
+                                                            preserveScroll: true, // No mueve el scroll de la página
+                                                        }
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="table-responsive d-none d-md-block">
                         <table className="table table-bordered border-dark">
                             <thead className='text-center'>
                                 <tr>
@@ -284,7 +350,7 @@ export default function NotesManager({ auth, notes, sections, featuredNote, succ
                         <BootstrapPagination links={notes.links} />
                     </div>
 
-                    
+
                 </div>
 
             </div>

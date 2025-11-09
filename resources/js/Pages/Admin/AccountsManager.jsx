@@ -90,7 +90,7 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
             <div className='row m-auto g-0'>
                 <DashboardOptions/>
                 <div className="col-12 col-xl ms-lg-3">
-                    <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4">
+                    <div className="bg-accent2 bg-opacity-50 rounded p-4 mb-4 text-center text-lg-start">
                         <h1 className="h2"><b>ADMINISTRAR USUARIOS</b></h1>
                     </div>
 
@@ -138,7 +138,75 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
                         </div>
                     </div>
 
-                    <div className="table-responsive rounded shadow-sm">
+
+                    
+
+                    {/* --- 1. INICIA VISTA MÓVIL (TARJETAS) --- */}
+                    {/* Se muestra solo en pantallas chicas (d-md-none) */}
+                    <div className='bg-warning text-center p-3 mb-3 border d-block d-lg-none border-dark'>
+                        <h2 className='fw-bold text-dark'>Usuarios </h2>
+                    </div>
+                    <div className="d-block d-md-none">
+                        {users.data.map((user) => (
+                            <div key={user.user_id} className="bg-accent2 bg-opacity-50 rounded shadow-sm p-3 mb-3">
+
+                                {/* Fila Nombre */}
+                                <div className="row g-2 mb-2 d-flex justify-content-between">
+                                    <div className="col-4 fw-bold">Nombre:</div>
+                                    <div className="col-8  text-end">
+                                        {user.name}
+                                        <div className='text-muted small'>@{user.username}</div>
+                                    </div>
+                                </div>
+
+                                {/* Fila Correo */}
+                                <div className="row g-2 mb-2 d-flex justify-content-between">
+                                    <div className="col-4 fw-bold">Correo:</div>
+                                    <div className="col-8 text-end" style={{ overflowWrap: 'break-word' }}>{user.email}</div>
+                                </div>
+
+                                {/* Fila Rol */}
+                                <div className="row g-2 mb-2 d-flex justify-content-between">
+                                    <div className="col-4 fw-bold">Rol:</div>
+                                    <div className="col-8 text-end">
+                                        <span className={`badge ${getRoleBadge(user.role?.name)}`}>
+                                            {user.role?.name || 'N/A'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Fila Registro */}
+                                <div className="row g-2 mb-2 d-flex justify-content-between">
+                                    <div className="col-4 fw-bold">Registro:</div>
+                                    <div className="col-8  text-end">{formatDate(user.created_at)}</div>
+                                </div>
+
+                                {/* Fila Acciones */}
+                                <hr className="my-2" />
+                                <div className="d-flex justify-content-end align-items-center">
+                                    <button
+                                        className='btn p-0 pe-3'
+                                        title="Ver detalles"
+                                        onClick={() => openViewModal(user)}
+                                    >
+                                        <EyeFill className='fs-2 text-dark p-0' />
+                                    </button>
+                                    <button
+                                        className='btn p-0'
+                                        title="Eliminar usuario"
+                                        onClick={() => openDeleteModal(user)}
+                                        disabled={user.user_id === auth.user.user_id}
+                                    >
+                                        <TrashFill className='fs-2 text-dark p-0' />
+                                    </button>
+                                </div>
+
+                            </div>
+                        ))}
+                    </div>
+                    {/* --- FIN VISTA MÓVIL --- */}
+
+                    <div className="table-responsive rounded shadow-sm d-none d-md-block">
                         <table className="table table-hover align-middle mb-0 table-bordered border-dark">
                             <thead className='bg-light'>
                                 <tr className='text-center'>
@@ -201,7 +269,9 @@ export default function UsersManager({ auth, users = { data: [] }, roles = [], f
                     </div>
                     
                 </div>
+                
             </div>
+
 
             {/* --- Modales --- */}
             <Modal show={isViewModalOpen} onClose={closeViewModal} size="md">
