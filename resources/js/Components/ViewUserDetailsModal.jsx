@@ -11,7 +11,7 @@ export default function ViewUserDetailsModal({ user, onClose }) {
     return (
         <div className="p-lg-4">
             <div className="modal-header border-0  pb-3">
-                <h2 className="modal-title">Detalles del usuario</h2>
+                <h2 className="modal-title fw-bold">Detalles del usuario</h2>
                 <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
             <div className="modal-body bg-light bg-opacity-50 rounded">

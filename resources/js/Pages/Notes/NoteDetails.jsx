@@ -15,7 +15,7 @@ import { Send } from 'react-bootstrap-icons';
 // Helper function (same as in Welcome.jsx)
 const formatDate = (dateString) => {
     if (!dateString) return '';
-    const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Use 'long' month for detail page
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('es-ES', options);
 };
 
@@ -113,31 +113,32 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
             <div className="mx-0 mx-lg-5 my-3 my-md-5">
                 <article className="bg-white bg-opacity-50 p-2 p-md-5 rounded shadow-sm"> {/* Added styling */}
                     {/* Header Section */}
-                    <header className="mb-4 p-3">
+                    <header className="mb-2 p-3" style={{ textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'  }}>
                         {/* Sections */}
                         <div className="mb-2">
                             {Array.isArray(note.sections) && note.sections.map((section) => (
-                                <span key={section.section_id} className="badge bg-primary me-2 fs-6"> {/* Larger badge */}
+                                <span key={section.section_id} className="badge bg-primary me-2 mb-2"> {/* Larger badge */}
                                     {section.name}
                                 </span>
                             ))}
                         </div>
                         {/* Headline */}
-                        <h1 className="fw-bold mb-3">{note.headline}</h1>
+                        <h1 className="fw-bold mb-3 h2">{note.headline}</h1>
                         {/* Author and Date */}
                         <div className="text-muted mb-3">
                             <p><strong>{note.user ? note.user.name : 'Desconocido'}</strong> | <strong>{formatDate(note.publish_date)}</strong> </p>
                         </div>
                         {/* Lead */}
-                        <p className="fst-italic h5 mb-3">{note.lead}</p>
+                        <p className="fst-italic fs-4 mb-3 lead d-none d-lg-block">{note.lead}</p>
+                        <p className="fst-italic fs-5 mb-3 lead d-block d-lg-none">{note.lead}</p>
 
                         
                         {/* Portrait Image */}
-                        <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded mb-4" style={{width:'100%', height: 'auto'}} alt="Portada" />
+                        <img src={`/storage/${note.portrait_url}`} className="img-fluid rounded" style={{width:'100%', height: 'auto'}} alt="Portada" />
                     </header>
 
                     {/* Content Section */}
-                    <section className="fs-5 p-3" style={{ textAlign: 'justify', textAlignLast: 'left' }}> {/* Increase font size */}
+                    <section className="fs-5 p-3" style={{ textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto' }}> {/* Increase font size */}
 
                         {leadExtensions.map(ext => (
                             <div key={ext.note_extension_id} className="ms-md-4 my-3 border-start border-2 ps-3">
@@ -150,7 +151,10 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                         ))}
 
                         {/* Body */}
-                        <p className="text-break" style={{ whiteSpace: 'pre-wrap' }}>
+                        <p className="text-break d-none d-lg-block" style={{ whiteSpace: 'pre-wrap' }}>
+                            {note.body}
+                        </p>
+                        <p className="text-break fs-6 d-block d-lg-none" style={{ whiteSpace: 'pre-wrap' }}>
                             {note.body}
                         </p>
                         {mediaForSlot1 && <div className="my-3" style={{width:'75%'}}><MediaRenderer file={mediaForSlot1} index={0} /></div>}
@@ -165,7 +169,8 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                         ))}
 
                         {/* Closing */}
-                        <p>{note.closing}</p>
+                        <p className='d-none d-lg-block'>{note.closing}</p>
+                        <p className='d-block fs-6 d-lg-none'>{note.closing}</p>
                         {mediaForSlot2 && <div className="my-3"><MediaRenderer file={mediaForSlot2} index={1} /></div>}
                         {closingExtensions.map(ext => (
                             <div key={ext.note_extension_id} className="ms-md-4 my-3 border-start border-2 ps-3">
@@ -179,7 +184,7 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                     </section>
                     
                     {/* --- SECCIÓN NOTAS RELACIONADAS --- */}
-                    <div className='bg-dark bg-opacity-25 rounded pb-5 pt-3 mt-5'>
+                    <div className='bg-dark bg-opacity-25 rounded pb-5 pt-3 mt-0 mt-lg-5'>
                         <div className='container-fluid px-0 px-lg-5'>
                             <h3 className='fw-bold text-decoration-underline text-black p-2 text-center text-lg-start'>Notas relacionadas</h3>
                             {relatedNotes.length > 0 && (
@@ -274,9 +279,13 @@ export default function Show({ note, relatedNotes = [] }) { // Receives the 'not
                                             onChange={(e) => setData('message', e.target.value)}
                                             placeholder='Escribe tu opinión...'
                                         ></textarea>
-                                        <div className={`text-end small ${isCommentOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                                            {data.message.length} / {commentCharLimit}
+
+                                        <div className='d-flex justify-content-end'>
+                                            <div className={`badge mt-2 fs-6 ${isCommentOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                                {data.message.length} / {commentCharLimit}
+                                            </div>
                                         </div>
+                                        
                                         <InputError message={errors.message} className="mt-2" />
                                         <div className='d-flex justify-content-end mt-2'>
                                             <PrimaryButton className='btn btn-primary btn-lg rounded-pill col-12 col-lg-3 ' disabled={processing}>

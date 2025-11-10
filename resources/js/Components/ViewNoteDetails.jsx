@@ -55,6 +55,12 @@ export const MediaRenderer = ({ file, index }) => {
 
 };
 
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
+};
+
 export default function ViewNoteDetails({ note, onClose }) {
 
     const isPortraitBlob = note.portrait_url && note.portrait_url.startsWith('blob:');
@@ -87,18 +93,12 @@ export default function ViewNoteDetails({ note, onClose }) {
 
     return (
         <div>
-            <div className="modal-header border-0 pb-0">
-                <h2 className='modal-title'>Detalles de la nota</h2>
+            <div className="modal-header border-0 pb-2">
+                <h2 className='modal-title'><strong>Detalles de la nota</strong></h2>
                  <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
-            <div className="modal-body">
-                <h4 className='mb-3'>{note.headline}</h4>
-                <img src={isPortraitBlob ? note.portrait_url : `/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
-                <div className="mb-3 text-muted">
-                    Por: <strong>{note.user ? note.user.name : 'Desconocido'}</strong>
-                    <br />
-                    Publicado el: {new Date(note.publish_date).toLocaleDateString()}
-                </div>
+            <div className="modal-body bg-light bg-opacity-50 rounded">
+                {/*Secciones*/}
                 <div className="mb-3">
                     {Array.isArray(note.sections) && note.sections.map((section) => (
                         <span key={section.section_id} className="badge bg-primary me-1">
@@ -106,18 +106,31 @@ export default function ViewNoteDetails({ note, onClose }) {
                         </span>
                     ))}
                 </div>
-                <hr/>
+
+                {/*Título*/}
+                <h4 className='mb-3' style={{textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}><strong>{note.headline}</strong></h4>
+                <div className="mb-3 text-muted">
+                    <strong><p style={{textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>{note.user ? note.user.name : 'Desconocido'} | {formatDate(note.publish_date)}</p> </strong>
+                </div>
 
                 {/* SECCIÓN DE ENTRADA (LEAD) */}
-                <p style={{textAlign: 'justify'}}><strong>{note.lead}</strong></p>
+                <p className='fst-italic lead' style={{textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>{note.lead}</p>
                 {leadExtensions.map(ext => (
                     <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">
                         <p>{ext.content}</p>
                         {ext.media && <MediaRenderer file={ext.media} index={ext.position} />}
                     </div>
                 ))}
+
+                {/* IMAGEN DE PORTADA */}
+                <img src={isPortraitBlob ? note.portrait_url : `/storage/${note.portrait_url}`} className="img-fluid rounded mb-3" alt="Portada" />
+                
+                
+                <hr/>
+
+                
                 {/* SECCIÓN DE CUERPO (BODY) */}
-                <p className="text-break" style={{ whiteSpace: 'pre-wrap', textAlign: 'justify', textAlignLast:'left' }}>{note.body}</p>
+                <p className="text-break" style={{ whiteSpace: 'pre-wrap', textAlign: 'justify', textAlignLast:'left', hyphens: 'auto' }}>{note.body}</p>
                 {mediaForSlot1 && <MediaRenderer file={mediaForSlot1} index={0} />}
                 {bodyExtensions.map(ext => (
                     <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">
@@ -126,7 +139,7 @@ export default function ViewNoteDetails({ note, onClose }) {
                     </div>
                 ))}
                 {/* SECCIÓN DE REMATE (CLOSING) */}
-                <p style={{textAlign: 'justify'}}>{note.closing}</p>
+                <p style={{textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>{note.closing}</p>
                 {mediaForSlot2 && <MediaRenderer file={mediaForSlot2} index={1} />}
                 {closingExtensions.map(ext => (
                     <div key={ext.note_extension_id} className="ms-4 border-start border-2 ps-3 mb-3">

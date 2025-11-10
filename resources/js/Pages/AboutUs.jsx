@@ -28,7 +28,7 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
                             <div className="row align-items-center p-3">
 
                                 {/* --- CAMBIO 1: Título más grande (fs-2 -> fs-1) --- */}
-                                <h1 className="fw-bold text-dark">
+                                <h1 className="fw-bold text-dark text-center text-lg-start">
                                     Sobre nosotros
                                 </h1>
 

@@ -153,7 +153,7 @@ export default function CreateNoteForm({
     return ( 
         <div>
             <div className='modal-header'>
-                <h2 className="modal-title">Crear Nueva Nota</h2>
+                <h2 className="modal-title fw-bold">Crear Nueva Nota</h2>
                 <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
             
@@ -179,7 +179,12 @@ export default function CreateNoteForm({
                             className={`form-control mt-1 ${isTitleOverLimit ? 'is-invalid' : ''}`}
                             onChange={(e) => setData('headline', e.target.value)}
                         />
-                        <div className={`text-end small ${isTitleOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>{data.headline.length} / {charLimits.headline}</div>
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isTitleOverLimit ? 'bg-danger fw-bold' : ' bg-secondary'}`}>
+                                {data.headline.length} / {charLimits.headline}
+                            </div>
+                        </div>
+                        
                         <InputError message={errors.headline} className="mt-2" />
 
                         {/* Campo: Imagen de Portada */}
@@ -219,10 +224,13 @@ export default function CreateNoteForm({
                         <textarea
                             id="lead" value={data.lead} 
                             className={`form-control mt-1 ${isLeadOverLimit ? 'is-invalid' : ''}`} 
-                            rows='4'
+                            rows='6'
                             onChange={(e) => setData('lead', e.target.value)}
                         ></textarea>
-                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>{data.lead.length} / {charLimits.lead}</div>
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isLeadOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>{data.lead.length} / {charLimits.lead}</div>
+                        </div>
+                        
                         <InputError message={errors.lead} className="mt-2" />
                         
                         {isReportajeSelected && (
@@ -244,10 +252,14 @@ export default function CreateNoteForm({
                         <textarea
                             id="body" value={data.body} 
                             className={`form-control mt-1 ${isBodyOverLimit ? 'is-invalid' : ''}`} 
-                            rows="6"
+                            rows="20"
                             onChange={(e) => setData('body', e.target.value)}
                         ></textarea>
-                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>{data.body.length} / {charLimits.body}</div>
+
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>{data.body.length} / {charLimits.body}</div>
+                        </div>
+                        
                         <InputError message={errors.body} className="mt-2" />
 
                         <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
@@ -278,10 +290,13 @@ export default function CreateNoteForm({
                         <textarea
                             id="closing" value={data.closing} 
                             className={`form-control mt-1 ${isClosingOverLimit ? 'is-invalid' : ''}`} 
-                            rows='4'
+                            rows='6'
                             onChange={(e) => setData('closing', e.target.value)}
                         ></textarea>
-                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>{data.closing.length} / {charLimits.closing}</div>
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isClosingOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>{data.closing.length} / {charLimits.closing}</div>
+                        </div>
+                        
                         <InputError message={errors.closing} className="mt-2" />
 
                         <div className="mt-4 p-3 rounded bg-light bg-opacity-50">

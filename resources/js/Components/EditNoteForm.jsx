@@ -144,7 +144,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
     return (
         <div>
             <div className="modal-header">
-                <h2 className="modal-title">Editar Nota</h2>
+                <h2 className="modal-title"><strong>Editar Nota</strong></h2>
                 <button type="button" className="btn-close btn btn-lg" onClick={onClose} aria-label="Close"></button>
             </div>
 
@@ -153,10 +153,13 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     <div className='bg-warning bg-opacity-50 p-3 rounded'>
                         <InputLabel htmlFor="headline" value="Título" />
                         <TextInput id="headline" value={data.headline} className="form-control mt-1" onChange={(e) => setData('headline', e.target.value)} />
-
-                        <div className={`text-end small ${isHeadlineOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.headline.length} / {charLimits.headline}
+                        
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isHeadlineOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                {data.headline.length} / {charLimits.headline}
+                            </div>
                         </div>
+                        
                         <InputError message={errors.headline} className="mt-2" />
 
                         {/* Imagen de PORTADA*/}        
@@ -185,9 +188,12 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="lead" value="Entrada" />
                         <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
-                        <div className={`text-end small ${isLeadOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.lead.length} / {charLimits.lead}
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isLeadOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                {data.lead.length} / {charLimits.lead}
+                            </div>
                         </div>
+                        
                         <InputError message={errors.lead} className="mt-2" />
 
                         {isReportajeSelected && (
@@ -202,10 +208,14 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     </div>
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
-                        <textarea id="body" value={data.body} className="form-control mt-1" rows="6" onChange={(e) => setData('body', e.target.value)}></textarea>
-                        <div className={`text-end small ${isBodyOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.body.length} / {charLimits.body}
+                        <textarea id="body" value={data.body} className="form-control mt-1" rows="20" onChange={(e) => setData('body', e.target.value)}></textarea>
+
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                {data.body.length} / {charLimits.body}
+                            </div>
                         </div>
+                        
                         <InputError message={errors.body} className="mt-2" />
 
                         <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
@@ -241,9 +251,13 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="closing" value="Remate" />
                         <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
-                        <div className={`text-end small ${isClosingOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                            {data.closing.length} / {charLimits.closing}
+                        
+                        <div className='d-flex justify-content-end'>
+                            <div className={`mt-2 badge fs-6 ${isClosingOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                {data.closing.length} / {charLimits.closing}
+                            </div>
                         </div>
+                        
                         <InputError message={errors.closing} className="mt-2" />
 
                         <div className="mt-4 p-3 rounded bg-light bg-opacity-50">

@@ -72,9 +72,14 @@ export default function CommentItem({ comment, authUserId }) {
                                 value={data.message}
                                 onChange={(e) => setData('message', e.target.value)}
                             ></textarea>
-                            <div className={`text-end small ${isCommentOverLimit ? 'text-danger fw-bold' : 'text-muted'}`}>
-                                {data.message.length} / {commentCharLimit}
+
+                            <div className='d-flex justify-content-end'>
+                                <div className={`mt-2 badge fs-6 ${isCommentOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                    {data.message.length} / {commentCharLimit}
+                                </div>
+
                             </div>
+                            
                             <div className='border-bottom border-dark pt-3'></div>
                             <InputError message={errors.message} className="mt-1" />
                             <div className="row g-0 mt-2 d-flex justify-content-end">

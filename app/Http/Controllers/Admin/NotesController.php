@@ -216,9 +216,9 @@ class NotesController extends Controller
         // Añadimos las mismas reglas de validación para 'extensions' que en el método store.
         $validated = $request->validate([
             'headline' => 'required|string|max:50',
-            'lead' => 'required|string|max:200',
-            'body' => 'required|string|max:280',
-            'closing' => 'required|string|max:200',
+            'lead' => 'required|string',
+            'body' => 'required|string',
+            'closing' => 'required|string',
             'portrait_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'sections' => 'required|array',
             'sections.*' => 'exists:sections,section_id',

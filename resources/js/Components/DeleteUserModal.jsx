@@ -21,7 +21,7 @@ export default function DeleteUserModal({ user, onClose }) {
         
             <div className='modal-header'>
                 
-                <h2 className="modal-title">Eliminar Usuario</h2>
+                <h2 className="modal-title fw-bold">Eliminar Usuario</h2>
                 <button className='btn btn-lg btn-close' onClick={onClose}></button>
                 
                 

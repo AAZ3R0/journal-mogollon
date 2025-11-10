@@ -53,15 +53,15 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
             <Head title="Lista de Noticias" />
 
             {/* --- Panel de Filtros --- */}
-            <div className='p-5 mx-lg-5 bg-light bg-opacity-50 rounded mb-5'>
+            <div className='p-5 mx-lg-5 bg-light bg-opacity-50 rounded mb-5 text-center text-lg-start'>
                 <h3 className='fw-bold mb-4'>Filtros de búsqueda</h3>
                 
                 {/* Usamos el sistema de Grid (row/col) */}
                 <div className='row g-3'> {/* g-3 añade espacio entre las columnas */}
                     
                     {/* --- Columna de Sección (ocupa 4 de 12 columnas en pantallas medianas) --- */}
-                    <div className='col col-lg col-md'>
-                        <h4>Sección</h4>
+                    <div className='col col-lg col-md '>
+                        <h4 className='fw-bold'>Sección</h4>
                         <select className='form-select' name="section_id" value={currentFilters.section_id} onChange={handleFilterChange}>
                             <option value="">Todas las secciones</option>
                             {sections.map(section => (
@@ -74,7 +74,7 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
 
                     {/* --- Columna de Fecha (ocupa 8 de 12 columnas en pantallas medianas) --- */}
                     <div className='col-md-8'>
-                        <h4>Fecha</h4>
+                        <h4 className='fw-bold'>Fecha</h4>
                         {/* Usamos 'd-flex' aquí para alinear los 3 selectores de fecha */}
                         <div className='row g-0'>
                             <select className='col-lg col-md-12 mb-2 me-lg-2 mb-lg-0 form-select' name="day" value={currentFilters.day} onChange={handleFilterChange}>
@@ -99,8 +99,8 @@ export default function Notes({ auth, notes = { data: [] }, sections = [], filte
 
             {/* --- Listado de Notas --- */}
             <div className="p-5 mx-lg-5 bg-light bg-opacity-50 rounded"> 
-                <div className="h1 mb-4">
-                    Lista de noticias
+                <div className="h1 mb-4 text-center text-lg-start">
+                   <strong>Lista de noticias</strong> 
                 </div>
                 
                 {/* ✅ 1. Reemplaza 'd-flex' por el 'row' de Bootstrap.
