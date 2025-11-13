@@ -46,7 +46,7 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
                                 {/* Columna Derecha: Texto */}
                                 {/* --- CAMBIO 2: Texto más grande (añadido fs-5) --- */}
                                 <div className="col-md-8" style={{ textAlign: 'justify', textAlignLast: 'left', hyphens: 'auto'}}>
-                                    <p className='text-dark' >
+                                    <p className='text-dark fs-4' >
                                        <b>Journal Mogollón</b> es una empresa periodística que desarrolla información, investigación e historia a
                                         través de los principales sucesos que acontecen y afectan a Ciudad Juárez, nuestra Misión es servir de
                                         puente a la comunidad con información oportuna, veraz y trascendente con prioridad en la difusión del Valor de lo
@@ -55,17 +55,6 @@ export default function AboutUs({ auth, laravelVersion, phpVersion }) {
                                         con la perspectiva de una mejor convivencia social.
 
                                     </p>
-                                    <div >
-                                        <strong>Objetivos:</strong>
-                                        <ul className="mt-2" >
-                                            <li className='mb-2'>Lanzar oficialmente al final de noviembre la primera publicación oficial de "Journal Mogollón" como periodico digital.</li>
-                                            <li className='mb-2'>Iniciar con publicación de información general de fuentes informativas principales durante el primer mes.</li>
-                                            <li className='mb-2'>Reducir al mínimo la curva de aprendizaje en el equipo de trabajo sobre la dinámica laboral en equipo base y de rapidez en la publicación de contenido inmediato.</li>
-                                            <li className='mb-2'>Completar  en el primer semestre del año, la publicación de todas las fuentes, tanto locales, nacionales e internacionales, soft y hard.</li>
-                                            <li className='mb-2'>Formar un equipo de trabajo completo al final del primer año de fundación con reporteros asignados a fuentes y staff administrativo.</li>
-                                            <li className='mb-2'>Mejorar calidad en contenidos en los diferentes géneros y secciones, en redacción de notas, selección de temas e historias que generen impacto en lectores.</li>
-                                        </ul>
-                                    </div>
                                 </div>
                             </div>
 

@@ -178,11 +178,11 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                     {/* LISTA DE SECCIONES */}
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="sections" value="Secciones" />
-                        <div className="row g-0 d-flex flex-wrap justify-content-between">
+                        <div className="row g-0 d-flex">
                             {sections.map((section) => (
-                                <div className="form-check me-3 fs-5 col-4 col-lg-2 mt-3 mt-lg-0" key={section.section_id}>
-                                    <input className="form-check-input" type="checkbox" value={section.section_id} id={`edit-section-${section.section_id}`} onChange={handleSectionChange} checked={data.sections.includes(section.section_id)} />
-                                    <label className="form-check-label" htmlFor={`edit-section-${section.section_id}`}>{section.name}</label>
+                                <div className="form-check col-6 col-lg-4 mt-3 mt-lg-2 d-flex align-items-center p-0" key={section.section_id}>
+                                    <input className="form-check-input fs-5 m-0 me-3" type="checkbox" value={section.section_id} id={`edit-section-${section.section_id}`} onChange={handleSectionChange} checked={data.sections.includes(section.section_id)} />
+                                    <label className="form-check-label m-0" htmlFor={`edit-section-${section.section_id}`}>{section.name}</label>
                                 </div>
                             ))}
                         </div>
