@@ -8,7 +8,10 @@
 
 @import 'bootstrap/scss/maps';
 
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@900&family=Roboto:wght@400;700&display=swap');
 
+$font-family-base: 'Roboto', sans-serif;
+$headings-font-family: 'Merriweather', serif;
 
 $theme-colors: map-merge(
     $theme-colors,(
