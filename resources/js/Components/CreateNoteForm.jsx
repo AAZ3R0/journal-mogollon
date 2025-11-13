@@ -145,6 +145,7 @@ export default function CreateNoteForm({
         data.extensions.body.some(ext => ext.content.length > charLimits.bodyExtension) ||
         data.extensions.closing.some(ext => ext.content.length > charLimits.closingExtension);
     const isFormInvalid = isTitleOverLimit || isLeadOverLimit || isBodyOverLimit || isClosingOverLimit || isAnyExtensionOverLimit;
+    const isFormReportajeInvalid = isTitleOverLimit || isLeadOverLimit || isClosingOverLimit || isAnyExtensionOverLimit;
 
     // ... (Lógica de 'isReportajeSelected' no cambia) ...
     const reportajeSection = sections.find(section => section.name.toLowerCase() === 'reportaje');
@@ -232,57 +233,64 @@ export default function CreateNoteForm({
                         </div>
                         
                         <InputError message={errors.lead} className="mt-2" />
-                        
-                        {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="lead" label="Entrada" extensions={data.extensions.lead}
-                                onAdd={addExtension} onRemove={removeExtension}
-                                onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange}
-                                borderColorClass="btn-primary"
-                                charLimit={charLimits.leadExtension}
-                                errors={errors}
-                            />
-                        )}
                     </div>
 
-                    {/* Campo: Cuerpo */}
-                    <div className="mt-4 p-3 rounded bg-warning bg-opacity-50">
-                        <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
-                        <textarea
-                            id="body" value={data.body} 
-                            className={`form-control mt-1 ${isBodyOverLimit ? 'is-invalid' : ''}`} 
-                            rows="20"
-                            onChange={(e) => setData('body', e.target.value)}
-                        ></textarea>
+                    {/* Campo: Cuerpo */}                       
 
-                        <div className='d-flex justify-content-end'>
-                            <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>{data.body.length} / {charLimits.body}</div>
-                        </div>
-                        
-                        <InputError message={errors.body} className="mt-2" />
+                        {!isReportajeSelected && (
+                            <div className="mt-4 p-3 rounded bg-warning bg-opacity-50">
+                                <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
+                                <textarea
+                                    id="body" value={data.body} 
+                                    className={`form-control mt-1 ${isBodyOverLimit ? 'is-invalid' : ''}`} 
+                                    rows="20"
+                                    onChange={(e) => setData('body', e.target.value)}
+                                ></textarea>
 
-                        <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
-                            <InputLabel value="Contenido Multimedia (después del cuerpo)" />
-                            <input type="file" className="form-control mt-1"
-                                onChange={(e) => handleFileChange(0, e.target.files[0])}
-                                accept="image/*,video/*,audio/*" 
-                            />
-                            <InputError message={errors['media_files.0']} className="mt-2" />
-                        </div>
+
+                                <div className='d-flex justify-content-end'>
+                                    <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>{data.body.length} / {charLimits.body}</div>
+                                </div>
+                                <InputError message={errors.body} className="mt-2" />
+
+                                <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                                    <InputLabel value="Contenido Multimedia (después del cuerpo)" />
+                                    <input type="file" className="form-control mt-1"
+                                        onChange={(e) => handleFileChange(0, e.target.files[0])}
+                                        accept="image/*,video/*,audio/*" 
+                                    />
+                                    <InputError message={errors['media_files.0']} className="mt-2" />
+                                </div>
+
+                            </div>
+                        )}
+
+                        {/* Quita limite de caracteres en el cuerpo */}
 
                         {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="body" label="Cuerpo" extensions={data.extensions.body}
-                                onAdd={addExtension} onRemove={removeExtension}
-                                onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange}
-                                borderColorClass="btn-primary"
-                                charLimit={charLimits.bodyExtension}
-                                errors={errors}
-                            />
+                            <div className="mt-4 p-3 rounded bg-warning bg-opacity-50">
+                                <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
+                                <textarea
+                                    id="body" value={data.body} 
+                                    className={`form-control mt-1`} 
+                                    rows="20"
+                                    onChange={(e) => setData('body', e.target.value)}
+                                ></textarea>
+                                <InputError message={errors.body} className="mt-2" />
+
+                                <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                                    <InputLabel value="Contenido Multimedia (después del cuerpo)" />
+                                    <input type="file" className="form-control mt-1"
+                                        onChange={(e) => handleFileChange(0, e.target.files[0])}
+                                        accept="image/*,video/*,audio/*" 
+                                    />
+                                    <InputError message={errors['media_files.0']} className="mt-2" />
+                                </div>
+
+                            </div>
                         )}
-                    </div>
+                        
+                        
                     
                     {/* Campo: Remate */}
                     <div className="mt-4 p-3 rounded bg-warning bg-opacity-50">
@@ -307,26 +315,25 @@ export default function CreateNoteForm({
                             />
                             <InputError message={errors['media_files.1']} className="mt-2" />
                         </div>
-
-                        {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="closing" label="Remate" extensions={data.extensions.closing}
-                                onAdd={addExtension} onRemove={removeExtension}
-                                onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange}
-                                borderColorClass="btn-primary"
-                                charLimit={charLimits.closingExtension}
-                                errors={errors}
-                            />
-                        )}
                     </div>
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className='btn btn-primary btn-lg col-12 col-lg-3 rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormInvalid}>
-                        <PlusCircleFill className='me-2 fs-3'/>
-                        {processing ? 'Guardando...' : 'Crear nota'}
-                    </PrimaryButton>
+
+                    {!isReportajeSelected &&(
+                        <PrimaryButton type="submit" className='btn btn-primary btn-lg col-12 col-lg-3 rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormInvalid}>
+                            <PlusCircleFill className='me-2 fs-3'/>
+                            {processing ? 'Guardando...' : 'Crear nota'}
+                        </PrimaryButton>
+                    )}
+                    
+
+                    {isReportajeSelected && (
+                        <PrimaryButton type="submit" className='btn btn-primary btn-lg col-12 col-lg-3 rounded-pill d-flex justify-content-center align-items-center fw-bold' disabled={processing || isFormReportajeInvalid}>
+                            <PlusCircleFill className='me-2 fs-3'/>
+                            {processing ? 'Guardando...' : 'Crear nota'}
+                        </PrimaryButton>
+                    )}
                 </div>
             </form>
 

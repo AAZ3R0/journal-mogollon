@@ -100,6 +100,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
         data.extensions.body.some(ext => ext.content.length > charLimits.bodyExtension) ||
         data.extensions.closing.some(ext => ext.content.length > charLimits.closingExtension);
     const isFormInvalid = isHeadlineOverLimit || isLeadOverLimit || isBodyOverLimit || isClosingOverLimit || isAnyExtensionOverLimit;
+    const isFormReportajeInvalid = isHeadlineOverLimit || isLeadOverLimit || isClosingOverLimit || isAnyExtensionOverLimit;
 
 
     // Lógica simplificada: encuentra el archivo específico para cada posición
@@ -151,6 +152,8 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
             <form onSubmit={submit}>
                 <div className="modal-body p-0">
                     <div className='bg-warning bg-opacity-50 p-3 rounded'>
+
+                        {/* CAMPO TÍTULO */}
                         <InputLabel htmlFor="headline" value="Título" />
                         <TextInput id="headline" value={data.headline} className="form-control mt-1" onChange={(e) => setData('headline', e.target.value)} />
                         
@@ -172,6 +175,7 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
 
                     </div>
 
+                    {/* LISTA DE SECCIONES */}
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="sections" value="Secciones" />
                         <div className="row g-0 d-flex flex-wrap justify-content-between">
@@ -185,9 +189,18 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                         <InputError message={errors.sections} className="mt-2" />
                     </div>
 
+
+                    {/* CAMPO ENTRADA */}
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="lead" value="Entrada" />
-                        <textarea id="lead" value={data.lead} className="form-control mt-1" rows='4' onChange={(e) => setData('lead', e.target.value)}></textarea>
+                        <textarea 
+                            id="lead" 
+                            value={data.lead} 
+                            className={`form-control mt-1 ${isLeadOverLimit ? 'is-invalid' : ''}`} 
+                            rows='6' 
+                            onChange={(e) => setData('lead', e.target.value)}
+                        ></textarea>
+
                         <div className='d-flex justify-content-end'>
                             <div className={`mt-2 badge fs-6 ${isLeadOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
                                 {data.lead.length} / {charLimits.lead}
@@ -195,62 +208,91 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                         </div>
                         
                         <InputError message={errors.lead} className="mt-2" />
-
-                        {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="lead" label="Entrada" extensions={data.extensions.lead}
-                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="btn-primary" isEditing={true}
-                                charLimit={charLimits.leadExtension}
-                            />
-                        )}
                     </div>
-                    <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
-                        <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
-                        <textarea id="body" value={data.body} className="form-control mt-1" rows="20" onChange={(e) => setData('body', e.target.value)}></textarea>
 
-                        <div className='d-flex justify-content-end'>
-                            <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
-                                {data.body.length} / {charLimits.body}
+                    {/* CAMPO CUERPO */}
+
+                    {!isReportajeSelected && (
+                        <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
+                            <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
+                            <textarea 
+                                id="body" 
+                                value={data.body} 
+                                className={`form-control mt-1 ${isBodyOverLimit ? 'is-invalid' : ''}`} 
+                                rows="20" 
+                                onChange={(e) => setData('body', e.target.value)}
+                            ></textarea>
+
+                            <div className='d-flex justify-content-end'>
+                                <div className={`mt-2 badge fs-6 ${isBodyOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
+                                    {data.body.length} / {charLimits.body}
+                                </div>
+                            </div>
+                            
+                            <InputError message={errors.body} className="mt-2" />
+
+                            <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                                <InputLabel value="Contenido Multimedia 1" />
+                                {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
+                                    <div>
+                                        <MediaRenderer file={existingMedia1} index={0} />
+                                        <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
+                                            Quitar archivo existente
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
+                                        <InputError message={errors['media_files.0']} className="mt-2" />
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        
-                        <InputError message={errors.body} className="mt-2" />
+                    )}
 
-                        <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
-                            <InputLabel value="Contenido Multimedia 1" />
-                            {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
-                                <div>
-                                    <MediaRenderer file={existingMedia1} index={0} />
-                                    <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
-                                        Quitar archivo existente
-                                    </button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
-                                    <InputError message={errors['media_files.0']} className="mt-2" />
-                                </div>
-                            )}
+                    {isReportajeSelected &&(
+                        <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
+                            <InputLabel htmlFor="body" value="Cuerpo de la Nota" />
+                            <textarea 
+                                id="body" 
+                                value={data.body} 
+                                className={`form-control mt-1`} 
+                                rows="20" 
+                                onChange={(e) => setData('body', e.target.value)}
+                            ></textarea>
+                            
+                            <InputError message={errors.body} className="mt-2" />
+
+                            <div className="mt-4 p-3 rounded bg-light bg-opacity-50">
+                                <InputLabel value="Contenido Multimedia 1" />
+                                {existingMedia1 && !data.media_to_delete.includes(existingMedia1.media_id) ? (
+                                    <div>
+                                        <MediaRenderer file={existingMedia1} index={0} />
+                                        <button type="button" onClick={() => handleRemoveExistingMedia(existingMedia1.media_id)} className="btn btn-sm btn-danger mt-2">
+                                            Quitar archivo existente
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <input type="file" className="form-control" onChange={(e) => handleFileChange(0, e.target.files[0])} />
+                                        <InputError message={errors['media_files.0']} className="mt-2" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
-
-                        {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="body" label="Cuerpo" extensions={data.extensions.body}
-                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="btn-primary" isEditing={true}
-                                charLimit={charLimits.bodyExtension}
-                            />
-                        )}
-                    </div>
-
+                    )}
                     
+
+                    {/* CAMPO REMATE */}
                     
                     <div className="mt-4 bg-warning bg-opacity-50 p-3 rounded">
                         <InputLabel htmlFor="closing" value="Remate" />
-                        <textarea id="closing" value={data.closing} className="form-control mt-1" rows='4' onChange={(e) => setData('closing', e.target.value)} />
+                        <textarea 
+                            id="closing" 
+                            value={data.closing} 
+                            className={`form-control mt-1" ${isClosingOverLimit? 'is-invalid' : '' }`}
+                            rows='6' 
+                            onChange={(e) => setData('closing', e.target.value)} />
                         
                         <div className='d-flex justify-content-end'>
                             <div className={`mt-2 badge fs-6 ${isClosingOverLimit ? 'bg-danger fw-bold' : 'bg-secondary'}`}>
@@ -276,25 +318,26 @@ export default function EditNoteForm({ note, sections = [], onClose }) {
                                 </div>
                             )}
                         </div>
-
-                        {isReportajeSelected && (
-                            <ExtensionBlock 
-                                type="closing" label="Remate" extensions={data.extensions.closing}
-                                onAdd={addExtension} onContentChange={handleExtensionContentChange}
-                                onFileChange={handleExtensionFileChange} onRemove={removeExtension}
-                                borderColorClass="btn-primary" isEditing={true}
-                                charLimit={charLimits.closingExtension}
-                            />
-                        )}
                     </div>
                     
                 </div>
 
                 <div className="modal-footer">
-                    <PrimaryButton type="submit" className="btn btn-lg btn-warning col-12 col-lg-3 rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormInvalid}>
-                        <PencilSquare className='me-2 fs-3' ></PencilSquare>
-                        {processing ? 'Actualizando...' : 'Actualizar'}
-                    </PrimaryButton>
+
+                    {!isReportajeSelected &&(
+                        <PrimaryButton type="submit" className="btn btn-lg btn-warning col-12 col-lg-3 rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormInvalid}>
+                            <PencilSquare className='me-2 fs-3' ></PencilSquare>
+                            {processing ? 'Actualizando...' : 'Actualizar'}
+                        </PrimaryButton>
+                    )}
+
+                    {isReportajeSelected &&(
+                        <PrimaryButton type="submit" className="btn btn-lg btn-warning col-12 col-lg-3 rounded-pill fw-bold text-dark d-flex justify-content-center align-items-center" disabled={processing || isFormReportajeInvalid}>
+                            <PencilSquare className='me-2 fs-3' ></PencilSquare>
+                            {processing ? 'Actualizando...' : 'Actualizar'}
+                        </PrimaryButton>
+                    )}
+                    
                 </div>
             </form>
         </div>
