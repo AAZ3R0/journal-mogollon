@@ -4,7 +4,7 @@ import React from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import Logo from '../../img/LogoModificado.png'; // ¡Perfecto! Esta es la importación correcta.
+import Logo from '../../img/logo.svg'; // ¡Perfecto! Esta es la importación correcta.
 
 export default function AboutUs({ auth, laravelVersion, phpVersion }) {
 
